@@ -1,0 +1,8 @@
+target 'Transfer Me It' do
+  pod 'SocketRocket'
+  pod 'STHTTPRequest'
+  pod 'Sparkle'
+  pod 'RNCryptor-objc'
+  pod 'SAMKeychain'
+  use_frameworks!
+end

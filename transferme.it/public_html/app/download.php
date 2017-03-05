@@ -1,0 +1,37 @@
+***REMOVED*** 
+function downloadPath($file){
+	ob_end_clean();
+	header("Connection: close");
+	ignore_user_abort(true); // just to be safe
+	header('Content-Type: application/octet-stream');
+	header('Content-Transfer-Encoding: binary');
+	header('Expires: 0');
+	header('Content-Length: ' . filesize($file));
+	readfile($file);
+***REMOVED***
+
+require 'functions.php';
+
+//connect to database
+$con = connect();
+
+//initial variables
+$UUID = mysqli_real_escape_string($con, $_POST['UUID']);
+$user = mysqli_real_escape_string($con, $_POST['user']);
+$path = mysqli_real_escape_string($con, $_POST['path']);
+
+if (!UUIDRegistered($con, $UUID)) {
+	die('1');
+***REMOVED***
+
+$userUUID = userToHashedUUID($con, $user);
+if($userUUID == null){
+	die('2');
+***REMOVED***
+
+$db_path = removeDirPath($path);
+
+updateUploadTime($con, $userUUID, $db_path);
+
+downloadPath($path);
+***REMOVED***

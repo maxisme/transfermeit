@@ -1,0 +1,11 @@
+{
+    "autoload": {
+        "psr-0": {
+            "Notify": "/var/www/transferme.it/socket"
+        ***REMOVED***
+    ***REMOVED***,
+    "require": {
+        "cboden/ratchet": "0.3.*",
+        "react/zmq": "^0.3.0"
+    ***REMOVED***
+***REMOVED***
