@@ -1,0 +1,29 @@
+#credit_val {
+    background: transparent;
+    border: none;
+    font-size: 8vw;
+    -webkit-text-fill-color: rgba(248,123,135,1);
+    text-shadow: 3px 3px 0px #5C6785;
+    text-align:center;
+    outline: none;
+}
+
+.info{
+    font-family: 'Heebo', sans-serif;
+}
+
+.highlight {
+    -webkit-text-stroke: 1px rgba(248,123,135,1);
+    color: #5C6785;
+}
+
+.credit_items{
+    font-size: 2vw;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}

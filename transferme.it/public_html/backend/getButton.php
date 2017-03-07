@@ -1,12 +1,17 @@
 <?php
+
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+
+
 include_once 'createPaypalButton.php';
 
-if(!$_GET['amt']){
+if(!isset($_GET['credit'])){
 	die();
 }
+$credit = $_GET['credit'];
 
-if($_GET['amt'] % 0.5 == 0){ //50p intervals
-	$button = createButton("Transfer Me It ".round($_GET['amt'], 1)."GB account", $_GET['amt']);
-	echo $button;
+if(is_int($credit) && $credit <= 20){
+	echo createButton("Transfer Me It $credit"."GB account", $credit);
 } 
 ?>

@@ -217,8 +217,6 @@
     //            [self showView];
     //        });
     //    }
-    NSData* file = [NSData dataWithContentsOfFile:[self adDIR:@"Choose the file you want to send!" buttonTitle:@"Choose" dirBool:NO fileBool:YES]];
-    NSLog(@"hash: %@", [self hash:file]);
     
     //set colours
     pink = [NSColor colorWithRed:0.973 green:0.482 blue:0.529 alpha:1];
@@ -1396,16 +1394,13 @@ StatusItemView *statusItemView;
         
         NSString* proCode = @"";
         NSString* permUser = @"";
-        if([self hasProCode]){
-            proCode = [[NSUserDefaults standardUserDefaults] objectForKey:@"pro_code"];
-            if([self hasPermUser]){
-                permUser = [[NSUserDefaults standardUserDefaults] objectForKey:@"perm_user"];
-            }
+        if([self hasPermUser]){
+            permUser = [[NSUserDefaults standardUserDefaults] objectForKey:@"perm_user"];
         }
         
         STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/addNewUser.php"];
         
-        r.POSTDictionary = @{ @"UUID":_uuid, @"mins":[self cleanUpString:_wantedTime], @"pro_code":proCode, @"security":[NSString stringWithFormat:@"%d",secure], @"perm_user":permUser};
+        r.POSTDictionary = @{ @"UUID":_uuid, @"mins":[self cleanUpString:_wantedTime], @"security":[NSString stringWithFormat:@"%d",secure], @"perm_user":permUser};
         
         r.completionBlock = ^(NSDictionary *headers, NSString *body) {
             _hasInternet = true;
@@ -1485,6 +1480,11 @@ StatusItemView *statusItemView;
     [_keychainQuery fetch:&error];
     if(!error){
         return [_keychainQuery password];
+    }else{
+        NSAlert *alert = [[NSAlert alloc] init];
+        [alert setMessageText:@"Error fetching your Key!"];
+        [alert setInformativeText:[NSString stringWithFormat:@"There was an error getting your key. Please contact hello@transferme.it.\r %@",error]];
+        [alert addButtonWithTitle:@"Ok"];
     }
     return @" ";
 }
@@ -2019,24 +2019,18 @@ int userLength = 7;
     _isSettingStatic = true;
     [self setRequestingCodeMenu];
     
-    NSString* customCode = @"";
+    NSString* customCode = @"0";
     if(setPerm){
         if([_inputCode.stringValue length] > 0){
             customCode = [self cleanUpString:_inputCode.stringValue];
-        }else{
-            customCode = @"0"; //remove perm code
         }
         [_window close];
-    }else{
-        customCode = @"0"; //remove perm code
     }
-    
-    NSString* proCode = [[NSUserDefaults standardUserDefaults] objectForKey:@"pro_code"];
     
     //add static ID
     STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/setPermenantUser.php"];
     
-    r.POSTDictionary = @{ @"customCode":customCode, @"UUID":_uuid, @"pro_code":proCode};
+    r.POSTDictionary = @{ @"customCode":customCode, @"UUID":_uuid};
     
     r.completionBlock = ^(NSDictionary *headers, NSString *body) {
         _isSettingStatic = false;
@@ -2103,7 +2097,7 @@ int userLength = 7;
         
         STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/regPro.php"];
         
-        r.POSTDictionary = @{ @"UUID":_uuid, @"user":_userCode, @"pro_code":[self cleanUpString:proCode] };
+        r.POSTDictionary = @{ @"UUID":_uuid, @"UUIDKey":[self getUUIDKey], @"pro_code":[self cleanUpString:proCode] };
         
         r.completionBlock = ^(NSDictionary *headers, NSString *body) {
             _isGettingRegistrationCode = false;

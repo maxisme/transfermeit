@@ -18,7 +18,6 @@ $max_allowed_mins = $default_max_mins;
 $UUID = mysqli_real_escape_string($con, $_POST['UUID']); 
 $wantedMins = mysqli_real_escape_string($con, $_POST['mins']);
 $security = mysqli_real_escape_string($con, $_POST['security']);
-if (isset($_POST['code'])) $pro_code = $_POST['code'];
 if (isset($_POST['perm_user'])) $perm_user = $_POST['perm_user'];
 
 //validate inputs
@@ -71,12 +70,11 @@ if(mysqli_num_rows($queryNewUser) == 0){
 
 	//get perm user if exists
 	if (!empty($pro_code)) {
-		//update user info depending on pro info
+
 		$pro_user_info = mysqli_query($con, "
 		SELECT perm_user
 		FROM `pro`
 		WHERE UUID = '".myHash($UUID)."'
-		AND code = '$pro_code'
 		");
 
 		if (mysqli_num_rows($pro_user_info) > 0) {
@@ -134,7 +132,7 @@ if(mysqli_num_rows($queryNewUser) == 0){
 	if(!$query){
 		die("0"); 
 	}else{
-		die($has_expired.$user.','.$bandwidth_left.','.$wantedMins.$addedReturn);
+        die("$has_expired.$user,$bandwidth_left,$wantedMins".$addedReturn);
 	}
 }
 ?>

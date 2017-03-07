@@ -9,6 +9,7 @@ $con = connect();
 
 //initial variables
 $UUID = mysqli_real_escape_string($con, $_POST['UUID']);
+$UUIDKey = trim(mysqli_real_escape_string($con, $_POST['UUIDKey']));
 $pro_code = trim(mysqli_real_escape_string($con, $_POST['code']));
 
 if (!UUIDRegistered($con, $UUID)) {
