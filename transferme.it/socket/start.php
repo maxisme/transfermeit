@@ -1,4 +1,4 @@
-***REMOVED***
+<?php
 require '/var/www/transferme.it/socket/vendor/autoload.php';
 
 use Ratchet\Server\IoServer;
@@ -33,9 +33,9 @@ $server->loop->addPeriodicTimer(15, function () use ($note) {
 			if (new DateTime($now) > new DateTime($endTime)){
 				//send message to socket object to close client UUID
 				$note->onLocal("close|".$client->UUID);
-			***REMOVED***
-		***REMOVED***
-	***REMOVED***
-***REMOVED***);
+			}
+		}
+	}
+});
 
 $server->run();

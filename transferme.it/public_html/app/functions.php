@@ -1,4 +1,4 @@
-***REMOVED***
+<?php
 $upload_dir = $_SERVER["DOCUMENT_ROOT"].'/uploads/';
 $custom_pro_mb = 5000;
 $free_user_bandwidth = megaToBytes(2500);
@@ -12,9 +12,9 @@ function connect(){
 	$con = mysqli_connect("localhost", $config['username'], $config['password'], $config['db']);
 	if(!$con){
 		die("Failed to connect to Database"); 
-	***REMOVED***
+	}
 	return $con;
-***REMOVED***
+}
 
 function UUIDRegistered($con, $UUID){
 	if(validUUID($UUID)){
@@ -26,10 +26,10 @@ function UUIDRegistered($con, $UUID){
  
 		if(mysqli_num_rows($uuidExists) > 0){
 			return true;
-		***REMOVED***
-	***REMOVED***
+		}
+	}
 	return false;
-***REMOVED***
+}
 
 function correctUUIDKey($con, $UUID, $key){
 	if (UUIDRegistered($con, $UUID)) {
@@ -43,11 +43,11 @@ function correctUUIDKey($con, $UUID, $key){
 		if (mysqli_num_rows($fetchKey) > 0) {
 			while ($row = mysqli_fetch_array($fetchKey)) {
 				if(myHash($key) == $row['UUIDKey']) return true;
-			***REMOVED***
-		***REMOVED***
-	***REMOVED***
+			}
+		}
+	}
 	return false;
-***REMOVED***
+}
 
 /* converts user code to UUID will return null if no such user */
 function userToHashedUUID($con, $user){
@@ -61,14 +61,14 @@ function userToHashedUUID($con, $user){
 			$hashedUUID = $row['UUID'];
 			if($row['connected'] == 1 && getUserTimeLeft($con, $hashedUUID) != "00:00"){
 				return $hashedUUID;
-			***REMOVED***else{
+			}else{
 				sendLocalSocket("close|$hashedUUID");
-			***REMOVED***
-		***REMOVED***
-	***REMOVED***
+			}
+		}
+	}
 
 	return null;
-***REMOVED***
+}
 
 /* gets time left before code expires */
 function getUserTimeLeft($con, $hashedUUID){
@@ -83,7 +83,7 @@ function getUserTimeLeft($con, $hashedUUID){
 	while ($row = mysqli_fetch_array($query)){
 		$wantedMins = $row['wantedMins'];
 		$timeStarted = $row['created'];
-	***REMOVED***
+	}
 
 	if(!empty($timeStarted)) {
 		$endTime = date("Y-m-d H:i:s", strtotime($timeStarted . " +" . $wantedMins . " minutes"));
@@ -97,19 +97,19 @@ function getUserTimeLeft($con, $hashedUUID){
 			$mins = date("i", $timeLeft);
 			if($hours > 0){
 				$mins += $hours * 60;
-			***REMOVED***
+			}
 			//get seconds
 			$secs = date("s", $timeLeft);
 
 			return "$mins:$secs";
-		***REMOVED***
-	***REMOVED***
+		}
+	}
 
 	//EXPIRED
 	//delete user
 	deleteUser($con, $hashedUUID);
 	return "00:00";
-***REMOVED***
+}
 
 /* deletes user code from database (does not delete rollollopp9 */
 function deleteUser($con, $hashedUUID){
@@ -121,7 +121,7 @@ function deleteUser($con, $hashedUUID){
 	
 	//close socket
 	sendLocalSocket("close|$hashedUUID");
-***REMOVED***
+}
 
 /* mark user as connected to server or not */
 function markUserSocketConnection($con, $hashedUUID, $isConnected){
@@ -130,7 +130,7 @@ function markUserSocketConnection($con, $hashedUUID, $isConnected){
 	SET connected = ". intval($isConnected) ."
 	WHERE UUID = '$hashedUUID'
 	");
-***REMOVED***
+}
 
 /* return whether the user is connected to the server or not */
 function isConnected($con, $hashedUUID){
@@ -143,44 +143,44 @@ function isConnected($con, $hashedUUID){
 	while ($row = mysqli_fetch_array($isConnectedQuery)){
 		if($row['connected'] == 1){
 			return true;
-		***REMOVED***
-	***REMOVED***
+		}
+	}
 
 	return false;
-***REMOVED***
+}
  
 // input checks
 function validUUID($UUID){
-	return preg_match('/^\{?[A-Z0-9]{8***REMOVED***-[A-Z0-9]{4***REMOVED***-[A-Z0-9]{4***REMOVED***-[A-Z0-9]{4***REMOVED***-[A-Z0-9]{12***REMOVED***\***REMOVED***?$/', $UUID);
-***REMOVED***
+	return preg_match('/^\{?[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}\}?$/', $UUID);
+}
 
 function hasSpecialChars($string){
 	return preg_match('/[^A-Za-z0-9]/', $string);
-***REMOVED***
+}
 
 // Returns true if one of the predefined allowed minutes the user code can exist for.
 function allowedMins($min){
 	return in_array($min, array(5, 10, 15, 20, 30, 45, 60));
-***REMOVED***
+}
 
 // 36^7 = 78,364,164,096 possible users
 function genUser(){
 	return strtoupper(generateRandomString(7));
-***REMOVED***
+}
 
 // Returns true if the user code is 7 chars long and consists of only capitals and numbers
 function validUserFormat($user){
 	if(strlen($user) != 7){
 		return false;
-	***REMOVED***
+	}
 
 	if (preg_match('/[^A-Z0-9]/', $user)) //string doesn't contain only caps and numbers
 	{
 		return false;
-	***REMOVED***
+	}
 
 	return true;
-***REMOVED***
+}
 
 function getPermUserCode($con, $UUID, $perm_user){
 
@@ -192,9 +192,9 @@ function getPermUserCode($con, $UUID, $perm_user){
 
 	if(mysqli_num_rows($query) > 0){
 		return true;
-	***REMOVED***
+	}
 	return false;
-***REMOVED***
+}
 
 function getCredit($con, $hashedUUID){
 	$get_credit = mysqli_query($con,"SELECT SUM(credit) as total_credit
@@ -203,15 +203,15 @@ function getCredit($con, $hashedUUID){
 
 	while ($row = mysqli_fetch_array($get_credit)) {
 		return $row['total_credit'];
-	***REMOVED***
+	}
 	return 0;
-***REMOVED***
+}
 
 //!important algorithm to calculate the total bandwidth a user should get based on credit.
 function creditToMaxUpload($credit){
 	if($credit > 0) return $credit * 1000;
 	return 0;
-***REMOVED***
+}
 function creditToBandwidth($credit){
 	global $free_user_bandwidth, $amt_max_files;
 	
@@ -220,9 +220,9 @@ function creditToBandwidth($credit){
 	while ($credit >= $tmp_credit){
 		$bandwidth += megaToBytes(creditToMaxUpload($tmp_credit)) * $amt_max_files;
 		$tmp_credit += 0.5;
-	***REMOVED***
+	}
 	return $bandwidth;
-***REMOVED***
+}
 
 function bandwidthToCredit($bandwidth){
 	global $free_user_bandwidth, $amt_max_files;
@@ -232,10 +232,10 @@ function bandwidthToCredit($bandwidth){
 	while($bandwidth > $tmp_bandwidth){
 		$credit += 0.5;
 		$tmp_bandwidth += megaToBytes(creditToMaxUpload($credit)) * $amt_max_files;
-	***REMOVED***
+	}
 	
 	return $credit;
-***REMOVED***
+}
 
 //returns the amount of bytes the user has used
 function getUsedBandwidth($con, $hashedUUID, $free_user = false){
@@ -245,15 +245,15 @@ function getUsedBandwidth($con, $hashedUUID, $free_user = false){
 		// and where bandwidth wasn't used when pro
 		$addSQL = "AND DATE(`finished`) = CURDATE()
 				   AND `pro` = 0";
-	***REMOVED***
+	}
 	$get_bandwidth = mysqli_query($con,"SELECT SUM(size) as used_bandwidth
 	FROM `upload`
 	WHERE fromUUID = '$hashedUUID' $addSQL");
 	while ($row = mysqli_fetch_array($get_bandwidth)) {
 		return $row['used_bandwidth'];
-	***REMOVED***
+	}
 	return 0;
-***REMOVED***
+}
 
 function getBandwidthLeft($con, $hashedUUID){
 	global $free_user_bandwidth;
@@ -268,12 +268,12 @@ function getBandwidthLeft($con, $hashedUUID){
 		//free user - limited to today
 		$bandwidth_used_today = getUsedBandwidth($con, $hashedUUID, true);
 		$bandwidth_left = $free_user_bandwidth - $bandwidth_used_today;
-	***REMOVED***
+	}
 
 	if($bandwidth_left < 0) return 0; //prevents negative bandwidth left. (should be impossible)
 	
 	return $bandwidth_left;
-***REMOVED***
+}
 
 function maxUploadSize($bandwidth_left){
 	global $free_user_bandwidth, $default_max_file_upload;
@@ -281,18 +281,18 @@ function maxUploadSize($bandwidth_left){
 	if ($bandwidth_left > $free_user_bandwidth) {
 		$rounded_credit = ceil(bandwidthToCredit($bandwidth_left) * 2) / 2; //rounds up 0.5
 		return megaToBytes(creditToMaxUpload($rounded_credit));
-	***REMOVED***else if($bandwidth_left > $default_max_file_upload){
+	}else if($bandwidth_left > $default_max_file_upload){
 		//free user
 		return $default_max_file_upload;
-	***REMOVED***
+	}
 
 	return $bandwidth_left;
-***REMOVED***
+}
 
 function getMaxUploadSize($con, $hashedUUID){
 	$bandwidth_left = getBandwidthLeft($con, $hashedUUID);
 	return maxUploadSize($bandwidth_left);
-***REMOVED***
+}
 
 // Updates the `updated` time in the `upload` database.
 // This is so that the file is not deleted if a user is still deleting or uploading the file.
@@ -307,10 +307,10 @@ function updateUploadTime($con, $aUUID, $path){
     
     if($query){
         return true;
-    ***REMOVED***else{
+    }else{
         return false;
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 // Removes unimportant information on the upload and
 // the actual directory of where the file was located using "Secure Remove"
@@ -328,11 +328,11 @@ function deleteUpload($con, $toUUID, $fromUUID, $path, $failed = FALSE){
 			$dir = getDirPath($path);
 			if (deleteDir($dir)) {
 				return true;
-			***REMOVED***
-		***REMOVED***
-	***REMOVED***
+			}
+		}
+	}
     return false;
-***REMOVED***
+}
 
 //returns the id of the row in the `upload` database
 //also authenticates variables
@@ -348,21 +348,21 @@ function getUploadID($con, $fromUUID, $toUUID){
 
     while ($row = mysqli_fetch_array($upload_id_query)){
         return $row['id'];
-    ***REMOVED***
+    }
     return null;
-***REMOVED***
+}
 
 //adds the full path to the directory of the path stored in the database
 function getDirPath($path){
 	global $upload_dir;
 	return $upload_dir.$path.'/';
-***REMOVED***
+}
 
 //returns the path stored in the database.
 function removeDirPath($path){
 	global $upload_dir;
 	return strtok(str_replace($upload_dir, "", $path),"/");
-***REMOVED***
+}
 
 //Deletes a directory with "Secure Delete"
 function deleteDir($dir){
@@ -371,16 +371,16 @@ function deleteDir($dir){
 	customLog("deleteDir shell: $shell", TRUE);
 	if($shell == "1"){
 		return true;
-	***REMOVED***
+	}
 	return false;
-***REMOVED***
+}
 
 function sendLocalSocket($message){
 	$context = new ZMQContext();
 	$socket = $context->getSocket(ZMQ::SOCKET_PUSH);
 	$socket->connect("tcp://localhost:47802");
 	$socket->send($message);
-***REMOVED***
+}
 
 //functions
 function generateRandomString($length) {
@@ -389,9 +389,9 @@ function generateRandomString($length) {
     $randomString = ''; 
     for ($i = 0; $i < $length; $i++) {
         $randomString .= $characters[rand(0, $charactersLength - 1)];
-    ***REMOVED***
+    }
     return $randomString;
-***REMOVED***
+}
 
 function customLog($message, $silent=false, $file = '/var/www/transferme.it/log/server.log'){
 	$message = date("Y-m-d H:i:s")."\t $message\n";
@@ -402,7 +402,7 @@ function customLog($message, $silent=false, $file = '/var/www/transferme.it/log/
 
 	//store log
 	file_put_contents($file, $message.PHP_EOL , FILE_APPEND | LOCK_EX);
-***REMOVED***
+}
 
 //ip database
 function addIP($con){
@@ -410,33 +410,33 @@ function addIP($con){
 	return mysqli_query($con,"INSERT INTO 
 	`IPs` (ip) VALUES ('$ip')
   	ON DUPLICATE KEY UPDATE last_access = NOW();");
-***REMOVED***
+}
 
 function megaToBytes($bytes){
 	return $bytes * 1048576;
-***REMOVED***
+}
 
 function bytesToMega($bytes){
 	return $bytes / 1048576;
-***REMOVED***
+}
 
 function encryptedFileSize($bytes){
 	$overhead = 66;
 
 	if ($bytes == 0) {
 		return 16 + $overhead;
-	***REMOVED***
+	}
 
 	$remainder = $bytes % 16;
 	if ($remainder == 0) {
 		return $bytes + 16 + $overhead;
-	***REMOVED***
+	}
 
 	return $bytes + 16 - $remainder + $overhead;
-***REMOVED***
+}
 
 function myHash($str){
     return hash("sha256",$str);
-***REMOVED***
+}
 
-***REMOVED***
+?>

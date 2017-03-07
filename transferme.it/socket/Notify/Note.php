@@ -1,10 +1,10 @@
-***REMOVED***
+<?php
 namespace Notify;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
  
-***REMOVED***
-***REMOVED***
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
 
 require '/var/www/transferme.it/public_html/app/functions.php';
 
@@ -21,7 +21,7 @@ class Note implements MessageComponentInterface {
 
     public function __construct() {
         $this->clients = new \SplObjectStorage; 
-    ***REMOVED***
+    }
 
     public function onOpen(ConnectionInterface $conn) {
 		$connection_ip = $conn->WebSocket->request->getHeader('X-Real-IP');
@@ -35,12 +35,12 @@ class Note implements MessageComponentInterface {
 		if(mysqli_num_rows($time_since) > 0) {
 			customLog("New socket");
 			$this->clients->attach($conn);
-		***REMOVED***else{
+		}else{
 			customLog("Fishy connection from: $connection_ip");
 			$conn->send("fishy connection");
 			$conn->close();
-		***REMOVED***
-    ***REMOVED***
+		}
+    }
 
     public function onMessage(ConnectionInterface $from, $message) {
 		$con = connect();
@@ -62,13 +62,13 @@ class Note implements MessageComponentInterface {
 						if($hashedUUID != null) {
 							$time_left = getUserTimeLeft($con, $hashedUUID);
 							$from->send("time|$time_left");
-						***REMOVED***else{
+						}else{
 							$from->send("time|00:00");
-						***REMOVED***
-					***REMOVED***
-				***REMOVED***
-			***REMOVED***
-		***REMOVED***else if($message_type === "keep") {
+						}
+					}
+				}
+			}
+		}else if($message_type === "keep") {
 			// USER IS STILL UPLOADING OR DOWNLOADING - tells server to postpone deleting the file.
 			$UUID 	= mysqli_real_escape_string($con, $arr[1]);
 			$user 	= mysqli_real_escape_string($con, $arr[2]);
@@ -81,11 +81,11 @@ class Note implements MessageComponentInterface {
 						$hashedUUID = userToHashedUUID($con, $user);
 						if ($hashedUUID != null) {
 							updateUploadTime($con, $hashedUUID, $path);
-						***REMOVED***
-					***REMOVED***
-				***REMOVED***
-			***REMOVED***
-		***REMOVED***else if(validUUID($message_type)){
+						}
+					}
+				}
+			}
+		}else if(validUUID($message_type)){
 			// first socket connection
 			$UUID 	= mysqli_real_escape_string($con, $message_type);
 			$key 	= mysqli_real_escape_string($con, $arr[1]);
@@ -93,12 +93,12 @@ class Note implements MessageComponentInterface {
 			if(isConnected($con, myHash($UUID))){
 				$from->send("User already connected to socket");
 				$from->close();
-			***REMOVED*** else {
+			} else {
 				if (!correctUUIDKey($con, $UUID, $key)) {
                     customLog("Invalid Key: $UUID with key: $key");
 					$from->send("Invalid key. You have likely altered Keychain");
 					$from->close();
-				***REMOVED*** else {
+				} else {
 					foreach ($this->clients as $client) {
 						if ($from === $client) {
 							//return time left
@@ -106,19 +106,19 @@ class Note implements MessageComponentInterface {
 							if ($time_left == "00:00") {
 								$from->send("time|$time_left");
 								$from->close();
-							***REMOVED*** else {
+							} else {
 								markUserSocketConnection($con, myHash($UUID), TRUE);
 								$client->UUID = myHash($UUID);
 								$client->activity = date("Y-m-d H:i:s");
 								$from->send("time|$time_left");
 								customLog("New client: " . $client->UUID);
-							***REMOVED***
-						***REMOVED***
-					***REMOVED***
-				***REMOVED***
-			***REMOVED***
-		***REMOVED***
-    ***REMOVED***
+							}
+						}
+					}
+				}
+			}
+		}
+    }
 	
 	public function onLocal($message)
 	{
@@ -133,9 +133,9 @@ class Note implements MessageComponentInterface {
 					$client->send("time|00:00");
 					$client->close();
 					break;
-				***REMOVED***
-			***REMOVED*** 
-		***REMOVED***else{
+				}
+			} 
+		}else{
 			//forward socket message to client
 
 			//remove hashed UUID from message as irrelevant to client
@@ -145,10 +145,10 @@ class Note implements MessageComponentInterface {
 				if (isset($client->UUID) && $hashedUUID == $client->UUID) {
 					$client->send($message);
 					break;
-				***REMOVED***
-			***REMOVED***
-		***REMOVED***
-	***REMOVED***
+				}
+			}
+		}
+	}
 
     public function onClose(ConnectionInterface $conn) {
 		foreach ($this->clients as $client) {
@@ -158,15 +158,15 @@ class Note implements MessageComponentInterface {
 					markUserSocketConnection(connect(), $client->UUID, FALSE);
 					//remove client code
 					$client->UUID = NULL;
-				***REMOVED***
-			***REMOVED***
-		***REMOVED***
+				}
+			}
+		}
         $this->clients->detach($conn);
-    ***REMOVED***
+    }
 
     public function onError(ConnectionInterface $conn, \Exception $e) {
 		customLog("connection error:");
 		customLog(print_r($e));
         $conn->close();
-    ***REMOVED***
-***REMOVED***
+    }
+}

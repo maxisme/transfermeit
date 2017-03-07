@@ -1,6 +1,6 @@
-***REMOVED***
-***REMOVED***
-***REMOVED***
+<?php
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
 
 require 'functions.php';
 
@@ -9,15 +9,16 @@ $con = connect();
 
 //initial variables
 $UUID = mysqli_real_escape_string($con, $_POST['UUID']);
+$UUIDKey = trim(mysqli_real_escape_string($con, $_POST['UUIDKey']));
 $pro_code = trim(mysqli_real_escape_string($con, $_POST['code']));
 
 if (!UUIDRegistered($con, $UUID)) {
 	die('1');
-***REMOVED***
+}
 
 if(strlen($pro_code) != 100 || hasSpecialChars($pro_code)){
 	die('2');
-***REMOVED***
+}
 
 $result = mysqli_query($con,"
 SELECT * 
@@ -34,10 +35,10 @@ if(mysqli_num_rows($result) > 0) {
 
 	if($updatePro){
 		die("0");
-	***REMOVED***else{
+	}else{
 		die("4");
-	***REMOVED***
-***REMOVED***else{
+	}
+}else{
 	die("3");
-***REMOVED***
-***REMOVED***
+}
+?>

@@ -1,4 +1,4 @@
-***REMOVED***
+<?php
 session_start();
 
 //---------------EMAIL------------------
@@ -12,23 +12,23 @@ $name = $_POST['name'];
 if(strlen($from) == 0){
 	$_SESSION["error"] = 1;
 	die(header("Location: /#contact"));
-***REMOVED***
+}
 
 if(strlen($name) == 0){
 	$_SESSION["error"] = 2;
 	die(header("Location: /#contact"));
-***REMOVED***
+}
 
 if(strlen($msg) == 0){
 	$_SESSION["error"] = 3;
 	die(header("Location: /#contact"));
-***REMOVED***
+}
 
 //validate email
 if (!filter_var($from, FILTER_VALIDATE_EMAIL)) {
 	$_SESSION["error"] = 4;
 	die(header("Location: /#contact"));
-***REMOVED***
+}
 
 require 'PHPMailer/PHPMailerAutoload.php';
 
@@ -54,8 +54,8 @@ $mail->Body    = $msg;
 if(!$mail->send()) {
     echo 'Message could not be sent.';
     echo 'Mailer Error: ' . $mail->ErrorInfo;
-***REMOVED*** else {
+} else {
 	$_SESSION["success"] = 1;
 	die(header("Location: /#contact"));
-***REMOVED***
-***REMOVED***
+}
+?>

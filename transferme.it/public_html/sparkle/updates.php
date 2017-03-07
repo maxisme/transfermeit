@@ -1,8 +1,8 @@
-***REMOVED***
+<?php
 header('Content-type: text/xml'); 
 $version = "1.048"; //and build 
 
-echo '<?xml version="1.1" encoding="utf-8"***REMOVED***
+echo '<?xml version="1.1" encoding="utf-8"?>
 <rss version="1.1" xmlns:sparkle="https://transferme.it/xml-namespaces/sparkle"  xmlns:dc="https://transferme.it/dc/elements/1.1/">
   <channel>
     <item>

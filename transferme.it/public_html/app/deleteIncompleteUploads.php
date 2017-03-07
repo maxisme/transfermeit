@@ -1,9 +1,9 @@
-***REMOVED***
+<?php
 //runs from cron.
 (PHP_SAPI !== 'cli' || isset($_SERVER['HTTP_USER_AGENT'])) && die('cli only');
 
-***REMOVED***
-***REMOVED***
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
 
 require 'functions.php';
 
@@ -25,5 +25,5 @@ AND `upload`.finished = NULL
 
 while ($row = mysqli_fetch_array($out_of_date_query)){
 	deleteUpload($con, $row['toUUID'], $row['fromUUID'], $row['path'], true);
-***REMOVED***
-***REMOVED***
+}
+?>

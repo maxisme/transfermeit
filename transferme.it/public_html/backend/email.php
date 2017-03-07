@@ -1,4 +1,4 @@
-***REMOVED***
+<?php
 require 'PHPMailer/PHPMailerAutoload.php';
 
 function sendMail($from, $name, $subj, $msg){
@@ -28,14 +28,14 @@ function sendMail($from, $name, $subj, $msg){
 			'verify_peer_name' => false,
 			'allow_self_signed' => true
 		)
-***REMOVED***
+	);
 	
 	if(!$mail->send()) {
 		echo 'Message could not be sent.';
 		echo 'Mailer Error: ' . $mail->ErrorInfo;
-	***REMOVED*** else {
+	} else {
 		$_SESSION['error'] = 0;
 		die(header("Location: /contact"));
-	***REMOVED***
-***REMOVED***
-***REMOVED***
+	}
+}
+?>

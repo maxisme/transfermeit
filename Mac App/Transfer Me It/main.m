@@ -19,4 +19,4 @@ int main(int argc, const char * argv[]) {
     [application run];                                                  // Call the Apps Run method
     
     return 0;       // App Never gets here.
-***REMOVED***
+}

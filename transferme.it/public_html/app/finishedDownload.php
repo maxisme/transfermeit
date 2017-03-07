@@ -1,4 +1,4 @@
-***REMOVED***
+<?php
 require 'functions.php';
 
 //connect to database
@@ -13,18 +13,18 @@ $fileHash = trim(mysqli_real_escape_string($con, $_POST['hash']));
 
 if (!UUIDRegistered($con, $UUID)) {
 	die('1');
-***REMOVED***
+}
 
 $userUUID = userToHashedUUID($con, $user);
 if($userUUID == null){
 	die('2');
-***REMOVED***
+}
 
 //extra validation check if user variables "match up"
 $upload_id = getUploadID($con, $friendUUID, $userUUID);
 if($upload_id == null){
 	die("3");
-***REMOVED***
+}
 
 $db_path = removeDirPath($path);
 
@@ -42,7 +42,7 @@ if(!empty($fileHash)){ // succesfully finished download
 	$partialKey = null;
 	while ($row = mysqli_fetch_array($partialKeyQuery)) {
 		$partialKey = $row['partialKey'];
-	***REMOVED***
+	}
 
 	if($partialKey == null){
 		die("SELECT partialKey
@@ -51,17 +51,17 @@ if(!empty($fileHash)){ // succesfully finished download
 		AND toUUID = '$userUUID'
 		AND path = '$db_path'
 		AND `hash` = '$fileHash'");
-	***REMOVED***
+	}
 
 	$failed = false;
-***REMOVED***
+}
 
 //finished upload
 if(deleteUpload($con, $userUUID, $friendUUID, $db_path, $failed)){
 	//send message to uploader that file has been downloaded.
 	sendLocalSocket("downloaded|$friendUUID|$path");
 	die($partialKey);
-***REMOVED***else{
+}else{
 	echo "Failed to delete file: ".$db_path;
-***REMOVED***
-***REMOVED***
+}
+?>

@@ -18,7 +18,7 @@
     BOOL _isHighlighted;
     SEL _action;
     id __unsafe_unretained _target;
-***REMOVED***
+}
 
 - (id)initWithStatusItem:(NSStatusItem *)statusItem;
 
@@ -43,7 +43,7 @@
 - (void)setMenu:(NSMenu *)menu {
     [menu setDelegate:self];
     [super setMenu:menu];
-***REMOVED***
+}
 
 
 - (id)initWithFrame:(NSRect)frame
@@ -53,10 +53,10 @@
         //register for drags
         NSArray *dragTypes = @[NSURLPboardType, NSFileContentsPboardType, NSFilenamesPboardType];
         [self registerForDraggedTypes:dragTypes];
-    ***REMOVED***
+    }
     
     return self;
-***REMOVED***
+}
 
 - (id)initWithStatusItem:(NSStatusItem *)statusItem
 {
@@ -69,9 +69,9 @@
     {
         _statusItem = statusItem;
         _statusItem.view = self;
-    ***REMOVED***
+    }
     return self;
-***REMOVED***
+}
 
 - (void)drawRect:(NSRect)dirtyRect
 {
@@ -84,46 +84,46 @@
     CGFloat iconY = roundf((NSHeight(bounds) - iconSize.height) / 2);
     NSPoint iconPoint = NSMakePoint(iconX, iconY);
     [icon drawAtPoint:iconPoint fromRect:bounds operation:NSCompositeSourceOver fraction:1.0];
-***REMOVED***
+}
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
     NSMenu *menu = [super menu];
     [_statusItem popUpStatusItemMenu:menu];
     [NSApp sendAction:self.action to:self.target from:self];
-***REMOVED***
+}
 
 
 - (void)menuWillOpen:(NSMenu *)menu {
     [self setHighlighted:YES];
     [self setNeedsDisplay:YES];
-***REMOVED***
+}
 
 - (void)menuDidClose:(NSMenu *)menu {
     [self setHighlighted:NO];
     [self setNeedsDisplay:YES];
-***REMOVED***
+}
 
 - (void)setImage:(NSImage *)newImage
 {
     _image = newImage;
     [self setNeedsDisplay:YES];
-***REMOVED***
+}
 
 - (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender
 {
     if ([[sender draggingPasteboard] availableTypeFromArray:@[NSFilenamesPboardType]]) {
         return NSDragOperationCopy;
-    ***REMOVED***
+    }
     return NSDragOperationNone;
-***REMOVED***
+}
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
 {
     NSPasteboard *pb = [sender draggingPasteboard];
     if([[pb pasteboardItems] count] != 1){
         return NO;
-    ***REMOVED***
+    }
     
     NSURL *url = [NSURL URLFromPasteboard:pb];
     _thisapp.uploadFilePath = url.path;
@@ -131,7 +131,7 @@
     [_thisapp chooseFriend];
     
     return NO;
-***REMOVED***
+}
 
 @end
 
@@ -140,7 +140,7 @@
 
 @interface MyWindow: NSWindow
 {
-***REMOVED***
+}
 - (BOOL) canBecomeKeyWindow;
 @end
 
@@ -148,7 +148,7 @@
 - (BOOL) canBecomeKeyWindow
 {
     return YES;
-***REMOVED***
+}
 @end
 
 
@@ -166,22 +166,22 @@
     [super mouseEntered:theEvent];
     [self updateImages];
     self.image = self.alternateImage;
-***REMOVED***
+}
 
 -(void)mouseExited:(NSEvent *)theEvent {
     [super mouseExited:theEvent];
     self.image = self.imageTmp;
-***REMOVED***
+}
 
 - (void)updateImages {
     self.imageTmp = self.image;
-***REMOVED***
+}
 
 -(void)updateTrackingAreas
 {
     if(self.trackingArea != nil) {
         [self removeTrackingArea:self.trackingArea];
-    ***REMOVED***
+    }
     
     int opts = (NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways);
     self.trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds]
@@ -190,16 +190,16 @@
                                                     userInfo:nil];
     
     [self addTrackingArea:self.trackingArea];
-***REMOVED***
+}
 
 - (void)resetCursorRects
 {
     if (self.cursor) {
         [self addCursorRect:[self bounds] cursor: self.cursor];
-    ***REMOVED*** else {
+    } else {
         [super resetCursorRects];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 @end
 
 
@@ -215,10 +215,8 @@
     //            [self enableLoginItemWithURL];
     //            [self startUpWindow];
     //            [self showView];
-    //        ***REMOVED***);
-    //    ***REMOVED***
-    NSData* file = [NSData dataWithContentsOfFile:[self adDIR:@"Choose the file you want to send!" buttonTitle:@"Choose" dirBool:NO fileBool:YES]];
-    NSLog(@"hash: %@", [self hash:file]);
+    //        });
+    //    }
     
     //set colours
     pink = [NSColor colorWithRed:0.973 green:0.482 blue:0.529 alpha:1];
@@ -250,7 +248,7 @@
     _wantedTime = [[NSUserDefaults standardUserDefaults] objectForKey:@"setTime"];
     if(!_wantedTime){
         _wantedTime = @"10";
-    ***REMOVED***
+    }
     
     [self createStatusBarItem];
     [self createNewUser];
@@ -291,23 +289,23 @@
 //        [encrypted_data writeToFile:dataPath atomically:YES];
 //        
 //        NSLog(@"decrypt size: %d", (int)[[self decryptFile:encrypted_data password:@"7xuSq6FwfxdGemqXhrizbFnbPqwdBK"] length]);
-//    ***REMOVED***);
+//    });
     
     //DECRYPT AT PATH
 //    NSData* file = [NSData dataWithContentsOfFile:@"/Users/maxmitch/Downloads/testencryptedfile_test.dat"];
 //    NSLog(@"decrypt size: %d", (int)[[self decryptFile:file password:@"7xuSq6FwfxdGemqXhrizbFnbPqwdBK"] length]);
     
     //$ mv /Users/maxmitch/Library/Caches/testencryptedfile.dat ~/Documents/transfermeit/transferme.it/
-***REMOVED***
+}
 
 -(void)applicationWillFinishLaunching:(NSNotification *)notification
 {
     [_window setContentView:_view];           // Hook the view up to the window
-***REMOVED***
+}
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
     //[self deleteUser:0];
-***REMOVED***
+}
 
 #pragma mark - view
 
@@ -442,8 +440,8 @@ MyButton* submitButton;
         [enterButton setKeyEquivalent:@"\r"];
         [enterButton setAction:@selector(enter)];
         [_view addSubview:enterButton];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 //for friend code
 NSString* string_before;
@@ -456,13 +454,13 @@ NSString* string_before;
         //make sure user is less than userLength
         if([string length] > userLength){
             string = string_before;
-        ***REMOVED***else{
+        }else{
             string_before = string;
-        ***REMOVED***
+        }
         
         [textField setStringValue:[string uppercaseString]];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 -(void)startUpWindow{
     
@@ -534,7 +532,7 @@ NSString* string_before;
     NSImageView *imView = [[NSImageView alloc] initWithFrame:NSMakeRect(0, -5, 400, 180)];
     [imView setImage:myImage];
     [_view addSubview:imView];
-***REMOVED***
+}
 
 - (void)menuWillOpen:(NSMenu *)menu
 {
@@ -544,16 +542,16 @@ NSString* string_before;
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 //[self killMenu];
                 //[self setDefaultMenu];
-            ***REMOVED***);
-        ***REMOVED***);
+            });
+        });
         
         dispatch_async( dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self finishStartUpView];
-        ***REMOVED***);
+        });
         [_window orderOut:self];
         [_window close];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 -(void)showView{
     //create view controller
@@ -561,20 +559,20 @@ NSString* string_before;
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [_window makeKeyAndOrderFront:_view];
-    ***REMOVED***);
-***REMOVED***
+    });
+}
 
 #pragma mark - NSUserNotification
 
 -(void)desktopAlert:(NSString*)title message:(NSString*)message button1:(NSString*)button1 button2:(NSString*)button2{
     [self desktopAlert:title message:message button1:button1 button2:button2 variables:nil];
-***REMOVED***
+}
 
 -(void)desktopAlert:(NSString*)title message:(NSString*)message button1:(NSString*)button1 button2:(NSString*)button2 variables:(NSDictionary*)variables{
     if(!_hasRequestedDownload && !_isDownloading && !_isUploading){
         if([title isEqualToString: _previousDesktopTitle] /*&& ![title  isEqual: @"Incoming File!"]*/){
             [[NSUserNotificationCenter defaultUserNotificationCenter] removeAllDeliveredNotifications];
-        ***REMOVED***
+        }
         
         NSUserNotification *notification = [[NSUserNotification alloc] init];
         notification.title = title;
@@ -583,32 +581,32 @@ NSString* string_before;
         notification.identifier = [NSString stringWithFormat:@"%d", _notificationCount++];
         if(![button1 isEqual: @""]){
             notification.actionButtonTitle = button1;
-        ***REMOVED***else{
+        }else{
             [notification setHasActionButton:NO];
-        ***REMOVED***
+        }
         if(![button2 isEqual: @""]){
             notification.otherButtonTitle = button2;
-        ***REMOVED***else{
+        }else{
             [notification setHasReplyButton:NO];
-        ***REMOVED***
+        }
         
         if([title  isEqual: @"Incoming File!"]){
             notification.soundName = @"alert.wav";
-        ***REMOVED***
+        }
         
         [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
         
         _previousDesktopTitle = title;
-    ***REMOVED***else{
+    }else{
         if(_isDownloading){
             NSLog(@"can't notify %@ as downloading", title);
-        ***REMOVED***else if(_isUploading){
+        }else if(_isUploading){
             NSLog(@"can't notify %@ as downloading", title);
-        ***REMOVED***else{
+        }else{
             NSLog(@"already requested a download");
-        ***REMOVED***
-    ***REMOVED***
-***REMOVED***
+        }
+    }
+}
 
 //action button for NSUserNotification
 - (void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification{
@@ -618,20 +616,20 @@ NSString* string_before;
         NSString* downloadLocation = [self saveLocation];
         if(downloadLocation == nil){
             downloadLocation = [self adDIR:@"Choose where your file should be saved" buttonTitle:@"Save" dirBool:true fileBool:false];
-        ***REMOVED***
+        }
         [self downloadFile:downloadLocation friendUUID:friendUUID ref:ref];
-    ***REMOVED***else if([notification.title  isEqual: @"File Too Big!"]){
+    }else if([notification.title  isEqual: @"File Too Big!"]){
         [self goPro];
-    ***REMOVED***else if([notification.title  isEqual: @"Success Downloading File!"]){
+    }else if([notification.title  isEqual: @"Success Downloading File!"]){
         [self openFilePath:_savedFileLocation file:[_savedFileLocation lastPathComponent]];
         _savedFileLocation = nil;
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 //send notification even at forefront
 - (BOOL)userNotificationCenter:(NSUserNotificationCenter *)center shouldPresentNotification:(NSUserNotification *)notification{
     return YES;
-***REMOVED***
+}
 
 - (void)userNotificationCenter:(NSUserNotificationCenter *)center didDeliverNotification:(NSUserNotification *)notification
 {
@@ -644,12 +642,12 @@ NSString* string_before;
                                for (NSUserNotification *note in [[NSUserNotificationCenter defaultUserNotificationCenter]deliveredNotifications]) {
                                    if ([note.identifier isEqualToString:notification.identifier]){
                                        notificationStillPresent = YES;
-                                   ***REMOVED***
-                               ***REMOVED***
+                                   }
+                               }
                                if (notificationStillPresent){
                                    [NSThread sleepForTimeInterval:0.20f];
-                               ***REMOVED***
-                           ***REMOVED*** while (notificationStillPresent);
+                               }
+                           } while (notificationStillPresent);
                            
                            dispatch_async(dispatch_get_main_queue(), ^{
                                //called when closed
@@ -658,43 +656,43 @@ NSString* string_before;
                                    int ref = [notification.userInfo[@"ref"] intValue];
                                    NSString* friendUUID = notification.userInfo[@"friendUUID"];
                                    [self finishedDownload:[self getValueFromArray:ref array:_files] friendUUID:friendUUID ref:ref newuser:false];
-                               ***REMOVED***
-                           ***REMOVED***);
-                       ***REMOVED***);
-    ***REMOVED***else{
+                               }
+                           });
+                       });
+    }else{
         //close notification after 8 seconds
         if(!([notification.title  isEqual: @"Registration Key Has Expired!"])){
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 8 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                 for (NSUserNotification *note in [[NSUserNotificationCenter defaultUserNotificationCenter] deliveredNotifications]) {
                     if ([note.identifier isEqualToString:notification.identifier]){
                         [[NSUserNotificationCenter defaultUserNotificationCenter] removeDeliveredNotification:note];
-                    ***REMOVED***
-                ***REMOVED***
-            ***REMOVED***);
-        ***REMOVED***
-    ***REMOVED***
-***REMOVED***
+                    }
+                }
+            });
+        }
+    }
+}
 
 #pragma mark - stuff
 
 -(int)bytesToMega:(int)bytes{
     return bytes / 1048576;
-***REMOVED***
+}
 
 -(int)bytesToEncrypted:(int)bytes{
     int overhead = 66;
     
     if (bytes == 0) {
         return 16 + overhead;
-    ***REMOVED***
+    }
     
     int remainder = bytes % 16;
     if (remainder == 0) {
         return bytes + 16 + overhead;
-    ***REMOVED***
+    }
     
     return bytes + 16 - remainder + overhead;
-***REMOVED***
+}
 
 int second_count;
 bool dnd_was_on = false;
@@ -705,26 +703,26 @@ bool dnd_was_on = false;
         [self setNoInternetMenu];
         _itemOne.title = @"Please turn off 'Do Not Disturb'!";
         dnd_was_on = true;
-    ***REMOVED***else if(dnd_was_on){
+    }else if(dnd_was_on){
         dnd_was_on = false;
         [self setDefaultMenu];
-    ***REMOVED***
+    }
     
     if(second_count % 2 == 0){
         [self checkSocket];
-    ***REMOVED***
+    }
     
     if(second_count % 15 == 0){
         [self askForRealTime];
-    ***REMOVED***
+    }
     
     if(second_count % 30 == 0){
         [self sendPing];
         
         if(_isUploading || _isDownloading){
             [self sendKeepActive];
-        ***REMOVED***
-    ***REMOVED***
+        }
+    }
     
     // update time in icon menu
     if ([_itemSix.title  isEqual: @"Settings..."]) {
@@ -732,23 +730,23 @@ bool dnd_was_on = false;
         NSString *time_left = [_time_format stringFromDate:deducted_date];
         if([time_left  isEqual: @"00:00"]){
             [self askForRealTime];
-        ***REMOVED***
+        }
         
         [_itemTwo setTitle:[NSString stringWithFormat:@"Code will reset in - %@",time_left]];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 -(void)sendKeepActive{
     if(_connectedToSocket){
         [_webSocket send:[NSString stringWithFormat:@"keep|%@|%@|%@",_uuid,_userCode,_downloadingPath]];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 -(void)askForRealTime{
     if(_connectedToSocket){
         [_webSocket send:[NSString stringWithFormat:@"time|%@|%@", _userCode, _uuid]];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 - (BOOL) fileIsPath: (NSString*) path {
     BOOL isDir;
@@ -756,50 +754,50 @@ bool dnd_was_on = false;
         if (isDir) {
             NSLog(@"%@ is a directory", path);
             return false;
-        ***REMOVED*** else {
+        } else {
             NSLog(@"%@ is a path", path);
             return true;
-        ***REMOVED***
-    ***REMOVED***
+        }
+    }
     return false;
-***REMOVED***
+}
 
 -(void)checkForUpdate:(int)x{
     SUUpdater* suupdater;
     suupdater = [SUUpdater sharedUpdater];
     if(x != 1){
         [suupdater checkForUpdates:self];
-    ***REMOVED***else{
+    }else{
         [suupdater checkForUpdatesInBackground];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 - (void)updaterDidNotFindUpdate:(SUUpdater *)update
 {
     NSLog(@"Sparkle: Updater Did Not Find Update");
-***REMOVED***
+}
 
 -(BOOL)dndIsOn{ //do not disturb
     NSString* path =  [[NSString stringWithFormat:@"~/Library/Preferences/ByHost/com.apple.notificationcenterui.%@.plist",_uuid] stringByExpandingTildeInPath];
     
     return [[NSDictionary dictionaryWithContentsOfFile:path][@"doNotDisturb"] boolValue];
-***REMOVED***
+}
 
 -(void)finishStartUpView{
     [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"hasShownStartUp"];
     
     //close popup
     [[NSApplication sharedApplication] hide:nil];
-***REMOVED***
+}
 
 -(void)windowClosed{
     _inputCode.stringValue = @"";
-***REMOVED***
+}
 
 -(void)windowDidResignKey:(NSNotification *)note {
     [_window orderOut:self];
     [_window close];
-***REMOVED***
+}
 
 -(NSString*)adDIR:(NSString*)title buttonTitle:(NSString*)buttonTitle dirBool:(BOOL)dir fileBool:(BOOL)file
 {
@@ -836,37 +834,37 @@ bool dnd_was_on = false;
         {
             fileName = [URL path];
             return fileName;
-        ***REMOVED***
-    ***REMOVED***
+        }
+    }
     return fileName;
-***REMOVED***
+}
 
 -(void)pasteToFriendCode{
     NSPasteboard *pasteBoard = [NSPasteboard generalPasteboard];
     NSString* pasteString = [pasteBoard stringForType:NSPasteboardTypeString];
     _inputCode.stringValue = [pasteString uppercaseString];
-***REMOVED***
+}
 
 -(void)selectFriendCode{
     [_inputCode selectText:self];
-***REMOVED***
+}
 
 -(void)enter{
     [submitButton performClick:self];
-***REMOVED***
+}
 
 -(void)copyCode{
     NSPasteboard *pasteBoard = [NSPasteboard generalPasteboard];
     [pasteBoard declareTypes:[NSArray arrayWithObjects:NSStringPboardType, nil] owner:nil];
     [pasteBoard setString: _userCode forType:NSStringPboardType];
-***REMOVED***
+}
 
 - (void)onlyOneInstanceOfApp {
     if ([[NSRunningApplication runningApplicationsWithBundleIdentifier:[[NSBundle mainBundle] bundleIdentifier]] count] > 1) {
         NSLog(@"instance of app already open");
         [NSApp terminate:self];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 - (NSString *)getSystemUUID {
     io_service_t platformExpert = IOServiceGetMatchingService(kIOMasterPortDefault,IOServiceMatching("IOPlatformExpertDevice"));
@@ -879,16 +877,16 @@ bool dnd_was_on = false;
         return nil;
     
     return (__bridge NSString *)(serialNumberAsCFString);;
-***REMOVED***
+}
 
 -(void)goPro{
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://transferme.it/#credit"]];
-***REMOVED***
+}
 
 -(NSString*)cleanUpString:(NSString*)unfilteredString{
-    NSCharacterSet *notAllowedChars = [[NSCharacterSet characterSetWithCharactersInString:@"1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@£$%^&*()_+-={***REMOVED***[]:|;\\<>?,.`~"] invertedSet];
+    NSCharacterSet *notAllowedChars = [[NSCharacterSet characterSetWithCharactersInString:@"1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@£$%^&*()_+-={}[]:|;\\<>?,.`~"] invertedSet];
     return [[unfilteredString componentsSeparatedByCharactersInSet:notAllowedChars] componentsJoinedByString:@""];
-***REMOVED***
+}
 
 #pragma mark - menu bar
 StatusItemView *statusItemView;
@@ -898,7 +896,7 @@ StatusItemView *statusItemView;
     [statusItemView setImage:[NSImage imageNamed:@"loading.png"]];
     [statusItemView setMenu:[self statusBarMenu]];
     statusItemView.thisapp = self;
-***REMOVED***
+}
 
 - (NSMenu *)statusBarMenu {
     
@@ -968,7 +966,7 @@ StatusItemView *statusItemView;
     [menu setAutoenablesItems:NO];
     [menu setDelegate:(id)self];
     return menu;
-***REMOVED***
+}
 
 -(void)killMenu{
     //deal with seperators
@@ -1004,7 +1002,7 @@ StatusItemView *statusItemView;
     _itemSix.action = nil;
     [_itemSix setEnabled:false];
     [_itemSix setSubmenu:nil];
-***REMOVED***
+}
 
 -(void)setDefaultMenu{
     if(_userCode){
@@ -1045,7 +1043,7 @@ StatusItemView *statusItemView;
             [_itemFour setAttributedTitle:libTitle];
             [_itemFour setHidden:false];
             [_itemFour setEnabled:false];
-        ***REMOVED***
+        }
         
         //_itemFive
         //send file
@@ -1065,15 +1063,15 @@ StatusItemView *statusItemView;
         _itemSix.title = @"Settings...";
         [_itemSix setHidden:false];
         [_itemSix setEnabled:true];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 -(void)setdownloadMenu:(int)ref{
     [self killMenu];
     
     if(!_animateTimer || _lastAnimate != 3){
         [self iconAnimation];
-    ***REMOVED***
+    }
     
     //deal with seperators
     [_seperator2 setHidden:false];
@@ -1090,14 +1088,14 @@ StatusItemView *statusItemView;
     _itemThree.action = @selector(createNewUser);
     [_itemThree setEnabled:true];
     [_itemThree setHidden:false];
-***REMOVED***
+}
 
 -(void)setUploadMenu{
     [self killMenu];
     
     if(!_animateTimer || _lastAnimate != 2){
         [self iconAnimation];
-    ***REMOVED***
+    }
     
     //deal with seperators
     [_seperator2 setHidden:false];
@@ -1112,7 +1110,7 @@ StatusItemView *statusItemView;
     _itemThree.action = @selector(createNewUser);
     [_itemThree setEnabled:true];
     [_itemThree setHidden:false];
-***REMOVED***
+}
 
 -(void)setNoInternetMenu{
     [self killMenu];
@@ -1120,34 +1118,34 @@ StatusItemView *statusItemView;
     if(_animateTimer){
         [_animateTimer invalidate];
         _animateTimer = nil;
-    ***REMOVED***
+    }
     
     statusItemView.image = [NSImage imageNamed:@"alert.png"];
     _itemOne.title = @"Network Error!";
     [_itemOne setHidden:false];
-***REMOVED***
+}
 
 -(void)setRequestingCodeMenu{
     [self killMenu];
     
     if(!_animateTimer || _lastAnimate != 1){
         [self iconAnimation];
-    ***REMOVED***
+    }
     
     _itemFive.title = @"Requesting Code From Server...";
     [_itemFive setHidden:false];
-***REMOVED***
+}
 
 -(void)setGettingRegMenu{
     [self killMenu];
     
     if(!_animateTimer){
         [self iconAnimation];
-    ***REMOVED***
+    }
     
     _itemFive.title = @"Checking Registration Code...";
     [_itemFive setHidden:false];
-***REMOVED***
+}
 
 - (NSMenu *)options {
     NSMenu *menu = [[NSMenu alloc] init];
@@ -1164,7 +1162,7 @@ StatusItemView *statusItemView;
     [phoneticOptionItem setTarget:self];
     if([self isPhonetic]){
         [phoneticOptionItem setState:NSOnState];
-    ***REMOVED***
+    }
     [menu addItem:phoneticOptionItem];
     
     NSMenuItem* createNewCode = [[NSMenuItem alloc] initWithTitle:@"Create a new code for..." action:nil keyEquivalent:@""];
@@ -1176,7 +1174,7 @@ StatusItemView *statusItemView;
     if([[self getUUIDKey] isEqualToString:@" "]){
         [extraSecureAccount setState:NSOnState];
         [extraSecureAccount setEnabled:false];
-    ***REMOVED***
+    }
     [menu addItem:extraSecureAccount];
     
     if([self hasProCode]){
@@ -1184,9 +1182,9 @@ StatusItemView *statusItemView;
         [permUserItem setTarget:self];
         if([self hasPermUser]){
             [permUserItem setState:NSOnState];
-        ***REMOVED***
+        }
         [menu addItem:permUserItem];
-    ***REMOVED***
+    }
     
     [menu addItem:[NSMenuItem separatorItem]];
     //DOWNLOAD STUFF
@@ -1199,14 +1197,14 @@ StatusItemView *statusItemView;
     [saveLocation setTarget:self];
     if([self saveLocation] != nil){
         [saveLocation setState:NSOnState];
-    ***REMOVED***
+    }
     [menu addItem:saveLocation];
     
     NSMenuItem* downloadAutomatically = [[NSMenuItem alloc] initWithTitle:@"Automatically accept incoming files" action:@selector(setDownloadAuto) keyEquivalent:@""];
     [downloadAutomatically setTarget:self];
     if([self shouldAutoDownload]){
         [downloadAutomatically setState:NSOnState];
-    ***REMOVED***
+    }
     [menu addItem:downloadAutomatically];
     
     
@@ -1236,9 +1234,9 @@ StatusItemView *statusItemView;
     
     if([self loginItemExistsWithLoginItemReference]){
         [_showOnStartupItem setState:NSOnState];
-    ***REMOVED***else{
+    }else{
         [_showOnStartupItem setState:NSOffState];
-    ***REMOVED***
+    }
     [menu addItem:_showOnStartupItem];
     
     NSMenuItem* update = [[NSMenuItem alloc] initWithTitle:@"Check for update" action:@selector(checkForUpdate:) keyEquivalent:@""];
@@ -1249,7 +1247,7 @@ StatusItemView *statusItemView;
     [menu setAutoenablesItems:NO];
     [menu setDelegate:(id)self];
     return menu;
-***REMOVED***
+}
 
 #pragma mark - auto download
 
@@ -1257,24 +1255,24 @@ StatusItemView *statusItemView;
     if([self shouldAutoDownload]){
         //remove autodownload option
         [[NSUserDefaults standardUserDefaults] setBool:false forKey:@"autoDownload"];
-    ***REMOVED***else{
+    }else{
         if([self saveLocation] == NULL){
             [self setSaveLocation];
-        ***REMOVED***
+        }
         
         //check again incase user pressed cancel on choosing location
         if([self saveLocation] != NULL){
             //set auto download
             [[NSUserDefaults standardUserDefaults] setBool:true forKey:@"autoDownload"];
-        ***REMOVED***
-    ***REMOVED***
+        }
+    }
     
     [self setDefaultMenu];
-***REMOVED***
+}
 
 -(BOOL)shouldAutoDownload{
     return [[NSUserDefaults standardUserDefaults] boolForKey:@"autoDownload"];
-***REMOVED***
+}
 
 #pragma mark - saved location
 
@@ -1284,19 +1282,19 @@ StatusItemView *statusItemView;
         [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"saveLocation"];
         if([self shouldAutoDownload]){
             [self setDownloadAuto];
-        ***REMOVED***
-    ***REMOVED***else{
+        }
+    }else{
         //set save location
         NSString* path = [self adDIR:@"Choose where you would like your files to automatically be saved" buttonTitle:@"Select" dirBool:true fileBool:false];
         [[NSUserDefaults standardUserDefaults] setObject:path forKey:@"saveLocation"];
-    ***REMOVED***
+    }
     
     [self setDefaultMenu];
-***REMOVED***
+}
 
 -(NSString*)saveLocation{
     return [[NSUserDefaults standardUserDefaults] objectForKey:@"saveLocation"];
-***REMOVED***
+}
 
 - (NSMenu *)timeIntervals {
     NSMenu *menu = [[NSMenu alloc] init];
@@ -1316,11 +1314,11 @@ StatusItemView *statusItemView;
                     [myIntegers addObject:@"45"];
                     if([_maxTime intValue] > 45){
                         [myIntegers addObject:@"60"];
-                    ***REMOVED***
-                ***REMOVED***
-            ***REMOVED***
-        ***REMOVED***
-    ***REMOVED***
+                    }
+                }
+            }
+        }
+    }
     
     for (NSNumber *n in myIntegers) {
         int x = [n intValue];
@@ -1331,26 +1329,26 @@ StatusItemView *statusItemView;
         //tick if selected
         if(x == [_wantedTime intValue]){
             [item setState:NSOnState];
-        ***REMOVED***
+        }
         
         [menu addItem:item];
-    ***REMOVED***
+    }
     
     // Disable auto enable
     [menu setAutoenablesItems:NO];
     [menu setDelegate:(id)self];
     return menu;
-***REMOVED***
+}
 
 -(void)setTime:(NSMenuItem*)sender{
     _wantedTime = sender.representedObject;
     [self createNewUser];
-***REMOVED***
+}
 
 #pragma mark - initialise user
 -(void)createNewUser{
     [self createNewUser:0];
-***REMOVED***
+}
 
 -(void)createNewUser:(int)secure{
     if(secure != 0){
@@ -1366,8 +1364,8 @@ StatusItemView *statusItemView;
         if (button != NSAlertFirstButtonReturn) {
             //user denied alert
             secure = 0;
-        ***REMOVED***
-    ***REMOVED***
+        }
+    }
     
     if (!_isCreatingUser) {
         NSLog(@"creating a new user");
@@ -1378,34 +1376,31 @@ StatusItemView *statusItemView;
             [_downloadReq cancel];
             _downloadReq = nil;
             _isDownloading = false;
-        ***REMOVED***
+        }
         
         if (_uploadReq) {
             NSLog(@"canceled upload");
             [_uploadReq cancel];
             _uploadReq = nil;
             _isUploading = false;
-        ***REMOVED***
+        }
         
         _userCode = nil;
         _isCreatingUser = true;
         
         if(_hasInternet){
             [self setRequestingCodeMenu];
-        ***REMOVED***
+        }
         
         NSString* proCode = @"";
         NSString* permUser = @"";
-        if([self hasProCode]){
-            proCode = [[NSUserDefaults standardUserDefaults] objectForKey:@"pro_code"];
-            if([self hasPermUser]){
-                permUser = [[NSUserDefaults standardUserDefaults] objectForKey:@"perm_user"];
-            ***REMOVED***
-        ***REMOVED***
+        if([self hasPermUser]){
+            permUser = [[NSUserDefaults standardUserDefaults] objectForKey:@"perm_user"];
+        }
         
         STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/addNewUser.php"];
         
-        r.POSTDictionary = @{ @"UUID":_uuid, @"mins":[self cleanUpString:_wantedTime], @"pro_code":proCode, @"security":[NSString stringWithFormat:@"%d",secure], @"perm_user":permUser***REMOVED***;
+        r.POSTDictionary = @{ @"UUID":_uuid, @"mins":[self cleanUpString:_wantedTime], @"security":[NSString stringWithFormat:@"%d",secure], @"perm_user":permUser};
         
         r.completionBlock = ^(NSDictionary *headers, NSString *body) {
             _hasInternet = true;
@@ -1421,7 +1416,7 @@ StatusItemView *statusItemView;
                     
                     //reset regCode
                     [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"pro_code"];
-                ***REMOVED***
+                }
                 
                 if ([firstLetter isEqual: @"1"] || [firstLetter isEqual: @"2"]) {
                     if([[self getUUIDKey] isEqualToString:@" "] && [bodySplit count] > 4){
@@ -1436,9 +1431,9 @@ StatusItemView *statusItemView;
                                 [alert setInformativeText:@"Please contact hello@transferme.it"];
                                 [alert addButtonWithTitle:@"Okay"];
                                 [alert runModal];
-                            ***REMOVED***
-                        ***REMOVED***
-                    ***REMOVED***
+                            }
+                        }
+                    }
                     
                     _userCode       = bodySplit[0];
                     _phoneticUser   = [self stringToPhonetic:_userCode];
@@ -1447,24 +1442,24 @@ StatusItemView *statusItemView;
                     _maxTime        = bodySplit[2];
                     
                     [self openSocket];
-                ***REMOVED***else{
+                }else{
                     NSLog(@"major error new user: %@",body);
                     _isCreatingUser = false;
-                ***REMOVED***
-            ***REMOVED***
-        ***REMOVED***;
+                }
+            }
+        };
         
         r.errorBlock = ^(NSError *error) {
             NSLog(@"ERROR: %@",error);
             _hasInternet = false;
             _isCreatingUser = false;
             [self setNoInternetMenu];
-        ***REMOVED***;
+        };
         
         [r startAsynchronous];
-    ***REMOVED***
+    }
     [[NSUserDefaults standardUserDefaults] setObject:_wantedTime forKey:@"setTime"];
-***REMOVED***
+}
 
 -(BOOL)setUUIDKey:(NSString*)pass{
     NSError* error = nil;
@@ -1474,9 +1469,9 @@ StatusItemView *statusItemView;
     [_keychainQuery save:&error];
     if(!error){
         return TRUE;
-    ***REMOVED***
+    }
     return FALSE;
-***REMOVED***
+}
 
 -(NSString*)getUUIDKey{
     NSError* error;
@@ -1485,9 +1480,14 @@ StatusItemView *statusItemView;
     [_keychainQuery fetch:&error];
     if(!error){
         return [_keychainQuery password];
-    ***REMOVED***
+    }else{
+        NSAlert *alert = [[NSAlert alloc] init];
+        [alert setMessageText:@"Error fetching your Key!"];
+        [alert setInformativeText:[NSString stringWithFormat:@"There was an error getting your key. Please contact hello@transferme.it.\r %@",error]];
+        [alert addButtonWithTitle:@"Ok"];
+    }
     return @" ";
-***REMOVED***
+}
 
 #pragma mark - socket
 
@@ -1502,11 +1502,11 @@ StatusItemView *statusItemView;
         mes = explode[1];
         if([explode count] > 2){
             ref = [explode[2] intValue];
-        ***REMOVED***
+        }
         if([explode count] > 3){
             friendUUID = explode[3];
-        ***REMOVED***
-    ***REMOVED***
+        }
+    }
     
     if([type  isEqual: @"file"]){
         NSLog(@"received file: %@ from %@", mes, friendUUID);
@@ -1514,43 +1514,43 @@ StatusItemView *statusItemView;
         
         if([self shouldAutoDownload]){
             [self downloadFile:[self saveLocation] friendUUID:friendUUID ref:ref];
-        ***REMOVED***else{
+        }else{
             [self desktopAlert:@"Would you like to download this file?"
                        message:[NSString stringWithFormat:@"%@?",[mes lastPathComponent]]
                        button1:@"Yes"
                        button2:@"No"
-                     variables:@{@"ref":[NSString stringWithFormat:@"%d",ref], @"friendUUID":friendUUID***REMOVED***];
-        ***REMOVED***
+                     variables:@{@"ref":[NSString stringWithFormat:@"%d",ref], @"friendUUID":friendUUID}];
+        }
         
         _hasRequestedDownload = true;
-    ***REMOVED***else if([type  isEqual: @"key"]){
+    }else if([type  isEqual: @"key"]){
         NSLog(@"received encryption key: %@", mes);
         [_keys insertObject:[NSString stringWithFormat:@"%@|%d", mes, ref] atIndex:0];
-    ***REMOVED***else if([type  isEqual: @"time"]){
+    }else if([type  isEqual: @"time"]){
         if(!_authedSocket){
             _authedSocket = true;
             [self setDefaultMenu];
             NSLog(@"Authenticated socket");
-        ***REMOVED***
+        }
         
         if([mes  isEqual: @"00:00"]){
             [self createNewUser];
-        ***REMOVED***else{
+        }else{
             _current_time = [_time_format dateFromString:mes];
             second_count = 0;
-        ***REMOVED***
-    ***REMOVED***else if([message isEqual: @"downloaded"]){
+        }
+    }else if([message isEqual: @"downloaded"]){
         [self desktopAlert:@"Friend succesfully downloaded file!"
                    message:[NSString stringWithFormat:@"%@",[mes lastPathComponent]]
                    button1:@""
                    button2:@""];
-    ***REMOVED***else if([message isEqual: @"0"]){
+    }else if([message isEqual: @"0"]){
         [self createNewUser];
-    ***REMOVED***else{
+    }else{
         [self desktopAlert:@"Socket Error!" message:message button1:@"" button2:@"Close"];
         NSLog(@"incoming socket error: %@",message);
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 //check whether time has changed
 -(void)checkTimeChange{
@@ -1561,9 +1561,9 @@ StatusItemView *statusItemView;
         if (currentTime == _theTime5) {
             NSLog(@"ERROR:time hasn't changed in 5 seconds!!");
             [self createNewUser];
-        ***REMOVED***
-    ***REMOVED***
-***REMOVED***
+        }
+    }
+}
 
 
 #pragma mark - download new file
@@ -1578,7 +1578,7 @@ StatusItemView *statusItemView;
         _savedFileLocation = savedPath;
         
         _downloadReq = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/download.php"];
-        _downloadReq.POSTDictionary = @{ @"user":_userCode, @"UUID":_uuid, @"path":filePath***REMOVED***;
+        _downloadReq.POSTDictionary = @{ @"user":_userCode, @"UUID":_uuid, @"path":filePath};
         
         _downloadingPath = filePath;
         
@@ -1596,7 +1596,7 @@ StatusItemView *statusItemView;
                 
                 if(decryptedFile == nil){
                     [self desktopAlert:@"Error Decrypting File!" message:@"Please ask your friend to send the file again!" button1:@"" button2:@"Close"];
-                ***REMOVED***else{
+                }else{
                     NSString* destinationPath = [NSString stringWithFormat:@"%@/%@", savedPath, [filePath lastPathComponent]];
                     
                     //rename if file already at path.
@@ -1605,18 +1605,18 @@ StatusItemView *statusItemView;
                         x = 1;
                         NSString* ext = [destinationPath pathExtension];
                         destinationPath = [NSString stringWithFormat:@"%@ copy.%@", [destinationPath stringByDeletingPathExtension], ext];
-                    ***REMOVED***
+                    }
                     
                     [decryptedFile writeToFile:destinationPath atomically:YES];
                     
                     if (x == 1) {
                         [self desktopAlert:@"A copy of the file has been made!" message:@"The file already existed." button1:@"" button2:@"Close"];
-                    ***REMOVED***
+                    }
                     
                     [self desktopAlert:@"Success Downloading File!" message:@"The file has been downloaded and decrypted." button1:@"View" button2:@"Close"];
-                ***REMOVED***
-            ***REMOVED***
-        ***REMOVED***;
+                }
+            }
+        };
         
         _downloadReq.errorBlock = ^(NSError *error) {
             NSString* error_message = [error localizedDescription] ;
@@ -1625,18 +1625,18 @@ StatusItemView *statusItemView;
                 [self finishedDownload:filePath friendUUID:friendUUID ref:ref newuser:true];
                 NSLog(@"DOWNLOAD ERROR: %@", [error localizedDescription]);
                 [self desktopAlert:@"Error Downloading File" message:error_message button1:@"" button2:@"Close"];
-            ***REMOVED***
-        ***REMOVED***;
+            }
+        };
         
         _downloadReq.downloadProgressBlock = ^(NSData *data, int64_t totalBytesReceived, int64_t totalBytesExpectedToReceive) {
             _totalBytes = totalBytesExpectedToReceive;
             _downloadPercent = ([@(totalBytesReceived) floatValue] / [@(totalBytesExpectedToReceive) floatValue]) * 100;
             NSLog(@"download_percent:%.1f%% of %lu",_downloadPercent, (unsigned long)_totalBytes);
-        ***REMOVED***;
+        };
         
         [_downloadReq startAsynchronous];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 -(id)getValueFromArray:(int)x array:(NSMutableArray*)array{
     NSString* val = @"";
@@ -1644,15 +1644,15 @@ StatusItemView *statusItemView;
         NSArray *explode = [str componentsSeparatedByString:@"|"];
         if([explode[1] intValue] == x){
             val = explode[0];
-        ***REMOVED***
-    ***REMOVED***
+        }
+    }
     
     return val;
-***REMOVED***
+}
 
 -(void)finishedDownload:(NSString*)path friendUUID:(NSString*)friendUUID ref:(int)ref newuser:(bool)newuser{
     [self finishedDownload:path friendUUID:friendUUID ref:ref newuser:newuser hash:@""];
-***REMOVED***
+}
 
 //returns key if it isn't a failed download
 -(NSString*)finishedDownload:(NSString*)path friendUUID:(NSString*)friendUUID ref:(int)ref newuser:(bool)newuser hash:(NSString*)hash{
@@ -1666,7 +1666,7 @@ StatusItemView *statusItemView;
     
     
     STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/finishedDownload.php"];
-    r.POSTDictionary = @{ @"path":path, @"user":_userCode, @"friendUUID": friendUUID, @"UUID":_uuid, @"hash":hash***REMOVED***;
+    r.POSTDictionary = @{ @"path":path, @"user":_userCode, @"friendUUID": friendUUID, @"UUID":_uuid, @"hash":hash};
     
     NSError *error = nil;
     NSString *body = [r startSynchronousWithError:&error];
@@ -1674,16 +1674,16 @@ StatusItemView *statusItemView;
     if(error != nil){
         NSLog(@"Error deleting file: %@",error);
         [self desktopAlert:@"E R R O R" message:@"Unable to delete file from server. It will be deleted within the hour anyway." button1:@"" button2:@"Close"];
-    ***REMOVED***else{
+    }else{
         if([body length] == 1024){ //received key
             return body;
-        ***REMOVED***else if(![body  isEqual: @"0"]){
+        }else if(![body  isEqual: @"0"]){
             NSLog(@"failed to delete file:%@",body);
             [self desktopAlert:@"E R R O R" message:body button1:@"" button2:@"Close"];
-        ***REMOVED***
-    ***REMOVED***
+        }
+    }
     return @"";
-***REMOVED***
+}
 
 #pragma mark - upload/send file
 
@@ -1691,14 +1691,14 @@ StatusItemView *statusItemView;
     _uploadFilePath = [self adDIR:@"Choose the file you want to send!" buttonTitle:@"Choose" dirBool:NO fileBool:YES];
     if(_uploadFilePath){
         [self chooseFriend];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 -(void)chooseFriend{
     [self sendToFriendView];
     _inputCode.stringValue = @"";
     [self showView];
-***REMOVED***
+}
 
 int userLength = 7;
 -(void)uploadFile{
@@ -1712,19 +1712,19 @@ int userLength = 7;
     if ([friendCode length] == 0) {
         [self shakeLayer:_inputCode.layer];
         [self sendError:@"You need to enter your friends code!"];
-    ***REMOVED***else if ([friendCode length] != userLength) {
+    }else if ([friendCode length] != userLength) {
         [self sendError:@"Your friend does not exist!"];
-    ***REMOVED***else if(_userCode == friendCode){
+    }else if(_userCode == friendCode){
         [self sendError:@"You can't send files to yourself..."];
-    ***REMOVED***else if(![self fileIsPath:path]){
+    }else if(![self fileIsPath:path]){
         //TODO zip if not already.
         [self sendError:@"Please Compress/zip folders!"];
-    ***REMOVED***else if(!_isUploading){
+    }else if(!_isUploading){
         NSString* pass = nil;
         
         STHTTPRequest* r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/initUpload.php"];
         
-        r.POSTDictionary = @{ @"user":_userCode, @"friend":friendCode, @"UUID":_uuid, @"filesize":[NSString stringWithFormat:@"%f",encryptedFileSize]***REMOVED***;
+        r.POSTDictionary = @{ @"user":_userCode, @"friend":friendCode, @"UUID":_uuid, @"filesize":[NSString stringWithFormat:@"%f",encryptedFileSize]};
         
         NSError *error = nil;
         NSString *body = [r startSynchronousWithError:&error];
@@ -1732,21 +1732,21 @@ int userLength = 7;
         
         if([body length] == 2048){ //2048 char key to use to encrypt the file
             pass = body;
-        ***REMOVED***else if([firstLetter  isEqual: @"1"]){
+        }else if([firstLetter  isEqual: @"1"]){
             [self sendError:@"ERROR (1): Please try create a new user."];
             [self desktopAlert:@"UUID is not registered!" message:@"Please create new user!" button1:@"" button2:@"Close"];
-        ***REMOVED***else if([firstLetter  isEqual: @"2"]){
+        }else if([firstLetter  isEqual: @"2"]){
             [self sendError:@"ERROR (2): Please try create a new user."];
             [self desktopAlert:@"Code is not registered!" message:@"Please create new user!" button1:@"" button2:@"Close"];
-        ***REMOVED***else if([firstLetter  isEqual: @"3"]){
+        }else if([firstLetter  isEqual: @"3"]){
             [self sendError:@"Your friend does not exist!"];
-        ***REMOVED***else if([firstLetter  isEqual: @"4"]){
+        }else if([firstLetter  isEqual: @"4"]){
             [self sendError:[NSString stringWithFormat:@"The file is out of your %dMB limit! Click \"Add Credit\"",[self bytesToMega:(int)[body substringFromIndex:1]]]];
-        ***REMOVED***else if([body  isEqual: @"5"]){
+        }else if([body  isEqual: @"5"]){
             [self sendError:@"You are already uploading a file to this user."];
-        ***REMOVED***else{
+        }else{
             NSLog(@"error: %@ body: %@", error, body);
-        ***REMOVED***
+        }
         
         if(pass != nil){
             NSData* encryptedFile = [self encryptFile:file password:pass];
@@ -1757,7 +1757,7 @@ int userLength = 7;
             
             _uploadReq = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/upload.php"];
             
-            _uploadReq.POSTDictionary = @{ @"user":_userCode, @"friend":friendCode, @"UUID":_uuid***REMOVED***;
+            _uploadReq.POSTDictionary = @{ @"user":_userCode, @"friend":friendCode, @"UUID":_uuid};
             
             [_uploadReq addDataToUpload:encryptedFile parameterName:@"fileUpload" mimeType:@"application/octet-stream" fileName:[path lastPathComponent]];
             
@@ -1772,26 +1772,26 @@ int userLength = 7;
                     if([firstLetter  isEqual: @"1"]){
                         [self completedUpload];
                         [self desktopAlert:@"Success!" message:@"File has been sent and encrypted!" button1:@"" button2:@"Close"];
-                    ***REMOVED***else{
+                    }else{
                         [self completedUpload];
                         if([firstLetter  isEqual: @"2"]){
                             [self desktopAlert:@"File Too Big!" message:[NSString stringWithFormat:@"The file is out of your %@MB limit! Would you like to upgrade?",body] button1:@"Yes" button2:@"No"];
-                        ***REMOVED***else if([firstLetter  isEqual: @"3"]){
+                        }else if([firstLetter  isEqual: @"3"]){
                             [self desktopAlert:@"Major Unknown Code!" message:@"I am sorry but your friend does not exist!" button1:@"" button2:@"Close"];
-                        ***REMOVED***else if([firstLetter  isEqual: @"4"]){
+                        }else if([firstLetter  isEqual: @"4"]){
                             [self desktopAlert:@"File already uploaded!" message:@"That same file name has already been sent to your friend!" button1:@"" button2:@"Close"];
-                        ***REMOVED***else if([firstLetter  isEqual: @"5"]){
+                        }else if([firstLetter  isEqual: @"5"]){
                             [self desktopAlert:@"No file uploaded!" message:@"Please try again!" button1:@"" button2:@"Close"];
-                        ***REMOVED***else if([firstLetter  isEqual: @"6"]){
+                        }else if([firstLetter  isEqual: @"6"]){
                             [self desktopAlert:@"Error Uploading File!" message:@"This is probably due to expired friend. Please try again!" button1:@"" button2:@"Close"];
-                        ***REMOVED***else if([firstLetter  isEqual: @"7"]){
+                        }else if([firstLetter  isEqual: @"7"]){
                             [self desktopAlert:@"Friend already has a file!" message:@"Your friend has to download their other pending file first." button1:@"" button2:@"Close"];
-                        ***REMOVED***else{
+                        }else{
                             NSLog(@"major error uploading file:%@%@",firstLetter , body);
-                        ***REMOVED***
-                    ***REMOVED***
-                ***REMOVED***
-            ***REMOVED***;
+                        }
+                    }
+                }
+            };
             
             _uploadReq.errorBlock = ^(NSError *error) {
                 [self completedUpload];
@@ -1799,27 +1799,27 @@ int userLength = 7;
                 if ([[NSString stringWithFormat:@"%@",error] rangeOfString:@"STHTTPRequest Code=1 \"Connection"].location == NSNotFound) {
                     NSLog(@"Error: %@",error);
                     [self desktopAlert:@"Network error!" message:@"Please check your internet and try again." button1:@"" button2:@"Close"];
-                ***REMOVED***
-            ***REMOVED***;
+                }
+            };
             
             _uploadReq.uploadProgressBlock = ^(int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite){
                 _uploadPercent = ([@(totalBytesWritten) floatValue] / [@(totalBytesExpectedToWrite) floatValue]) * 100;
                 _totalUploadBytes = (int)totalBytesExpectedToWrite;
                 //NSLog(@"upload: %f",_uploadPercent);
-            ***REMOVED***;
+            };
             
             
             [_uploadReq startAsynchronous];
-        ***REMOVED***
-    ***REMOVED***
-***REMOVED***
+        }
+    }
+}
 
 -(void)completedUpload{
     _uploadFilePath = nil;
     _uploadPercent = 0;
     _totalUploadBytes = 0;
     _isUploading = false;
-***REMOVED***
+}
 
 -(void)sendError:(NSString*)message{
     [submitButton setEnabled:true];
@@ -1837,7 +1837,7 @@ int userLength = 7;
     [self shakeLayer:submitButton.layer];
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(fadeOutErrorText) object:@""];
     [self performSelector:@selector(fadeOutErrorText) withObject:@"" afterDelay:4];
-***REMOVED***
+}
 
 -(void)fadeOutErrorText{
     CABasicAnimation *fadeOutAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
@@ -1847,7 +1847,7 @@ int userLength = 7;
     fadeOutAnimation.removedOnCompletion = NO;
     [_errorMessage.layer addAnimation:fadeOutAnimation forKey:nil];
     //_errorMessage.stringValue = @"";
-***REMOVED***
+}
 
 #define DEGREES_RADIANS(angle) ((angle) / 180.0 * M_PI)
 
@@ -1875,7 +1875,7 @@ int userLength = 7;
     [group setAnimations:[NSArray arrayWithObjects:rightAnimation, fall, rotate, nil]];
     
     [submitButton.layer addAnimation:group forKey:nil];
-***REMOVED***
+}
 
 -(void)shakeLayer:(CALayer*)layer{
     int repeats = 4;
@@ -1906,15 +1906,15 @@ int userLength = 7;
             [group setAnimations:[NSArray arrayWithObjects:posAnimation, negAnimation, posAnimation2, nil]];
             
             [layer addAnimation:group forKey:nil];
-        ***REMOVED***);
-    ***REMOVED***
-***REMOVED***
+        });
+    }
+}
 
 //Called when there has been an error downloading the file or the user does not want the file.
 -(bool)deleteFileFromServer:(NSString*)friendCode userCode:(NSString*)userCode path:(NSString*)path{
     if(_userCode){
         STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/deleteFile.php"];
-        r.POSTDictionary = @{ @"path":path, @"user":userCode, @"friend": friendCode, @"UUID":_uuid***REMOVED***;
+        r.POSTDictionary = @{ @"path":path, @"user":userCode, @"friend": friendCode, @"UUID":_uuid};
         
         NSError *error = nil;
         NSString *body = [r startSynchronousWithError:&error];
@@ -1922,18 +1922,18 @@ int userLength = 7;
         if(error != nil){
             NSLog(@"Error deleting file: %@",error);
             [self desktopAlert:@"E R R O R" message:@"Unable to delete file from server. It will be deleted within the hour anyway." button1:@"" button2:@"Close"];
-        ***REMOVED***else{
+        }else{
             NSString* firstLetter = [body substringToIndex:1];
             body = [body substringFromIndex:1];
             if([firstLetter  isEqual: @"0"]){
                 return true;
-            ***REMOVED***else{
+            }else{
                 NSLog(@"failed to delete file:%@",body);
-            ***REMOVED***
-        ***REMOVED***
-    ***REMOVED***
+            }
+        }
+    }
     return false;
-***REMOVED***
+}
 
 #pragma mark - encrypt/decrypt file
 -(NSData*)encryptFile:(NSData*)data password:(NSString*)password{
@@ -1942,10 +1942,10 @@ int userLength = 7;
     if (error != nil) {
         NSLog(@"Encryption ERROR:%@", error);
         return nil;
-    ***REMOVED***else{
+    }else{
         return encrypted_data;
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 -(NSData*)decryptFile:(NSData*)data password:(NSString*)password{
     NSError *error = nil;
@@ -1953,10 +1953,10 @@ int userLength = 7;
     if (error != nil) {
         NSLog(@"Decryption ERROR:%@", error);
         return nil;
-    ***REMOVED***else{
+    }else{
         return decrypted_data;
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 #pragma mark - Send to friend code
 -(void)sendToFriendView{
@@ -1983,7 +1983,7 @@ int userLength = 7;
     [_view addSubview:_errorMessage];
     
     [self showView];
-***REMOVED***
+}
 
 #pragma mark - Choose custom code
 -(void)enterPermCodeView{
@@ -1997,7 +1997,7 @@ int userLength = 7;
     _inputCode.stringValue = @"";
     
     [self showView];
-***REMOVED***
+}
 
 -(void)setPerm{
     _inputCode.stringValue = @"";
@@ -2006,37 +2006,31 @@ int userLength = 7;
         //stop being static
         if([self bytesToMega:_bandwidthLeft] == 5000){
             [self enterPermCodeView];
-        ***REMOVED***else{
+        }else{
             [self setPermCode:true];
-        ***REMOVED***
-    ***REMOVED***else{
+        }
+    }else{
         [self setPermCode:false];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 -(void)setPermCode:(bool)setPerm{
     
     _isSettingStatic = true;
     [self setRequestingCodeMenu];
     
-    NSString* customCode = @"";
+    NSString* customCode = @"0";
     if(setPerm){
         if([_inputCode.stringValue length] > 0){
             customCode = [self cleanUpString:_inputCode.stringValue];
-        ***REMOVED***else{
-            customCode = @"0"; //remove perm code
-        ***REMOVED***
+        }
         [_window close];
-    ***REMOVED***else{
-        customCode = @"0"; //remove perm code
-    ***REMOVED***
-    
-    NSString* proCode = [[NSUserDefaults standardUserDefaults] objectForKey:@"pro_code"];
+    }
     
     //add static ID
     STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/setPermenantUser.php"];
     
-    r.POSTDictionary = @{ @"customCode":customCode, @"UUID":_uuid, @"pro_code":proCode***REMOVED***;
+    r.POSTDictionary = @{ @"customCode":customCode, @"UUID":_uuid};
     
     r.completionBlock = ^(NSDictionary *headers, NSString *body) {
         _isSettingStatic = false;
@@ -2047,34 +2041,34 @@ int userLength = 7;
             if([firstLetter  isEqual: @"0"]){
                 [self desktopAlert:@"Success!" message:[NSString stringWithFormat:@"You now have the permenant code: %@", body] button1:@"" button2:@"close"];
                 [[NSUserDefaults standardUserDefaults] setObject:body forKey:@"perm_user"];
-            ***REMOVED***else if([firstLetter  isEqual: @"1"]){
+            }else if([firstLetter  isEqual: @"1"]){
                 [self desktopAlert:@"Success!" message:@"You codes will now go back to being dynamic" button1:@"" button2:@"close"];
-            ***REMOVED***else if([firstLetter  isEqual: @"6"]){
+            }else if([firstLetter  isEqual: @"6"]){
                 [self desktopAlert:@"Error!" message:[NSString stringWithFormat:@"Custom code '%@' might already be in use.", body] button1:@"" button2:@"close"];
-            ***REMOVED***else if([firstLetter  isEqual: @"2"]){
+            }else if([firstLetter  isEqual: @"2"]){
                 NSLog(@"error");
                 [self desktopAlert:@"Error!" message:@"Custom code must be 7 characters and only contain letters and numbers." button1:@"" button2:@"close"];
-            ***REMOVED***
+            }
             
             [self createNewUser];
-        ***REMOVED***
-    ***REMOVED***;
+        }
+    };
     
     r.errorBlock = ^(NSError *error) {
         _isSettingStatic = false;
         NSLog(@"Error: %@",error);
-    ***REMOVED***;
+    };
     
     [r startAsynchronous];
-***REMOVED***
+}
 
 -(bool)hasPermUser{
     if([[NSUserDefaults standardUserDefaults] objectForKey:@"perm_user"] != nil){
         return true;
-    ***REMOVED***else{
+    }else{
         return false;
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 
 #pragma mark - Enter Pro code
@@ -2089,21 +2083,21 @@ int userLength = 7;
     _inputCode.stringValue = @"";
     
     [self showView];
-***REMOVED***
+}
 
 -(void)checkPro{
     NSString* proCode = [_inputCode.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     
     if([proCode length] != 100){
         [self desktopAlert:@"Registration Key Invalid!" message:@"Make sure codes are case sensitive." button1:@"" button2:@"Close"];
-    ***REMOVED***else if(!_isGettingRegistrationCode){
+    }else if(!_isGettingRegistrationCode){
         [_window close];
         
         _isGettingRegistrationCode = true;
         
         STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/regPro.php"];
         
-        r.POSTDictionary = @{ @"UUID":_uuid, @"user":_userCode, @"pro_code":[self cleanUpString:proCode] ***REMOVED***;
+        r.POSTDictionary = @{ @"UUID":_uuid, @"UUIDKey":[self getUUIDKey], @"pro_code":[self cleanUpString:proCode] };
         
         r.completionBlock = ^(NSDictionary *headers, NSString *body) {
             _isGettingRegistrationCode = false;
@@ -2115,34 +2109,34 @@ int userLength = 7;
                 [[NSUserDefaults standardUserDefaults] setObject:proCode forKey:@"pro_code"];
                 
                 [self createNewUser];
-            ***REMOVED***else if ([body  isEqual: @"2"]) {
+            }else if ([body  isEqual: @"2"]) {
                 [self desktopAlert:@"Registration Key does not exist!" message:@"Make sure codes are case sensitive." button1:@"" button2:@"Close"];
-            ***REMOVED***else{
+            }else{
                 NSLog(@"key body: %@",body);
                 [self desktopAlert:@"Incorrect key!" message:@"This key has either expired, already been used or is incorrect." button1:@"" button2:@"Close"];
-            ***REMOVED***
-        ***REMOVED***;
+            }
+        };
         
         r.errorBlock = ^(NSError *error) {
             NSLog(@"Error: %@",error);
-        ***REMOVED***;
+        };
         
         [r startAsynchronous];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 -(bool)hasProCode{
     if([[[NSUserDefaults standardUserDefaults] objectForKey:@"pro_code"] length] == 100){
         return true;
-    ***REMOVED***
+    }
     return false;
-***REMOVED***
+}
 
 -(void)openFilePath:(NSString*)path file:(NSString*)file{
     NSString* fullPath = [NSString stringWithFormat:@"%@/%@", path, file];
     [[NSWorkspace sharedWorkspace] selectFile:fullPath inFileViewerRootedAtPath:fullPath];
     
-***REMOVED***
+}
 
 #pragma mark - icon animation
 
@@ -2150,24 +2144,24 @@ int userLength = 7;
     if(_animateTimer){
         [_animateTimer invalidate];
         _animateTimer = nil;
-    ***REMOVED***
+    }
     
     
     if(_isDownloading || _isUploading){
         _animateTimer = [NSTimer scheduledTimerWithTimeInterval:0.1f
                                                          target:self selector:@selector(animateUploadOrDownload) userInfo:nil
                                                         repeats:YES];
-    ***REMOVED***else{
+    }else{
         opacityCnt = 0;
         _lastAnimate = 1;
         _animateTimer = [NSTimer scheduledTimerWithTimeInterval:0.1f
                                                          target:self selector:@selector(animateLoadUser) userInfo:nil
                                                         repeats:YES];
-    ***REMOVED***
+    }
     
     NSRunLoop * rl = [NSRunLoop mainRunLoop];
     [rl addTimer:_animateTimer forMode:NSRunLoopCommonModes];
-***REMOVED***
+}
 
 int opacityCnt;
 -(void)animateLoadUser{
@@ -2176,13 +2170,13 @@ int opacityCnt;
     opacityCnt++;
     if(opacityCnt > 20){
         opacityCnt = 0;
-    ***REMOVED***
+    }
     
     if(opacityCnt > 10){
         x = 10 - (opacityCnt - 10);
-    ***REMOVED***else{
+    }else{
         x = opacityCnt;
-    ***REMOVED***
+    }
     
     NSImage *image = [NSImage imageNamed:@"loading.png"];
     NSImage *opacitatedImage = [[NSImage alloc] initWithSize:[image size]];
@@ -2192,7 +2186,7 @@ int opacityCnt;
     [opacitatedImage unlockFocus];
     
     statusItemView.image = opacitatedImage;
-***REMOVED***
+}
 
 int animateY;
 -(void)animateUploadOrDownload{
@@ -2201,18 +2195,18 @@ int animateY;
     int x = animateY;
     if(x > 19){
         animateY = 0;
-    ***REMOVED***
+    }
     
     NSImage *image2;
     if(_isUploading){
         _lastAnimate = 2;
         image2 = [NSImage imageNamed:@"upload.png"];
         x = (2 * animateY) - 25;
-    ***REMOVED***else{
+    }else{
         _lastAnimate = 3;
         image2 = [NSImage imageNamed:@"download.png"];
         x = 25 - (2 * animateY);
-    ***REMOVED***
+    }
     
     NSImage *image = [NSImage imageNamed:@"icon.png"];
     NSImage *arrowImage = [[NSImage alloc] initWithSize:[image size]];
@@ -2223,12 +2217,12 @@ int animateY;
     [arrowImage unlockFocus];
     
     statusItemView.image = arrowImage;
-***REMOVED***
+}
 
 - (CGFloat)widthOfString:(NSString *)string withFont:(NSFont *)font {
     NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
     return [[[NSAttributedString alloc] initWithString:string attributes:attributes] size].width;
-***REMOVED***
+}
 
 #pragma mark - phonetic stuff
 
@@ -2236,17 +2230,17 @@ int animateY;
     if([self isPhonetic]){
         NSLog(@"mark as false");
         [[NSUserDefaults standardUserDefaults] setBool:FALSE forKey:@"phonetic"];
-    ***REMOVED***else{
+    }else{
         NSLog(@"mark as true");
         [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:@"phonetic"];
-    ***REMOVED***
+    }
     
     [self setDefaultMenu];
-***REMOVED***
+}
 
 -(BOOL)isPhonetic{
     return [[NSUserDefaults standardUserDefaults] boolForKey:@"phonetic"];
-***REMOVED***
+}
 
 -(NSString*)stringToPhonetic:(NSString*)string{
     NSString* phonetic = @"";
@@ -2258,9 +2252,9 @@ int animateY;
     for(int i = 0; i < len; ++i) {
         char current = buffer[i];
         phonetic = [NSString stringWithFormat:@"%@ %@",phonetic, [self letterToPhonetic:current]];
-    ***REMOVED***
+    }
     return [phonetic stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
-***REMOVED***
+}
 
 -(NSString*)letterToPhonetic:(char)letter{
     switch (letter) {
@@ -2318,18 +2312,18 @@ int animateY;
             return @"Zulu";
         default:
             return [NSString stringWithFormat:@"%c",letter];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 #pragma mark - socketRocket
 
 - (void)checkSocket{
     if(!_authedSocket && _connectedToSocket){
         [_webSocket send:_uuid];
-    ***REMOVED***else if(!_userCode){
+    }else if(!_userCode){
         [self createNewUser];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 - (void)openSocket
 {
@@ -2345,11 +2339,11 @@ int animateY;
     _webSocket.delegate = (id)self;
     
     [_webSocket open];
-***REMOVED***
+}
 
 -(void)closeSocket{
     [self closeSocket:true];
-***REMOVED***
+}
 
 -(void)closeSocket:(bool)showNoInternetMenu{
     NSLog(@"closed socket");
@@ -2359,8 +2353,8 @@ int animateY;
     _userCode = nil;
     if(showNoInternetMenu){
         [self setNoInternetMenu];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 bool receivedPong = false;
 - (void)sendPing{
@@ -2374,40 +2368,40 @@ bool receivedPong = false;
             if(!receivedPong){
                 NSLog(@"Did not receive pong");
                 [self closeSocket];
-            ***REMOVED***
-        ***REMOVED***);
-    ***REMOVED***
-***REMOVED***
+            }
+        });
+    }
+}
 
 - (void)webSocketDidOpen:(SRWebSocket *)webSocket;
 {
     _connectedToSocket = true;
     [_webSocket send:[NSString stringWithFormat:@"%@|%@", _uuid, [self getUUIDKey]]];
-***REMOVED***
+}
 
 - (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error;
 {
     NSLog(@"The websocket handshake/connection failed with an error: %@", error);
     [self closeSocket];
-***REMOVED***
+}
 
 
 - (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(nonnull NSString *)string
 {
     [self receivedMessage:string];
-***REMOVED***
+}
 
 - (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean;
 {
     NSLog(@"WebSocket closed because: %@",reason);
     [self closeSocket];
     _webSocket = nil;
-***REMOVED***
+}
 
 - (void)webSocket:(SRWebSocket *)webSocket didReceivePong:(NSData *)pongPayload;
 {
     receivedPong = true;
-***REMOVED***
+}
 
 #pragma mark - open on startup
 
@@ -2427,16 +2421,16 @@ bool receivedPong = false;
             if ([[(__bridge NSURL *)thePath path] hasPrefix:appPath]) {
                 found = YES;
                 break;
-            ***REMOVED***
+            }
             // Docs for LSSharedFileListItemResolve say we're responsible
             // for releasing the CFURLRef that is returned
             if (thePath != NULL) CFRelease(thePath);
-        ***REMOVED***
-    ***REMOVED***
+        }
+    }
     if (loginItemsArray != NULL) CFRelease(loginItemsArray);
     
     return found;
-***REMOVED***
+}
 
 - (void)enableLoginItemWithURL
 {
@@ -2454,12 +2448,12 @@ bool receivedPong = false;
                                                                                  NULL);
             if (loginItemRef) {
                 CFRelease(loginItemRef);
-            ***REMOVED***
+            }
             CFRelease(loginListRef);
-        ***REMOVED***
+        }
         [_showOnStartupItem setState:NSOnState];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 - (void)removeLoginItemWithURL
 {
@@ -2477,33 +2471,33 @@ bool receivedPong = false;
         // Insert the item at the bottom of Login Items list.
         LSSharedFileListItemRemove(loginListRef, loginItemRef);
         [_showOnStartupItem setState:NSOffState];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 -(void)openOnStartup{
     if(![self loginItemExistsWithLoginItemReference]){
         [self enableLoginItemWithURL];
-    ***REMOVED***else{
+    }else{
         [self removeLoginItemWithURL];
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
 
 #pragma mark - major error dealer
 - (void)handleError:(NSString*)body location:(NSString*)location{
     STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/error.php"];
     
-    r.POSTDictionary = @{ @"body":body, @"location": location***REMOVED***;
+    r.POSTDictionary = @{ @"body":body, @"location": location};
     
     r.completionBlock = ^(NSDictionary *headers, NSString *body) {
-    ***REMOVED***;
+    };
     
     r.errorBlock = ^(NSError *error) {
         //ironic error
-    ***REMOVED***;
+    };
     
     [r startAsynchronous];
-***REMOVED***
+}
 
 - (NSString *)hash:(NSData *)data{
     uint8_t digest[CC_SHA512_DIGEST_LENGTH];
@@ -2514,13 +2508,13 @@ bool receivedPong = false;
     
     for (int i = 0; i < CC_SHA512_DIGEST_LENGTH; i++){
         [output appendFormat:@"%02x", digest[i]];
-    ***REMOVED***
+    }
     
     return output;
-***REMOVED***
+}
 
 #pragma mark - quit app
 -(void)quitApp{
     [NSApp terminate:self];
-***REMOVED***
+}
 @end

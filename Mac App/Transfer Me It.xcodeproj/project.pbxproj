@@ -2,49 +2,49 @@
 {
 	archiveVersion = 1;
 	classes = {
-	***REMOVED***;
+	};
 	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		481893C51E4E73EF007227EA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 481893C41E4E73EF007227EA /* AppDelegate.m */; ***REMOVED***;
-		481893C81E4E73EF007227EA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 481893C71E4E73EF007227EA /* main.m */; ***REMOVED***;
-		481893CA1E4E73EF007227EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 481893C91E4E73EF007227EA /* Assets.xcassets */; ***REMOVED***;
-		481893E61E4E77F3007227EA /* Montserrat-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 481893E51E4E77F3007227EA /* Montserrat-Light.ttf */; ***REMOVED***;
-		481894051E4E786D007227EA /* alert.png in Resources */ = {isa = PBXBuildFile; fileRef = 481893FB1E4E786D007227EA /* alert.png */; ***REMOVED***;
-		481894061E4E786D007227EA /* download.png in Resources */ = {isa = PBXBuildFile; fileRef = 481893FC1E4E786D007227EA /* download.png */; ***REMOVED***;
-		481894071E4E786D007227EA /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 481893FD1E4E786D007227EA /* icon.png */; ***REMOVED***;
-		481894081E4E786D007227EA /* loading.png in Resources */ = {isa = PBXBuildFile; fileRef = 481893FE1E4E786D007227EA /* loading.png */; ***REMOVED***;
-		481894091E4E786D007227EA /* mainicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 481893FF1E4E786D007227EA /* mainicon.png */; ***REMOVED***;
-		4818940A1E4E786D007227EA /* send_hover.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894001E4E786D007227EA /* send_hover.png */; ***REMOVED***;
-		4818940B1E4E786D007227EA /* send.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894011E4E786D007227EA /* send.png */; ***REMOVED***;
-		4818940C1E4E786D007227EA /* up_b.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894021E4E786D007227EA /* up_b.png */; ***REMOVED***;
-		4818940D1E4E786D007227EA /* up.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894031E4E786D007227EA /* up.png */; ***REMOVED***;
-		4818940E1E4E786D007227EA /* upload.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894041E4E786D007227EA /* upload.png */; ***REMOVED***;
-		E723C70E01EC647391567723 /* Pods_Transfer_Me_It.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68851D7966FDC8A6FFADEC87 /* Pods_Transfer_Me_It.framework */; ***REMOVED***;
+		481893C51E4E73EF007227EA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 481893C41E4E73EF007227EA /* AppDelegate.m */; };
+		481893C81E4E73EF007227EA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 481893C71E4E73EF007227EA /* main.m */; };
+		481893CA1E4E73EF007227EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 481893C91E4E73EF007227EA /* Assets.xcassets */; };
+		481893E61E4E77F3007227EA /* Montserrat-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 481893E51E4E77F3007227EA /* Montserrat-Light.ttf */; };
+		481894051E4E786D007227EA /* alert.png in Resources */ = {isa = PBXBuildFile; fileRef = 481893FB1E4E786D007227EA /* alert.png */; };
+		481894061E4E786D007227EA /* download.png in Resources */ = {isa = PBXBuildFile; fileRef = 481893FC1E4E786D007227EA /* download.png */; };
+		481894071E4E786D007227EA /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 481893FD1E4E786D007227EA /* icon.png */; };
+		481894081E4E786D007227EA /* loading.png in Resources */ = {isa = PBXBuildFile; fileRef = 481893FE1E4E786D007227EA /* loading.png */; };
+		481894091E4E786D007227EA /* mainicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 481893FF1E4E786D007227EA /* mainicon.png */; };
+		4818940A1E4E786D007227EA /* send_hover.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894001E4E786D007227EA /* send_hover.png */; };
+		4818940B1E4E786D007227EA /* send.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894011E4E786D007227EA /* send.png */; };
+		4818940C1E4E786D007227EA /* up_b.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894021E4E786D007227EA /* up_b.png */; };
+		4818940D1E4E786D007227EA /* up.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894031E4E786D007227EA /* up.png */; };
+		4818940E1E4E786D007227EA /* upload.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894041E4E786D007227EA /* upload.png */; };
+		E723C70E01EC647391567723 /* Pods_Transfer_Me_It.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68851D7966FDC8A6FFADEC87 /* Pods_Transfer_Me_It.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		481893C01E4E73EF007227EA /* Transfer Me It.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Transfer Me It.app"; sourceTree = BUILT_PRODUCTS_DIR; ***REMOVED***;
-		481893C31E4E73EF007227EA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; ***REMOVED***;
-		481893C41E4E73EF007227EA /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; ***REMOVED***;
-		481893C71E4E73EF007227EA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; ***REMOVED***;
-		481893C91E4E73EF007227EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; ***REMOVED***;
-		481893CE1E4E73EF007227EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; ***REMOVED***;
-		481893E51E4E77F3007227EA /* Montserrat-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Light.ttf"; sourceTree = "<group>"; ***REMOVED***;
-		481893FB1E4E786D007227EA /* alert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = alert.png; sourceTree = "<group>"; ***REMOVED***;
-		481893FC1E4E786D007227EA /* download.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = download.png; sourceTree = "<group>"; ***REMOVED***;
-		481893FD1E4E786D007227EA /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; ***REMOVED***;
-		481893FE1E4E786D007227EA /* loading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loading.png; sourceTree = "<group>"; ***REMOVED***;
-		481893FF1E4E786D007227EA /* mainicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mainicon.png; sourceTree = "<group>"; ***REMOVED***;
-		481894001E4E786D007227EA /* send_hover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = send_hover.png; sourceTree = "<group>"; ***REMOVED***;
-		481894011E4E786D007227EA /* send.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = send.png; sourceTree = "<group>"; ***REMOVED***;
-		481894021E4E786D007227EA /* up_b.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = up_b.png; sourceTree = "<group>"; ***REMOVED***;
-		481894031E4E786D007227EA /* up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = up.png; sourceTree = "<group>"; ***REMOVED***;
-		481894041E4E786D007227EA /* upload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = upload.png; sourceTree = "<group>"; ***REMOVED***;
-		5155CE64DBB11A9BFBCD445D /* Pods-Transfer Me It.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Transfer Me It.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Transfer Me It/Pods-Transfer Me It.debug.xcconfig"; sourceTree = "<group>"; ***REMOVED***;
-		68851D7966FDC8A6FFADEC87 /* Pods_Transfer_Me_It.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Transfer_Me_It.framework; sourceTree = BUILT_PRODUCTS_DIR; ***REMOVED***;
-		94ECA04043BBF2E7605FDAC8 /* Pods-Transfer Me It.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Transfer Me It.release.xcconfig"; path = "Pods/Target Support Files/Pods-Transfer Me It/Pods-Transfer Me It.release.xcconfig"; sourceTree = "<group>"; ***REMOVED***;
+		481893C01E4E73EF007227EA /* Transfer Me It.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Transfer Me It.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		481893C31E4E73EF007227EA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		481893C41E4E73EF007227EA /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		481893C71E4E73EF007227EA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		481893C91E4E73EF007227EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		481893CE1E4E73EF007227EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		481893E51E4E77F3007227EA /* Montserrat-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Light.ttf"; sourceTree = "<group>"; };
+		481893FB1E4E786D007227EA /* alert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = alert.png; sourceTree = "<group>"; };
+		481893FC1E4E786D007227EA /* download.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = download.png; sourceTree = "<group>"; };
+		481893FD1E4E786D007227EA /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		481893FE1E4E786D007227EA /* loading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loading.png; sourceTree = "<group>"; };
+		481893FF1E4E786D007227EA /* mainicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mainicon.png; sourceTree = "<group>"; };
+		481894001E4E786D007227EA /* send_hover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = send_hover.png; sourceTree = "<group>"; };
+		481894011E4E786D007227EA /* send.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = send.png; sourceTree = "<group>"; };
+		481894021E4E786D007227EA /* up_b.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = up_b.png; sourceTree = "<group>"; };
+		481894031E4E786D007227EA /* up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = up.png; sourceTree = "<group>"; };
+		481894041E4E786D007227EA /* upload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = upload.png; sourceTree = "<group>"; };
+		5155CE64DBB11A9BFBCD445D /* Pods-Transfer Me It.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Transfer Me It.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Transfer Me It/Pods-Transfer Me It.debug.xcconfig"; sourceTree = "<group>"; };
+		68851D7966FDC8A6FFADEC87 /* Pods_Transfer_Me_It.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Transfer_Me_It.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		94ECA04043BBF2E7605FDAC8 /* Pods-Transfer Me It.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Transfer Me It.release.xcconfig"; path = "Pods/Target Support Files/Pods-Transfer Me It/Pods-Transfer Me It.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,9 +53,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E723C70E01EC647391567723 /* Pods_Transfer_Me_It.framework in Frameworks */,
-		***REMOVED***
+			);
 			runOnlyForDeploymentPostprocessing = 0;
-		***REMOVED***;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -66,17 +66,17 @@
 				481893C11E4E73EF007227EA /* Products */,
 				D4FA7F17F0AD11C86F41A4C8 /* Pods */,
 				A2B12DD9E3E9B8B566AEB725 /* Frameworks */,
-		***REMOVED***
+			);
 			sourceTree = "<group>";
-		***REMOVED***;
+		};
 		481893C11E4E73EF007227EA /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				481893C01E4E73EF007227EA /* Transfer Me It.app */,
-		***REMOVED***
+			);
 			name = Products;
 			sourceTree = "<group>";
-		***REMOVED***;
+		};
 		481893C21E4E73EF007227EA /* Transfer Me It */ = {
 			isa = PBXGroup;
 			children = (
@@ -87,18 +87,18 @@
 				481893CE1E4E73EF007227EA /* Info.plist */,
 				481893E41E4E7540007227EA /* images */,
 				481893C61E4E73EF007227EA /* Supporting Files */,
-		***REMOVED***
+			);
 			path = "Transfer Me It";
 			sourceTree = "<group>";
-		***REMOVED***;
+		};
 		481893C61E4E73EF007227EA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
 				481893C71E4E73EF007227EA /* main.m */,
-		***REMOVED***
+			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
-		***REMOVED***;
+		};
 		481893E41E4E7540007227EA /* images */ = {
 			isa = PBXGroup;
 			children = (
@@ -112,27 +112,27 @@
 				481894021E4E786D007227EA /* up_b.png */,
 				481894031E4E786D007227EA /* up.png */,
 				481894041E4E786D007227EA /* upload.png */,
-		***REMOVED***
+			);
 			name = images;
 			sourceTree = "<group>";
-		***REMOVED***;
+		};
 		A2B12DD9E3E9B8B566AEB725 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				68851D7966FDC8A6FFADEC87 /* Pods_Transfer_Me_It.framework */,
-		***REMOVED***
+			);
 			name = Frameworks;
 			sourceTree = "<group>";
-		***REMOVED***;
+		};
 		D4FA7F17F0AD11C86F41A4C8 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
 				5155CE64DBB11A9BFBCD445D /* Pods-Transfer Me It.debug.xcconfig */,
 				94ECA04043BBF2E7605FDAC8 /* Pods-Transfer Me It.release.xcconfig */,
-		***REMOVED***
+			);
 			name = Pods;
 			sourceTree = "<group>";
-		***REMOVED***;
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -146,16 +146,16 @@
 				481893BE1E4E73EF007227EA /* Resources */,
 				9F56400429BBE1B99F6F5690 /* [CP] Embed Pods Frameworks */,
 				EF947759BB857CFB6CBBF866 /* [CP] Copy Pods Resources */,
-		***REMOVED***
+			);
 			buildRules = (
-		***REMOVED***
+			);
 			dependencies = (
-		***REMOVED***
+			);
 			name = "Transfer Me It";
 			productName = "Transfer Me It";
 			productReference = 481893C01E4E73EF007227EA /* Transfer Me It.app */;
 			productType = "com.apple.product-type.application";
-		***REMOVED***;
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -169,9 +169,9 @@
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = 3H49MXS325;
 						ProvisioningStyle = Automatic;
-					***REMOVED***;
-				***REMOVED***;
-			***REMOVED***;
+					};
+				};
+			};
 			buildConfigurationList = 481893BB1E4E73EF007227EA /* Build configuration list for PBXProject "Transfer Me It" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -179,15 +179,15 @@
 			knownRegions = (
 				en,
 				Base,
-		***REMOVED***
+			);
 			mainGroup = 481893B71E4E73EF007227EA;
 			productRefGroup = 481893C11E4E73EF007227EA /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				481893BF1E4E73EF007227EA /* Transfer Me It */,
-		***REMOVED***
-		***REMOVED***;
+			);
+		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -207,9 +207,9 @@
 				481894051E4E786D007227EA /* alert.png in Resources */,
 				4818940A1E4E786D007227EA /* send_hover.png in Resources */,
 				481894061E4E786D007227EA /* download.png in Resources */,
-		***REMOVED***
+			);
 			runOnlyForDeploymentPostprocessing = 0;
-		***REMOVED***;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -217,47 +217,47 @@
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-		***REMOVED***
+			);
 			inputPaths = (
-		***REMOVED***
+			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
-		***REMOVED***
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT***REMOVED***/../Podfile.lock\" \"${PODS_ROOT***REMOVED***/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
-		***REMOVED***;
+		};
 		9F56400429BBE1B99F6F5690 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-		***REMOVED***
+			);
 			inputPaths = (
-		***REMOVED***
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-		***REMOVED***
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT***REMOVED***/Pods/Target Support Files/Pods-Transfer Me It/Pods-Transfer Me It-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Transfer Me It/Pods-Transfer Me It-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
-		***REMOVED***;
+		};
 		EF947759BB857CFB6CBBF866 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-		***REMOVED***
+			);
 			inputPaths = (
-		***REMOVED***
+			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-		***REMOVED***
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT***REMOVED***/Pods/Target Support Files/Pods-Transfer Me It/Pods-Transfer Me It-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Transfer Me It/Pods-Transfer Me It-resources.sh\"\n";
 			showEnvVarsInLog = 0;
-		***REMOVED***;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -267,9 +267,9 @@
 			files = (
 				481893C81E4E73EF007227EA /* main.m in Sources */,
 				481893C51E4E73EF007227EA /* AppDelegate.m in Sources */,
-		***REMOVED***
+			);
 			runOnlyForDeploymentPostprocessing = 0;
-		***REMOVED***;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
@@ -306,7 +306,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
-			***REMOVED***
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -317,9 +317,9 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
-			***REMOVED***;
+			};
 			name = Debug;
-		***REMOVED***;
+		};
 		481893D01E4E73EF007227EA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -357,9 +357,9 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
-			***REMOVED***;
+			};
 			name = Release;
-		***REMOVED***;
+		};
 		481893D21E4E73EF007227EA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5155CE64DBB11A9BFBCD445D /* Pods-Transfer Me It.debug.xcconfig */;
@@ -372,9 +372,9 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_BUNDLE_IDENTIFIER = "it.transferme.Transfer-Me-It";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-			***REMOVED***;
+			};
 			name = Debug;
-		***REMOVED***;
+		};
 		481893D31E4E73EF007227EA /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 94ECA04043BBF2E7605FDAC8 /* Pods-Transfer Me It.release.xcconfig */;
@@ -387,9 +387,9 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_BUNDLE_IDENTIFIER = "it.transferme.Transfer-Me-It";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-			***REMOVED***;
+			};
 			name = Release;
-		***REMOVED***;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -398,20 +398,20 @@
 			buildConfigurations = (
 				481893CF1E4E73EF007227EA /* Debug */,
 				481893D01E4E73EF007227EA /* Release */,
-		***REMOVED***
+			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
-		***REMOVED***;
+		};
 		481893D11E4E73EF007227EA /* Build configuration list for PBXNativeTarget "Transfer Me It" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				481893D21E4E73EF007227EA /* Debug */,
 				481893D31E4E73EF007227EA /* Release */,
-		***REMOVED***
+			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
-		***REMOVED***;
+		};
 /* End XCConfigurationList section */
-	***REMOVED***;
+	};
 	rootObject = 481893B81E4E73EF007227EA /* Project object */;
-***REMOVED***
+}

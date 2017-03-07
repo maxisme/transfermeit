@@ -1,4 +1,4 @@
-***REMOVED***
+<?php
 
 require '/var/www/transferme.it/public_html/app/functions.php';
 $con = connect();

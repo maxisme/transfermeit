@@ -1,8 +1,8 @@
-***REMOVED*** 
+<?php 
 session_start();
 
-***REMOVED***
-***REMOVED***
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
 
 require 'functions.php';
 
@@ -19,23 +19,23 @@ $file_size = mysqli_real_escape_string($con, $_POST['filesize']);
 //validate inputs
 if (!UUIDRegistered($con, $UUID)) {
 	die('1');
-***REMOVED***
+}
 
 $userUUID = userToHashedUUID($con, $user);
 if($userUUID == null){ 
 	die('2');
-***REMOVED***
+}
 
 $friendUUID = userToHashedUUID($con, $friend);
 if($friendUUID == null){
 	die('3');
-***REMOVED***
+}
 
 //check if file size is allowed user single file limit
 $max_file_allowed_bytes = getMaxUploadSize($con, $userUUID);
 if($file_size > encryptedFileSize($max_file_allowed_bytes)){
 	die("4$max_file_allowed_bytes");
-***REMOVED***
+}
 
 //check if user and friend are already uploading to each other
 $isAlreadyUploading = mysqli_query($con,"SELECT path
@@ -45,8 +45,8 @@ AND toUUID = '$friendUUID'");
 while ($row = mysqli_fetch_array($isAlreadyUploading)) {
 	if($row['path'] != null){ //path is set to null on complete
 		die("5");
-	***REMOVED***
-***REMOVED***
+	}
+}
 
 //create upload folder at random path
 $path = generateRandomString(200);
@@ -63,14 +63,14 @@ $key2 = generateRandomString(1024);
 $pro_upload = 0;
 if($max_file_allowed_bytes > $default_max_file_upload){
 	$pro_upload = 1;
-***REMOVED***
+}
 
 //insert initial `upload` row
 if(!mysqli_query($con, "
 INSERT INTO `upload` (fromUUID, toUUID, path, partialKey, pro)
 VALUES ('$userUUID', '$friendUUID', '$path', '$key2', '$pro_upload')")){
 	die("6");
-***REMOVED***
+}
 
 //get upload id
 $upload_id = mysqli_insert_id($con);
@@ -84,4 +84,4 @@ $_SESSION["filesize".$upload_id] = $file_size;
 
 die($key1.$key2); //return key to user
 
-***REMOVED***
+?>
