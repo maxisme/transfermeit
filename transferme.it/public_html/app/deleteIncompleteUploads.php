@@ -11,19 +11,27 @@ require 'functions.php';
 $con = connect(); 
 
 //get out of date uploads
-$out_of_date_query= mysqli_query($con,"SELECT 
+$out_of_date_query= mysqli_query($con,"
+SELECT 
+    `upload`.id as id,
 	`upload`.path as path, 
 	`upload`.`toUUID` as toUUID,
-	`upload`.`fromUUID` as fromUUID,
+	`upload`.`fromUUID` as fromUUID
 FROM `upload`
-INNER JOIN `user`
+JOIN `user`
 ON `upload`.`fromUUID` = `user`.`UUID`
-WHERE `upload`.started + `user`.`wantedMins` <= NOW()
-AND `upload`.updated + interval 1 minute <= NOW()
-AND `upload`.finished = NULL
+WHERE `upload`.started + interval `user`.`wantedMins` minute <= NOW()
+AND (upload.updated IS NULL OR upload.updated + interval 1 minute <= NOW())
+AND `upload`.finished IS NULL
 ");
 
+$deleted=0;
 while ($row = mysqli_fetch_array($out_of_date_query)){
-	deleteUpload($con, $row['toUUID'], $row['fromUUID'], $row['path'], true);
+	if(!deleteUpload($con, $row['toUUID'], $row['fromUUID'], $row['path'], true)){
+	    echo "ERROR with ".$row['id'];
+    }else{
+        $deleted++;
+    }
 }
+echo "Deleted $deleted rows";
 ?>

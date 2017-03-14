@@ -15,7 +15,7 @@ function uploadDie($error_num){
 	if(deleteUpload($con, $user, $friend, $upload_path, true)) {
 		die("$error_num");
 	}else {
-		die("$error_num - error deleting upload");
+		die("$error_num - error deleting upload - ". $_SERVER["CONTENT_LENGTH"]);
 	}
 }
 
@@ -29,47 +29,55 @@ $UUID = mysqli_real_escape_string($con, $_POST['UUID']);
 
 //validate inputs (not really necessary to do again)
 if (!UUIDRegistered($con, $UUID)) {
-	uploadDie('01');
+	uploadDie('1');
 }
 
 $userUUID = userToHashedUUID($con, $user);
 if($userUUID == null){
-	uploadDie('02');
+	uploadDie('2');
 }
 
-$friendUUID = userToHashedUUID($con, $friend);
-if($friendUUID == null){
-	uploadDie('03');
-}
-
-// get upload_id
-$upload_id = getUploadID($con, $userUUID, $friendUUID);
+$upload_id = getUploadID($con, $userUUID);
 if($upload_id == null){
 	uploadDie("4");
 }
 
-// get file path
+// get friendUUID from session
+$friendUUID = $_SESSION["friendUUID".$upload_id];
+if(!isset($friendUUID)){
+    //initUpload.php was probably not used.
+    uploadDie("5");
+}
+
+// get file path from session
 $upload_path = $_SESSION["path".$upload_id];
 if(!isset($upload_path)){
 	//initUpload.php was probably not used.
-	uploadDie("4");
+	uploadDie("6");
 }
-$file_path = getDirPath($upload_path) . basename($_FILES["fileUpload"]["name"]);
+
+//no such upload initiated
+if(!isLiveUpload($con, $upload_path, $userUUID)){
+    die('7');
+}
+
+$file_name = basename($_FILES["fileUpload"]["name"]);
+$file_path = getDirPath($upload_path) . $file_name;
 
 // validate file size and make sure it is the same as the one in innit
 $said_file_size = $_SESSION["filesize".$upload_id];
 if($said_file_size){
-	if ($_FILES["fileUpload"]["size"] != $said_file_size) {
+	if ($_FILES["fileUpload"]["size"] > $said_file_size) { //greater than as compression is applied
 		//file is too big
 		uploadDie("2 said:$said_file_size actual: ".$_FILES["fileUpload"]["size"]);
 	}
 }else{
-	uploadDie('5');
+	uploadDie('8');
 }
 
 // upload file
 if (!move_uploaded_file($_FILES["fileUpload"]["tmp_name"], $file_path)) {
-	uploadDie('6');
+	uploadDie('9');
 }else{
 	//get sha512 of file
 	$fileHash = hash_file("sha512", "$file_path");
@@ -78,9 +86,9 @@ if (!move_uploaded_file($_FILES["fileUpload"]["tmp_name"], $file_path)) {
 	if(!mysqli_query($con, "UPDATE `upload`
 	SET size = '$said_file_size', `hash` = '$fileHash'
 	WHERE fromUUID = '$userUUID'
-	OR toUUID = '$friendUUID'
+	AND toUUID = '$friendUUID'
 	AND path='$upload_path'")){
-		uploadDie('7');
+		uploadDie('10');
 	}
 
 	// update `updated` time

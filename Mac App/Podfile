@@ -4,5 +4,6 @@ target 'Transfer Me It' do
   pod 'Sparkle'
   pod 'RNCryptor-objc'
   pod 'SAMKeychain'
+  pod 'GZIP'
   use_frameworks!
 end

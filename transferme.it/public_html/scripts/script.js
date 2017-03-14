@@ -5,10 +5,9 @@ function changeCredit(credit){
     if(credit > 20) {
         credit = 20;
     }
-    var credit_val = $('#credit_val');
-    var credit_slider = $('#credit_slider');
-	credit_val.val(credit);
-	credit_slider.val(credit);
+
+	$('#credit_val').val(credit);
+	$('#credit_slider').val(credit);
 
     if(credit < 1){
         credit = 1;
@@ -35,25 +34,23 @@ function changeCredit(credit){
     //bandwidth
     $("#bandwidth").html("<p><span class='highlight'>"+credit+"GB</span> bandwidth to upload files with.</p>");
 
-    if (lastCredit !== credit && !fetchingButton) {
+    if (lastCredit != credit && !fetchingButton) {
         $.ajax({
             url: 'backend/getButton.php',
             type: 'GET',
             data: "credit="+credit,
             beforeSend: function () {
+                console.log("bef");
                 $("#purchaseButton input").prop('disabled', true);
                 fetchingButton = true;
             },
             success: function (data) {
-                var paypal_image = 'src="https://www.paypalobjects.com/en_GB/i/btn/btn_subscribe_LG.gif"';
-                if(data.includes > 0) {
-                    console.log("data: " + data);
-                    var html_button = data.replace('type="image" src="https://www.paypalobjects.com/en_GB/i/btn/btn_subscribe_LG.gif"', "class='lineText buyNow' type='submit' value='BUY NOW!'");
-                    $("#purchaseButton input").prop('disabled', false);
-                    $("#purchaseButton").html(html_button);
-                    lastAmt = credit;
-                    fetchingButton = false;
-                }
+                console.log("data: " + data);
+                //var html_button = data.replace('type="image" src="https://www.paypalobjects.com/en_GB/i/btn/btn_subscribe_LG.gif"', "class='lineText buyNow' type='submit' value='BUY NOW!'");
+                $("#purchaseButton input").prop('disabled', false);
+                $("#purchaseButton").html(data);
+                lastAmt = credit;
+                fetchingButton = false;
             }
         });
     }

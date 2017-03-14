@@ -11,64 +11,64 @@ $con = connect();
 $remove_perm_code = false;
 $allowed_custom_code = false;
 //POST variables
-if(isset($_POST['customCode'])) {
-	$customCode = trim(mysqli_real_escape_string($con, $_POST['customCode']));
-	if($customCode == "0"){
-		$remove_perm_code = true;
-	}else if(!validUserFormat($customCode)){
-		die('2');
-	}
+if (isset($_POST['customCode'])) {
+    $customCode = trim(mysqli_real_escape_string($con, $_POST['customCode']));
+    if ($customCode == "0") {
+        $remove_perm_code = true;
+    }
 }
 $UUID = mysqli_real_escape_string($con, $_POST['UUID']);
-$pro_code = mysqli_real_escape_string($con, $_POST['pro_code']);
+$UUIDKey = mysqli_real_escape_string($con, $_POST['UUIDKey']);
 
-if(strlen($pro_code) != 100 || hasSpecialChars($pro_code)){
-	die("3");
-}
-
-if (!UUIDRegistered($con, $UUID)) {
-	die('4');
-}
-
-if(!isProUser($con, $pro_code, $UUID)){
-	die("5");
+if (empty($UUIDKey) || !UUIDRegistered($con, $UUID, $UUIDKey)) {
+    die(json_encode(array("status" => "Invalid User")));
 }
 
 $query = mysqli_query($con, "
 SELECT *
 FROM `pro`
-WHERE code = '$pro_code'
+WHERE UUID = '" . myHash($UUID) . "'
 ");
 
-while ($row = mysqli_fetch_array($query)){
-	if($row['maxLimitMB'] >= $custom_pro_mb){
-		//user is allowed a CUSTOM CODE
-		$allowed_custom_code = true;
-	}
+while ($row = mysqli_fetch_array($query)) {
+    if (userTier(myHash($UUID)) == 2) {
+        //user is allowed a CUSTOM CODE
+        if (userTier(myHash($UUID)) == 3) {
+            $allowed_custom_code = true;
+        }
+        $pro_code = $row['code'];
+    }
 }
 
-if($remove_perm_code){
-	//stop using perm user code
-	if(!mysqli_query($con,"UPDATE `pro`
-	SET perm_user = NULL
-	WHERE code = '$pro_code'")){
-		//failed to update pro code
-		die("5");
-	}else{
-		die("1");
-	}
-}else{
-	if(!$allowed_custom_code || !isset($_POST['pro_code'])){
-		$customCode = genUser();
-	}
+if (isset($pro_code)) {
+    if ($remove_perm_code) {
+        //stop using perm user code
+        if (!mysqli_query($con, "UPDATE `pro`
+        SET perm_user = NULL
+        WHERE code = '$pro_code'")
+        ) {
+            dieStatus("Failed removing permanent code");
+        } else {
+            dieStatus("1");
+        }
+    } else {
+        if (!$allowed_custom_code || empty($customCode)) {
+            //create a random new perm code
+            $customCode = genUser();
+        } else if (!validUserFormat($customCode)) {
+            dieStatus("Custom code must be 7 characters and only contain letters and numbers");
+        }
 
-	if(!mysqli_query($con,"UPDATE `pro`
-	SET perm_user = '".myHash($customCode)."'
-	WHERE code = '$pro_code'")){
-		die("6");
-	}
+        if (!mysqli_query($con, "UPDATE `pro`
+        SET perm_user = '" . myHash($customCode) . "'
+        WHERE code = '$pro_code'")
+        ) {
+            dieStatus("Custom code may already be in use");
+        }else{
+            dieStatus(array("code" => "$customCode"));
+        }
+    }
 }
 
-echo "0$customCode";
-
+dieStatus("Invalid User 2");
 ?>

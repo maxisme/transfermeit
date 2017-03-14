@@ -1,27 +1,34 @@
 <?php
-$upload_dir = $_SERVER["DOCUMENT_ROOT"].'/uploads/';
-$custom_pro_mb = 5000;
+$upload_dir = '/var/www/transferme.it/uploads/';
 $free_user_bandwidth = megaToBytes(2500);
 $amt_max_files = 5;
 $default_max_file_upload = megaToBytes(200);
 $default_max_mins = 10;
+$perm_user_credit_min = 5;
+$custom_user_credit_min = 10;
+$brute_seconds = 15;
 
 //database stuff
 function connect(){
 	$config = parse_ini_file('/var/www/transferme.it/db.ini');
-	$con = mysqli_connect("localhost", $config['username'], $config['password'], $config['db']);
+	$con = mysqli_connect("127.0.0.1", $config['username'], $config['password'], $config['db']);
 	if(!$con){
 		die("Failed to connect to Database"); 
 	}
 	return $con;
 }
 
-function UUIDRegistered($con, $UUID){
+function UUIDRegistered($con, $UUID, $UUIDKey = ""){
+    $addSQL = "";
+    if(!empty($UUIDKey)){
+        $addSQL = "AND UUIDKey = '".myHash($UUIDKey)."'";
+    }
+
 	if(validUUID($UUID)){
 		$uuidExists = mysqli_query($con, "
 		SELECT * 
 		FROM `user`
-		WHERE UUID = '".myHash($UUID)."'
+		WHERE UUID = '".myHash($UUID)."' $addSQL
 		");
  
 		if(mysqli_num_rows($uuidExists) > 0){
@@ -53,8 +60,7 @@ function correctUUIDKey($con, $UUID, $key){
 function userToHashedUUID($con, $user){
 	$getUUID = mysqli_query($con, "SELECT UUID, connected
 	FROM `user`
-	WHERE `user` = '".myHash($user)."'
-	LIMIT 1");
+	WHERE `user` = '".myHash($user)."'");
 
 	if(mysqli_num_rows($getUUID) > 0) {
 		while ($row = mysqli_fetch_array($getUUID)) {
@@ -242,7 +248,7 @@ function getUsedBandwidth($con, $hashedUUID, $free_user = false){
 	$addSQL = "";
 	if($free_user){
 		// only find bandwidth used today
-		// and where bandwidth wasn't used when pro
+		// and where bandwidth wasn't used by pro
 		$addSQL = "AND DATE(`finished`) = CURDATE()
 				   AND `pro` = 0";
 	}
@@ -294,6 +300,39 @@ function getMaxUploadSize($con, $hashedUUID){
 	return maxUploadSize($bandwidth_left);
 }
 
+//0 - no credit user
+//1 - has credit user
+//2 - perm code user
+//3 - custom code user
+function userTier($hashedUUID){
+    global $custom_user_credit_min, $perm_user_credit_min;
+    $user_credit = getCredit(connect(), $hashedUUID);
+
+    if($user_credit >= $custom_user_credit_min){
+        return 3;
+    }else if($user_credit >= $perm_user_credit_min){
+        return 2;
+    }else if($user_credit > 0){
+        return 1;
+    }
+    return 0;
+}
+
+function userMaxMins($hashedUUID){
+    global $default_max_mins;
+
+    $tier = userTier($hashedUUID);
+    if($tier == 3){
+        return 60;
+    }else if($tier == 2){
+        return 30;
+    }else if($tier == 1){
+        return 20;
+    }
+
+    return $default_max_mins;
+}
+
 // Updates the `updated` time in the `upload` database.
 // This is so that the file is not deleted if a user is still deleting or uploading the file.
 function updateUploadTime($con, $aUUID, $path){
@@ -301,8 +340,8 @@ function updateUploadTime($con, $aUUID, $path){
 	
     $query = mysqli_query($con, "UPDATE `upload`
     SET updated = NOW()
-    WHERE fromUUID = '$aUUID'
-    OR toUUID = '$aUUID'
+    WHERE (fromUUID = '$aUUID'
+    OR toUUID = '$aUUID')
     AND path='$path'");
     
     if($query){
@@ -312,37 +351,52 @@ function updateUploadTime($con, $aUUID, $path){
     }
 }
 
+function isLiveUpload($con, $path, $fromUUID){
+    $query = mysqli_query($con, "SELECT *
+    FROM `upload`
+    WHERE fromUUID = '$fromUUID'
+    AND path = '$path'
+    AND finished IS NULL
+    ");
+
+    if(mysqli_num_rows($query) > 0){
+        return true;
+    }
+
+    return false;
+}
+
 // Removes unimportant information on the upload and
 // the actual directory of where the file was located using "Secure Remove"
-function deleteUpload($con, $toUUID, $fromUUID, $path, $failed = FALSE){
+function deleteUpload($con, $toUUID, $fromUUID, $path, $failed){
 	if(strlen(trim($path)) > 0) {
-		$query = mysqli_query($con, "UPDATE `upload`
-		SET toUUID = NULL, path = NULL, finished = NOW(), partialKey = NULL, hash = NULL, failed = '".(int)$failed."'
-		WHERE fromUUID = '$fromUUID'
-		AND toUUID = '$toUUID'
-		AND path = '$path'
-		");
+        $dir = getDirPath($path);
+        if (deleteDir($dir)) {
+            $query = mysqli_query($con, "UPDATE `upload`
+            SET toUUID = NULL, path = NULL, finished = NOW(), partialKey = NULL, hash = NULL, failed = '" . (int)$failed . "'
+            WHERE fromUUID = '$fromUUID'
+            AND toUUID = '$toUUID'
+            AND path = '$path'
+            ");
 
-		if ($query) {
-			//delete folder using srm
-			$dir = getDirPath($path);
-			if (deleteDir($dir)) {
-				return true;
-			}
-		}
+            if ($query) {
+                return true;
+            }
+        }else{
+            echo "!@!:\n$dir";
+        }
 	}
     return false;
 }
 
 //returns the id of the row in the `upload` database
 //also authenticates variables
-function getUploadID($con, $fromUUID, $toUUID){
+function getUploadID($con, $fromUUID){
 	//pick newest id
     $upload_id_query = mysqli_query($con, "
     SELECT id
     FROM `upload`
 	WHERE fromUUID = '$fromUUID'
-	AND toUUID = '$toUUID'
 	ORDER BY id DESC
     ");
 
@@ -394,11 +448,11 @@ function generateRandomString($length) {
 }
 
 function customLog($message, $silent=false, $file = '/var/www/transferme.it/log/server.log'){
-	$message = date("Y-m-d H:i:s")."\t $message\n";
+	$message = date("Y-m-d H:i:s")."\t $message";
 
 	//output log
 	if(!$silent)
-		echo $message;
+		echo $message."\n";
 
 	//store log
 	file_put_contents($file, $message.PHP_EOL , FILE_APPEND | LOCK_EX);
@@ -410,6 +464,24 @@ function addIP($con){
 	return mysqli_query($con,"INSERT INTO 
 	`IPs` (ip) VALUES ('$ip')
   	ON DUPLICATE KEY UPDATE last_access = NOW();");
+}
+
+function isBrute($con){
+    global $brute_seconds;
+    $ip = $_SERVER['REMOTE_ADDR'];
+
+    $isBrute = mysqli_query($con,"SELECT last_access
+    FROM `IPs`
+    WHERE ip = '$ip'");
+    while ($row = mysqli_fetch_array($isBrute)) {
+        $endTime = date("Y-m-d H:i:s", strtotime($row['last_access'] . " +" . $brute_seconds . " seconds"));
+        $now = date("Y-m-d H:i:s");
+
+        if (new DateTime($now) <= new DateTime($endTime)) {
+            return strtotime($endTime) - strtotime($now);
+        }
+    }
+    return "";
 }
 
 function megaToBytes($bytes){
@@ -439,4 +511,11 @@ function myHash($str){
     return hash("sha256",$str);
 }
 
+function dieStatus($status){
+    $status_arr = $status;
+    if(!is_array($status)){
+        $status_arr = array("status" => "$status");
+    }
+    die(json_encode($status_arr));
+}
 ?>

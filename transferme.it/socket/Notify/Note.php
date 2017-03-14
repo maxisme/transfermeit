@@ -104,6 +104,7 @@ class Note implements MessageComponentInterface {
 							//return time left
 							$time_left = getUserTimeLeft($con, myHash($UUID));
 							if ($time_left == "00:00") {
+							    echo "no time left";
 								$from->send("time|$time_left");
 								$from->close();
 							} else {
@@ -166,7 +167,7 @@ class Note implements MessageComponentInterface {
 
     public function onError(ConnectionInterface $conn, \Exception $e) {
 		customLog("connection error:");
-		customLog(print_r($e));
+        $conn->send(print_r($e));
         $conn->close();
     }
 }

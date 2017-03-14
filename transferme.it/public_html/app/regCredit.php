@@ -12,7 +12,7 @@ $UUID = mysqli_real_escape_string($con, $_POST['UUID']);
 $UUIDKey = trim(mysqli_real_escape_string($con, $_POST['UUIDKey']));
 $pro_code = trim(mysqli_real_escape_string($con, $_POST['code']));
 
-if (!UUIDRegistered($con, $UUID)) {
+if (!UUIDRegistered($con, $UUID, $UUIDKey)) {
 	die('1');
 }
 
@@ -23,9 +23,9 @@ if(strlen($pro_code) != 100 || hasSpecialChars($pro_code)){
 $result = mysqli_query($con,"
 SELECT * 
 FROM `pro`
-WHERE code = '$pro_code'
-AND activation != NULL
-AND expiry > NOW()");
+WHERE `code` = '$pro_code'
+AND activation IS NULL
+AND UUID IS NULL");
 
 if(mysqli_num_rows($result) > 0) {
 	//there is a pro code that has not been used, and has not expired in the db

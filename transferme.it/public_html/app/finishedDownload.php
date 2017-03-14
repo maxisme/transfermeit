@@ -20,18 +20,12 @@ if($userUUID == null){
 	die('2');
 }
 
-//extra validation check if user variables "match up"
-$upload_id = getUploadID($con, $friendUUID, $userUUID);
-if($upload_id == null){
-	die("3");
-}
-
 $db_path = removeDirPath($path);
 
 $partialKey = 0;
 $failed = true;
-if(!empty($fileHash)){ // succesfully finished download
-	//get other part of encryption key
+//get other part of encryption key
+if(!empty($fileHash)){
 	$partialKeyQuery = mysqli_query($con, "SELECT partialKey
 	FROM `upload`
 	WHERE fromUUID = '$friendUUID'
@@ -41,6 +35,7 @@ if(!empty($fileHash)){ // succesfully finished download
 
 	$partialKey = null;
 	while ($row = mysqli_fetch_array($partialKeyQuery)) {
+        // succesfully finished download as user has hash
 		$partialKey = $row['partialKey'];
 	}
 
@@ -58,7 +53,7 @@ if(!empty($fileHash)){ // succesfully finished download
 
 //finished upload
 if(deleteUpload($con, $userUUID, $friendUUID, $db_path, $failed)){
-	//send message to uploader that file has been downloaded.
+	//send message to uploader that file has been downloaded by user successfully
 	sendLocalSocket("downloaded|$friendUUID|$path");
 	die($partialKey);
 }else{

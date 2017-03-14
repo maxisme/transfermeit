@@ -14,12 +14,13 @@
 #import <RNCryptor_objc/RNDecryptor.h>
 #import <RNCryptor_objc/RNEncryptor.h>
 #import <SAMKeychain/SAMKeychain.h>
+#import <GZIP/GZIP.h>
 
 @interface AppDelegate : NSObject <NSApplicationDelegate, NSURLConnectionDataDelegate, NSUserNotificationCenterDelegate>
 //other
-@property BOOL hasInternet;
+@property BOOL successfulNewUser;
 @property BOOL isMonitoring;
-@property BOOL isSettingStatic;
+@property BOOL settingPermUser;
 @property BOOL isGettingRegistrationCode;
 @property BOOL isProUser;
 @property int timeEndCount;
@@ -68,34 +69,29 @@
 @property NSView* view;
 @property NSString* uploadFilePath;
 @property BOOL isUploading;
-@property float uploadPercent;
-@property NSString* ulStartTime;
-@property int totalUploadBytes;
 @property STHTTPRequest *uploadReq;
 - (void)chooseFriend;
 
 //new user
 @property NSString *userCode;
 @property NSString *phoneticUser;
-@property int bandwidthLeft;
+@property unsigned long long bandwidthLeft;
 @property NSString *maxTime;
 @property NSString *wantedTime;
+@property int userTier;
 @property BOOL isCreatingUser;
 @property NSString* regCode;
 
 //download
 @property NSMutableData *downloadData;
-@property NSUInteger totalBytes;
 @property NSUInteger receivedBytes;
 @property NSMutableArray* files;
 @property NSMutableArray* keys;
-@property NSString* savedFileLocation;
 @property NSString* downloadingPath;
 @property BOOL isDownloading;
 @property BOOL hasRequestedDownload;
 @property long long responseExpectedContentLength;
 @property (nonatomic, strong, readonly) NSMutableData *responseData;
-@property float downloadPercent;
 @property NSURLConnection * connection;
 @property NSString* tempStoreIncomingPath;
 @property NSString* dlStartTime;
