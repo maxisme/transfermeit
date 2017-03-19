@@ -993,6 +993,7 @@ StatusItemView *statusItemView;
     
     [_itemThree setHidden:true];
     _itemThree.action = nil;
+    _itemThree.keyEquivalent = @"";
     [_itemThree setEnabled:false];
     
     [_itemFour setHidden:true];
@@ -1011,7 +1012,7 @@ StatusItemView *statusItemView;
 }
 
 -(void)setDefaultMenu{
-    if(_userCode){
+    if(_userCode && !_isDownloading && !_isUploading){
         [self killMenu];
         
         [_animateTimer invalidate];
@@ -1086,19 +1087,20 @@ StatusItemView *statusItemView;
         fileName = [NSString stringWithFormat:@"%@...",[fileName substringToIndex:clip]];
     }
     
-    _itemOne.title = [NSString stringWithFormat:@"Downloading %@", fileName];
+    _itemOne.title = [NSString stringWithFormat:@"Downloading: %@", fileName];
     _itemOne.action = nil;
     [_itemOne setHidden:false];
     
     [_itemTwo setHidden:false];
     
     _itemThree.title = @"Cancel Download";
-    _itemThree.action = @selector(createNewUser);
+    _itemThree.action = @selector(cancelDownloadUpload);
     [_itemThree setEnabled:true];
     [_itemThree setHidden:false];
 }
 
 -(void)setUploadMenu:(NSString*)fileName{
+    
     [self killMenu];
     [self iconAnimation];
     
@@ -1111,13 +1113,14 @@ StatusItemView *statusItemView;
         fileName = [NSString stringWithFormat:@"%@...",[fileName substringToIndex:clip]];
     }
     
-    _itemOne.title = [NSString stringWithFormat:@"Uploading %@", fileName];
+    _itemOne.title = [NSString stringWithFormat:@"Uploading: %@", fileName];
     [_itemOne setHidden:false];
     
+    _itemTwo.title = @"Compressing File...";
     [_itemTwo setHidden:false];
     
     _itemThree.title = @"Cancel Upload";
-    _itemThree.action = @selector(createNewUser);
+    _itemThree.action = @selector(cancelDownloadUpload);
     [_itemThree setEnabled:true];
     [_itemThree setHidden:false];
 }
@@ -1218,9 +1221,9 @@ StatusItemView *statusItemView;
     [accountType setTarget:self];
     [accountType setEnabled:NO];
     [menu addItem:accountType];
-    accountType.title = [NSString stringWithFormat:@"Credit | You have %@GB of bandwidth left!",bandwidthLeftStr];
+    accountType.title = [NSString stringWithFormat:@"Credit | %@ - Upload Bandwidth",bandwidthLeftStr];
     
-    NSMenuItem* addCredit = [[NSMenuItem alloc] initWithTitle:@"Purchase credit" action:@selector(goPro) keyEquivalent:@""];
+    NSMenuItem* addCredit = [[NSMenuItem alloc] initWithTitle:@"Purchase Upload Credit" action:@selector(goPro) keyEquivalent:@""];
     [addCredit setTarget:self];
     [menu addItem:addCredit];
     
@@ -1394,6 +1397,7 @@ StatusItemView *statusItemView;
         }
         
         STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/addNewUser.php"];
+        r.timeoutSeconds = 2;
         
         r.POSTDictionary = @{ @"UUID":_uuid, @"mins":[self cleanUpString:_wantedTime], @"security":[NSString stringWithFormat:@"%d",secure], @"perm_user":permUser};
         
@@ -1565,6 +1569,7 @@ StatusItemView *statusItemView;
 -(void)downloadFile:(NSString*)savedPath friendUUID:(NSString*)friendUUID ref:(int)ref{
     if(!_isDownloading){
         _isDownloading = true;
+        [self createNewUser];
         [self setdownloadMenu:ref];
         NSString* filePath = [self getValueFromArray:ref array:_files];
         NSString* key1 = [self getValueFromArray:ref array:_keys];
@@ -1572,69 +1577,75 @@ StatusItemView *statusItemView;
         NSLog(@"started download of: %@",filePath);
         
         _downloadReq = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/download.php"];
-        _downloadReq.POSTDictionary = @{ @"user":_userCode, @"UUID":_uuid, @"friendUUID":friendUUID, @"path":filePath};
+        _downloadReq.POSTDictionary = @{ @"user":_userCode, @"UUID":_uuid, @"friendUUID":friendUUID, @"path":filePath, @"UUIDKey":[self getKey:@"UUIDKey"]};
         
         _downloadingPath = filePath; //used for keep alive
         _downloadReq.completionDataBlock = ^(NSDictionary *headers, NSData *downloadedData) {
-            [_itemTwo setTitle:@"Decrypting File..."];
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                NSString* downloadedError = nil;
-                //fetch other part of key by confirming download with hash of file
-                NSString* fileHash = [self hash:downloadedData];
-                NSString* key2 = [self finishedDownload:filePath friendUUID:friendUUID ref:ref newuser:true hash:fileHash];
-                
-                if ([downloadedData length] > 0 && [key2 length] == 1024) {
-                    NSData* file = [self decryptFile:downloadedData
-                                            password:@"7xuSq6FwfxdGemqXhrizbFnbPqwdBK"];
-                    
-                    //NSData* file = [self decryptFile:downloadedData
-                    //                        password:[NSString stringWithFormat:@"%@%@", key1,key2]];
-                    
-                    if([file isGzippedData]){
-                        //uncompress file
-                        file = [file gunzippedData];
-                    }
-                    
-                    if(file != nil){
-                        NSString* destinationPath = [NSString stringWithFormat:@"%@/%@", savedPath, [filePath lastPathComponent]];
+            if([downloadedData length] > 1){
+                NSLog(@"filesize: %lu", (unsigned long)[downloadedData length]);
+                [_itemTwo setTitle:@"Decrypting File..."];
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    NSString* downloadedError = nil;
+                    //fetch other part of key by confirming download with hash of file
+                    NSString* fileHash = [self hash:downloadedData];
+                    NSString* key2 = [self finishedDownload:filePath friendUUID:friendUUID ref:ref newuser:true hash:fileHash];
+                    NSLog(@"key2: %@",key2);
+                    if ([downloadedData length] > 0 && [key2 length] == 1024) {
+                        NSData* file = [self decryptFile:downloadedData
+                                                password:@"7xuSq6FwfxdGemqXhrizbFnbPqwdBK"];
                         
-                        //rename if file already at path.
-                        int x = 0;
-                        NSString* ext = [destinationPath pathExtension];
-                        NSString* filepath = [destinationPath stringByDeletingPathExtension];
-                        while ([[NSFileManager defaultManager] fileExistsAtPath:destinationPath]){
-                            x++;
-                            if(![ext isEqual: @""]){
-                                destinationPath = [NSString stringWithFormat:@"%@ (%d).%@", filepath, x, ext];
-                            }else{
-                                destinationPath = [NSString stringWithFormat:@"%@ (%d)", filepath, x];
-                            }
+                        //NSData* file = [self decryptFile:downloadedData
+                        //                        password:[NSString stringWithFormat:@"%@%@", key1,key2]];
+                        
+                        if([file isGzippedData]){
+                            //uncompress file
+                            file = [file gunzippedData];
                         }
                         
-                        [file writeToFile:destinationPath atomically:YES];
-                        
-                        [self desktopAlert:[NSString stringWithFormat:@"Finished Downloading %@!",[destinationPath lastPathComponent]] message:@"The file has been downloaded and decrypted." button1:@"View" button2:@"Close" variables:@{@"file_path":destinationPath}];
+                        if(file != nil){
+                            NSString* destinationPath = [NSString stringWithFormat:@"%@/%@", savedPath, [filePath lastPathComponent]];
+                            
+                            //rename if file already at path.
+                            int x = 0;
+                            NSString* ext = [destinationPath pathExtension];
+                            NSString* filepath = [destinationPath stringByDeletingPathExtension];
+                            while ([[NSFileManager defaultManager] fileExistsAtPath:destinationPath]){
+                                x++;
+                                if(![ext isEqual: @""]){
+                                    destinationPath = [NSString stringWithFormat:@"%@ (%d).%@", filepath, x, ext];
+                                }else{
+                                    destinationPath = [NSString stringWithFormat:@"%@ (%d)", filepath, x];
+                                }
+                            }
+                            
+                            [file writeToFile:destinationPath atomically:YES];
+                            
+                            [self desktopAlert:@"Finished Downloading File!" message:@"The file has been downloaded and decrypted." button1:@"View" button2:@"Close" variables:@{@"file_path":destinationPath}];
+                        }else{
+                            downloadedError = @"Unable to decrypt file.";
+                        }
                     }else{
-                        downloadedError = @"Unable to decrypt file.";
+                        downloadedError = @"Downloaded file is not as it should be.";
                     }
-                }else{
-                    downloadedError = @"Unable to fetch hash.";
-                }
-                
-                if(downloadedError.length > 0){
-                    [self desktopAlert:@"Error Downloading File!" message:downloadedError button1:@"" button2:@"Close"];
-                    NSLog(@"Download Error: %@",downloadedError);
-                }
-                
-                [self createNewUser];
-            });
+                    
+                    if(downloadedError.length > 0){
+                        [self desktopAlert:@"Error Downloading File!" message:downloadedError button1:@"" button2:@"Close"];
+                        NSLog(@"Download Error: %@",downloadedError);
+                    }
+                    
+                    _isDownloading = false;
+                    [self createNewUser];
+                });
+            }else{
+                [self desktopAlert:@"Error Downloading File!" message:[[NSString alloc] initWithData:downloadedData encoding:NSUTF8StringEncoding] button1:@"" button2:@"Close"];
+            }
         };
         
         _downloadReq.errorBlock = ^(NSError *error) {
             NSString* error_message = [error localizedDescription] ;
             if(![error_message isEqual: @"Connection was cancelled."]){
                 [self finishedDownload:filePath friendUUID:friendUUID ref:ref newuser:true];
-                [self desktopAlert:@"Error Downloading File" message:error_message button1:@"" button2:@"Close"];
+                [self desktopAlert:@"Network error while Downloading!" message:@"Please check your network and ask user to upload again." button1:@"" button2:@"Close"];
             }
             
             [self createNewUser];
@@ -1656,7 +1667,7 @@ StatusItemView *statusItemView;
     NSString* val = @"";
     for(NSString* str in array){
         NSArray *explode = [str componentsSeparatedByString:@"|"];
-        if([explode[1] intValue] == x){
+        if(explode.count > 0 && [explode[1] intValue] == x){
             val = explode[0];
         }
     }
@@ -1671,15 +1682,14 @@ StatusItemView *statusItemView;
 //returns key if it isn't a failed download
 -(NSString*)finishedDownload:(NSString*)path friendUUID:(NSString*)friendUUID ref:(int)ref newuser:(bool)newuser hash:(NSString*)hash{
     
-    NSLog(@"finished download");
+    NSLog(@"finished download %d", ref);
     _downloadingPath = nil;
     _hasRequestedDownload = false;
-    _isDownloading = false;
     [_files removeObject:[self getValueFromArray:ref array:_files]];
     [_keys removeObject:[self getValueFromArray:ref array:_keys]];
     
     STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/finishedDownload.php"];
-    r.POSTDictionary = @{ @"path":path, @"user":_userCode, @"friendUUID": friendUUID, @"UUID":_uuid, @"hash":hash};
+    r.POSTDictionary = @{ @"path":path, @"friendUUID": friendUUID, @"UUID":_uuid, @"hash":hash, @"ref":[NSString stringWithFormat:@"%d",ref]};
     
     NSError *error = nil;
     NSString *body = [r startSynchronousWithError:&error];
@@ -1687,10 +1697,10 @@ StatusItemView *statusItemView;
     if(error != nil){
         NSLog(@"Error deleting file: %@",error);
         [self desktopAlert:@"E R R O R" message:@"Unable to delete file from server. It will be deleted within the hour anyway." button1:@"" button2:@"Close"];
-    }else{
-        return body;
+        return @"";
     }
-    return @"";
+    
+    return body;
 }
 
 #pragma mark - upload/send file
@@ -1733,7 +1743,7 @@ int userLength = 7;
             [self sendError:@"Please Compress/zip folders! 🤐"];
         }else if(!_isUploading){
             NSString* pass = nil;
-            
+             
             STHTTPRequest* r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/initUpload.php"];
             
             r.POSTDictionary = @{ @"user":_userCode, @"friend":friendCode, @"UUID":_uuid, @"filesize":[NSString stringWithFormat:@"%lu",encryptedFileSize]};
@@ -1744,7 +1754,7 @@ int userLength = 7;
             if([body length] == 2048){ //2048 char key to use to encrypt the file
                 pass = body;
             }else{
-                [self sendError:[NSString stringWithFormat:@"Error code %@. Contact hello@transferme.it.",body]];
+                [self sendError:body];
                 
                 if ([body rangeOfString:@"upload limit"].location != NSNotFound) {
                     [self desktopAlert:@"File Upload Too Big!" message:@"Would you like to purchase some upload credit?" button1:@"Yes" button2:@"No"];
@@ -1753,16 +1763,29 @@ int userLength = 7;
             
             if(pass != nil){
                 _isUploading = true;
+                
                 [self setUploadMenu:file_name];
                 [self animatePlane];
+                
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    NSData* compressedFile = [file gzippedDataWithCompressionLevel:1];
-                    NSData* fileToEncrypt = file;
+                    NSDate *methodStart = [NSDate date];
+                    
+                    NSData* compressedFile = [file gzippedDataWithCompressionLevel:0.7];
+                    NSData* fileToEncrypt = nil;
                     if([compressedFile length] < fileSize){
                         //compression made the file smaller
                         fileToEncrypt = compressedFile;
+                    }else{
+                        fileToEncrypt = file;
                     }
                     
+                    NSLog(@"original size %lu, compressed size %lu", fileSize, (unsigned long)[compressedFile length]);
+                    
+                    NSDate *methodFinish = [NSDate date];
+                    NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:methodStart];
+                    NSLog(@"Compression took %f", executionTime);
+                    
+                    _itemTwo.title = @"Encrypting File...";
                     NSData* encryptedFile = [self encryptFile:fileToEncrypt password:pass];
                     
                     _uploadReq = nil;
@@ -1777,20 +1800,23 @@ int userLength = 7;
                     _uploadReq.completionBlock = ^(NSDictionary *headers, NSString *body) {
                         _isUploading = false;
                         if([body  isEqual: @"1"]){
-                            [self desktopAlert:[NSString stringWithFormat:@"Finished uploading %@!",file_name] message:@"File has been sent and encrypted!" button1:@"" button2:@"Close"];
+                            [self desktopAlert:@"Finished Uploading File!" message:@"File has been sent and encrypted!" button1:@"" button2:@"Close"];
                         }else{
-                            NSString* err_message = [NSString stringWithFormat:@"Error code: %@. Contact hello@transferme.it.",body];
+                            NSString* err_message = [NSString stringWithFormat:@"Error code: %@. Contact hello@transferme.it",body];
                             [self desktopAlert:@"Major Error Uploading!" message:err_message button1:@"" button2:@""];
                             NSLog(@"Upload %@",err_message);
                         }
+                        
+                        [self setDefaultMenu];
                     };
                     
                     _uploadReq.errorBlock = ^(NSError *error) {
                         _isUploading = false;
-                        //when the request isn't a manual cancel.
-                        if ([[NSString stringWithFormat:@"%@",error] rangeOfString:@"STHTTPRequest Code=1 \"Connection"].location == NSNotFound) {
-                            NSLog(@"Error: %@",error);
-                            [self desktopAlert:@"Network error!" message:@"Please check your internet and try again." button1:@"" button2:@"Close"];
+                        if ([[error localizedDescription] rangeOfString:@"cancelled"].location == NSNotFound) {
+                            NSLog(@"Error: %@",[error localizedDescription]);
+                            [self desktopAlert:@"Network error while uploading!" message:@"Please check your network and try uploading again." button1:@"" button2:@"Close"];
+                            
+                            [self setDefaultMenu];
                         }
                     };
                     
@@ -1810,6 +1836,24 @@ int userLength = 7;
     }
 }
 
+-(void)cancelDownloadUpload{
+    if (_downloadReq) {
+        NSLog(@"canceled download");
+        [_downloadReq cancel];
+        _downloadReq = nil;
+        _isDownloading = false;
+    }
+    
+    if (_uploadReq) {
+        NSLog(@"canceled upload");
+        [_uploadReq cancel];
+        _uploadReq = nil;
+        _isUploading = false;
+    }
+    
+    [self createNewUser];
+}
+
 -(void)sendError:(NSString*)message{
     [submitButton setEnabled:true];
     
@@ -1823,7 +1867,8 @@ int userLength = 7;
     [_errorMessage.layer addAnimation:fadeOutAnimation forKey:nil];
     
     _errorMessage.stringValue = message;
-    [self shakeLayer:submitButton.layer];
+    //[self shakeLayer:submitButton.layer];
+    [self animatePlane];
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(fadeOutErrorText) object:@""];
     [self performSelector:@selector(fadeOutErrorText) withObject:@"" afterDelay:4];
 }
@@ -1867,29 +1912,40 @@ int userLength = 7;
 }
 
 -(void)animatePlane{
+    CAMediaTimingFunction*easing = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+    
     CABasicAnimation *rightAnimation = [CABasicAnimation animationWithKeyPath:@"transform.translation.x"];
-    [rightAnimation setToValue:[NSNumber numberWithFloat:230]];
+    [rightAnimation setToValue:[NSNumber numberWithFloat:180]];
     [rightAnimation setBeginTime:0.0];
-    [rightAnimation setDuration:0.6];
+    [rightAnimation setDuration:0.7];
+    rightAnimation.timingFunction = easing;
     
     
     CABasicAnimation *fall = [CABasicAnimation animationWithKeyPath:@"transform.translation.y"];
-    [fall setToValue:[NSNumber numberWithFloat:20]];
-    [fall setBeginTime:0.1];
-    [fall setDuration:0.6];
+    [fall setToValue:[NSNumber numberWithFloat:10]];
+    [fall setBeginTime:0.2];
+    [fall setDuration:0.7];
+    fall.timingFunction = easing;
     
     //DOESN'T WORK
     CABasicAnimation *rotate = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
-    [rotate setToValue:[NSNumber numberWithFloat:DEGREES_RADIANS(20)]];
+    [rotate setToValue:[NSNumber numberWithFloat:DEGREES_RADIANS(15)]];
     NSLog(@"%f",DEGREES_RADIANS(5));
-    [rotate setBeginTime:0.1];
-    [rotate setDuration:0.6];
+    [rotate setBeginTime:0.3];
+    [rotate setDuration:0.7];
+    rotate.timingFunction = easing;
     
     CAAnimationGroup *group = [CAAnimationGroup animation];
-    [group setDuration:0.6];
+    [group setDuration:0.7];
     [group setAnimations:[NSArray arrayWithObjects:rightAnimation, fall, rotate, nil]];
     
     [submitButton.layer addAnimation:group forKey:nil];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.7 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        //close window
+        [_window orderOut:self];
+        [_window close];
+    });
 }
 
 -(void)shakeLayer:(CALayer*)layer{
