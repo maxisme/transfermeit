@@ -7,7 +7,8 @@ then
 	then
 		echo "$1" | grep -q '^/var/www/transferme.it/[a-z]*/[a-z]*'
         if [[ $? -eq 0 ]] ; then
-			/usr/bin/srm -rf "$1" & #runs in background
+			/usr/bin/srm -rfs "$1" & #runs in background
+			cpulimit -p "$!" -l 5 &
 			echo "1"
 		else
 			echo "the path: $1 is not within allowed path"
