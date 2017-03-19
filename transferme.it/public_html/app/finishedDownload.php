@@ -5,22 +5,27 @@ require 'functions.php';
 $con = connect();
 
 //initial variables
-$user = mysqli_real_escape_string($con, $_POST['user']);
 $friendUUID = mysqli_real_escape_string($con, $_POST['friendUUID']);
 $UUID = mysqli_real_escape_string($con, $_POST['UUID']);
 $path = mysqli_real_escape_string($con, $_POST['path']);
 $fileHash = trim(mysqli_real_escape_string($con, $_POST['hash']));
+$ref = trim(mysqli_real_escape_string($con, $_POST['ref']));
 
 if (!UUIDRegistered($con, $UUID)) {
 	die('1');
 }
 
-$userUUID = userToHashedUUID($con, $user);
-if($userUUID == null){
-	die('2');
+if(!is_numeric($ref)){
+    die("2");
 }
 
+$userUUID = myHash($UUID);
+
 $db_path = removeDirPath($path);
+
+if(!isLiveUpload($con, $db_path, $friendUUID, $userUUID)){
+    die('3');
+}
 
 $partialKey = 0;
 $failed = true;
@@ -31,7 +36,8 @@ if(!empty($fileHash)){
 	WHERE fromUUID = '$friendUUID'
 	AND toUUID = '$userUUID'
 	AND path = '$db_path'
-	AND `hash` = '$fileHash'");
+	AND `hash` = '$fileHash'
+	AND `id` = '$ref'");
 
 	$partialKey = null;
 	while ($row = mysqli_fetch_array($partialKeyQuery)) {
@@ -41,11 +47,12 @@ if(!empty($fileHash)){
 
 	if($partialKey == null){
 		die("SELECT partialKey
-		FROM `upload`
-		WHERE fromUUID = '$friendUUID'
-		AND toUUID = '$userUUID'
-		AND path = '$db_path'
-		AND `hash` = '$fileHash'");
+	FROM `upload`
+	WHERE fromUUID = '$friendUUID'
+	AND toUUID = '$userUUID'
+	AND path = '$db_path'
+	AND `hash` = '$fileHash'
+	AND `id` = '$ref'");
 	}
 
 	$failed = false;

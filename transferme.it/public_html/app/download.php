@@ -17,11 +17,11 @@ $con = connect();
 
 //initial variables
 $UUID = mysqli_real_escape_string($con, $_POST['UUID']);
-$friendUUID = mysqli_real_escape_string($con, $_POST['friendUUID']);
 $user = mysqli_real_escape_string($con, $_POST['user']);
 $path = mysqli_real_escape_string($con, $_POST['path']);
+$UUIDKey = mysqli_real_escape_string($con, $_POST['UUIDKey']);
 
-if (!UUIDRegistered($con, $UUID)) {
+if (!UUIDRegistered($con, $UUID, $UUIDKey)) {
 	die('1');
 }
 
@@ -31,11 +31,6 @@ if($userUUID == null){
 }
 
 $db_path = removeDirPath($path);
-
-// no such upload
-if(!isLiveUpload($con, $db_path, $friendUUID)){
-    die('3');
-}
 
 updateUploadTime($con, $userUUID, $db_path);
 

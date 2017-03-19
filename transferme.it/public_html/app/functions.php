@@ -351,10 +351,11 @@ function updateUploadTime($con, $aUUID, $path){
     }
 }
 
-function isLiveUpload($con, $path, $fromUUID){
+function isLiveUpload($con, $path, $fromUUID, $toUUID){
     $query = mysqli_query($con, "SELECT *
     FROM `upload`
     WHERE fromUUID = '$fromUUID'
+    AND toUUID = '$toUUID'
     AND path = '$path'
     AND finished IS NULL
     ");
@@ -420,7 +421,7 @@ function removeDirPath($path){
 
 //Deletes a directory with "Secure Delete"
 function deleteDir($dir){
-	$command = "sudo /var/www/transferme.it/public_html/app/secureDeleteFolder.sh '$dir'";
+	$command = "sudo /var/www/transferme.it/secureDeleteFolder.sh '$dir'";
 	$shell = trim(shell_exec($command));
 	customLog("deleteDir shell: $shell", TRUE);
 	if($shell == "1"){

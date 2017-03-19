@@ -112,13 +112,13 @@ By default transfer me it will create a 10 minute <strong>code</strong> for you.
             </p>
             <p class='info'>
                 Each time you send a file it is encrypted using a unique 256 character key locally with <a
-                        target="_blank" href="https://github.com/RNCryptor/RNCryptor">AES encryption</a> before being uploaded and sent to your friend. Your friend will receive part of this key through an un-penetrable socket and the other part when they have authenticated the download - the file can then be decrypted locally and purged from the server – this means that even we can't decrypt the file!
+                        target="_blank" href="https://github.com/RNCryptor/RNCryptor">AES encryption</a> before being uploaded and sent to your friend. Your friend will receive part of this key through an un-penetrable socket and the other part when they have authenticated the download - the file will then be purged from the server and decrypted locally – this means that even we can't decrypt the file!
             </p>
             <p class='info'>
-			    All connections between your computer and our server are with HTTPS/SSL AES encryption.
+			    All connections between your computer and our server are with HTTPS AES encryption.
             </p>
             <p class='info'>
-			    And if that doesn’t make you think the app is secure/private enough - after the file you’re sending has been downloaded, it is deleted from the server and then overwritten with lots of '0's (to protect against any sort of recovery of the storage).
+			    And if that doesn’t make you think the app is secure and private enough - after the file you’re sending has been downloaded, it is deleted from the server and then overwritten with lots of '0's (to protect against any sort of recovery of the storage).
             </p>
             <p class='info'>
                 You also don't need to take our word for it. Transfer Me It is <a target="_blank"

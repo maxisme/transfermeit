@@ -1,6 +1,6 @@
 <?php
 session_start();
-//ini set in /etc/php5/fpm/php.ini
+// ini set in /etc/php7.1/fpm/php.ini
 // max_execution_time set from 30 to 0
 // post_max_size set from 8M to 5000M
 
@@ -57,7 +57,7 @@ if(!isset($upload_path)){
 }
 
 //no such upload initiated
-if(!isLiveUpload($con, $upload_path, $userUUID)){
+if(!isLiveUpload($con, $upload_path, $userUUID, $friendUUID)){
     die('7');
 }
 
