@@ -7,40 +7,24 @@ require 'functions.php';
 //connect to database
 $con = connect();
 
-//initial variables
 $remove_perm_code = false;
-$allowed_custom_code = false;
 //POST variables
 if (isset($_POST['customCode'])) {
     $customCode = trim(mysqli_real_escape_string($con, $_POST['customCode']));
-    if ($customCode == "0") {
+    if (empty($customCode)) {
         $remove_perm_code = true;
     }
 }
 $UUID = mysqli_real_escape_string($con, $_POST['UUID']);
 $UUIDKey = mysqli_real_escape_string($con, $_POST['UUIDKey']);
 
-if (empty($UUIDKey) || !UUIDRegistered($con, $UUID, $UUIDKey)) {
+//validation
+if (!UUIDRegistered($con, $UUID, $UUIDKey)) {
     die(json_encode(array("status" => "Invalid User")));
 }
 
-$query = mysqli_query($con, "
-SELECT *
-FROM `pro`
-WHERE UUID = '" . myHash($UUID) . "'
-");
-
-while ($row = mysqli_fetch_array($query)) {
-    if (userTier(myHash($UUID)) == 2) {
-        //user is allowed a CUSTOM CODE
-        if (userTier(myHash($UUID)) == 3) {
-            $allowed_custom_code = true;
-        }
-        $pro_code = $row['code'];
-    }
-}
-
-if (isset($pro_code)) {
+$tier = userTier(myHash($UUID));
+if ($tier >= 2) {
     if ($remove_perm_code) {
         //stop using perm user code
         if (!mysqli_query($con, "UPDATE `pro`

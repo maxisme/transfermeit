@@ -1,5 +1,6 @@
 <?php
 $upload_dir = '/var/www/transferme.it/uploads/';
+$log_path = "/var/www/transferme.it/log/";
 $free_user_bandwidth = megaToBytes(2500);
 $amt_max_files = 5;
 $default_max_file_upload = megaToBytes(200);
@@ -18,17 +19,14 @@ function connect(){
 	return $con;
 }
 
-function UUIDRegistered($con, $UUID, $UUIDKey = ""){
-    $addSQL = "";
-    if(!empty($UUIDKey)){
-        $addSQL = "AND UUIDKey = '".myHash($UUIDKey)."'";
-    }
+function UUIDRegistered($con, $UUID, $UUIDKey){
 
 	if(validUUID($UUID)){
 		$uuidExists = mysqli_query($con, "
 		SELECT * 
 		FROM `user`
-		WHERE UUID = '".myHash($UUID)."' $addSQL
+		WHERE UUID = '".myHash($UUID)."'
+		AND UUIDKey = '".myHash($UUIDKey)."'
 		");
  
 		if(mysqli_num_rows($uuidExists) > 0){
@@ -39,7 +37,7 @@ function UUIDRegistered($con, $UUID, $UUIDKey = ""){
 }
 
 function correctUUIDKey($con, $UUID, $key){
-	if (UUIDRegistered($con, $UUID)) {
+	if (UUIDRegistered($con, $UUID, $key)) {
 		$fetchKey = mysqli_query($con, "
 		SELECT * 
 		FROM `user`
@@ -65,10 +63,10 @@ function userToHashedUUID($con, $user){
 	if(mysqli_num_rows($getUUID) > 0) {
 		while ($row = mysqli_fetch_array($getUUID)) {
 			$hashedUUID = $row['UUID'];
-			if($row['connected'] == 1 && getUserTimeLeft($con, $hashedUUID) != "00:00"){
+			if($row['connected'] == 1 && getUserTimeLeft($con, $hashedUUID) != "-"){
 				return $hashedUUID;
 			}else{
-				sendLocalSocket("close|$hashedUUID");
+				sendLocalSocket($hashedUUID, "close");
 			}
 		}
 	}
@@ -97,13 +95,10 @@ function getUserTimeLeft($con, $hashedUUID){
 
 		if (new DateTime($now) <= new DateTime($endTime)) {
 			$timeLeft = strtotime($endTime) - strtotime($now);
-			//get hours
-			$hours = date("H", $timeLeft);
+
 			//get mins
 			$mins = date("i", $timeLeft);
-			if($hours > 0){
-				$mins += $hours * 60;
-			}
+
 			//get seconds
 			$secs = date("s", $timeLeft);
 
@@ -114,10 +109,10 @@ function getUserTimeLeft($con, $hashedUUID){
 	//EXPIRED
 	//delete user
 	deleteUser($con, $hashedUUID);
-	return "00:00";
+	return "-";
 }
 
-/* deletes user code from database (does not delete rollollopp9 */
+/* deletes user code from database */
 function deleteUser($con, $hashedUUID){
 	mysqli_query($con, "
 	UPDATE `user`
@@ -126,7 +121,7 @@ function deleteUser($con, $hashedUUID){
 	");
 	
 	//close socket
-	sendLocalSocket("close|$hashedUUID");
+	sendLocalSocket($hashedUUID, "close");
 }
 
 /* mark user as connected to server or not */
@@ -336,19 +331,23 @@ function userMaxMins($hashedUUID){
 // Updates the `updated` time in the `upload` database.
 // This is so that the file is not deleted if a user is still deleting or uploading the file.
 function updateUploadTime($con, $aUUID, $path){
-	customLog("update upload time: $aUUID to $path", TRUE);
-	
-    $query = mysqli_query($con, "UPDATE `upload`
-    SET updated = NOW()
-    WHERE (fromUUID = '$aUUID'
+	$sql_where_query = "WHERE (fromUUID = '$aUUID'
     OR toUUID = '$aUUID')
-    AND path='$path'");
-    
-    if($query){
-        return true;
+    AND path='$path'";
+
+	$exists_query = mysqli_query($con, "SELECT `id` FROM `upload` $sql_where_query");
+	if(mysqli_num_rows($exists_query) == 1) {
+        $update_query = mysqli_query($con, "UPDATE `upload`
+        SET updated = NOW() $sql_where_query");
+
+        if ($update_query) {
+            return true;
+        }
     }else{
-        return false;
+	    customLog("<-><-><-><-> SELECT `id` FROM `upload` $sql_where_query");
     }
+
+    return false;
 }
 
 function isLiveUpload($con, $path, $fromUUID, $toUUID){
@@ -371,7 +370,7 @@ function isLiveUpload($con, $path, $fromUUID, $toUUID){
 // the actual directory of where the file was located using "Secure Remove"
 function deleteUpload($con, $toUUID, $fromUUID, $path, $failed){
 	if(strlen(trim($path)) > 0) {
-        $dir = getDirPath($path);
+        $dir = addDirPath($path);
         if (deleteDir($dir)) {
             $query = mysqli_query($con, "UPDATE `upload`
             SET toUUID = NULL, path = NULL, finished = NOW(), partialKey = NULL, hash = NULL, failed = '" . (int)$failed . "'
@@ -383,8 +382,6 @@ function deleteUpload($con, $toUUID, $fromUUID, $path, $failed){
             if ($query) {
                 return true;
             }
-        }else{
-            echo "!@!:\n$dir";
         }
 	}
     return false;
@@ -408,7 +405,7 @@ function getUploadID($con, $fromUUID){
 }
 
 //adds the full path to the directory of the path stored in the database
-function getDirPath($path){
+function addDirPath($path){
 	global $upload_dir;
 	return $upload_dir.$path.'/';
 }
@@ -423,18 +420,18 @@ function removeDirPath($path){
 function deleteDir($dir){
 	$command = "sudo /var/www/transferme.it/secureDeleteFolder.sh '$dir'";
 	$shell = trim(shell_exec($command));
-	customLog("deleteDir shell: $shell", TRUE);
-	if($shell == "1"){
-		return true;
-	}
+	if($shell == "1") return true;
 	return false;
 }
 
-function sendLocalSocket($message){
+// $to = the uuid you are sending to
+// $type = is the
+function sendLocalSocket($to, $message){
+    $mess = json_encode(array("to" => $to, "message" => "$message"));
 	$context = new ZMQContext();
 	$socket = $context->getSocket(ZMQ::SOCKET_PUSH);
 	$socket->connect("tcp://localhost:47802");
-	$socket->send($message);
+	$socket->send($mess);
 }
 
 //functions
@@ -448,7 +445,10 @@ function generateRandomString($length) {
     return $randomString;
 }
 
-function customLog($message, $silent=false, $file = '/var/www/transferme.it/log/server.log'){
+function customLog($message, $silent=false, $file = 'server.log'){
+    global $log_path;
+    $file_path = "${log_path}$file";
+
 	$message = date("Y-m-d H:i:s")."\t $message";
 
 	//output log
@@ -456,7 +456,7 @@ function customLog($message, $silent=false, $file = '/var/www/transferme.it/log/
 		echo $message."\n";
 
 	//store log
-	file_put_contents($file, $message.PHP_EOL , FILE_APPEND | LOCK_EX);
+	file_put_contents($file_path, $message.PHP_EOL , FILE_APPEND | LOCK_EX);
 }
 
 //ip database

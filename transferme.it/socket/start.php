@@ -32,7 +32,7 @@ $server->loop->addPeriodicTimer(15, function () use ($note) {
 
 			if (new DateTime($now) > new DateTime($endTime)){
 				//send message to socket object to close client UUID
-				$note->onLocal("close|".$client->UUID);
+				$note->onLocal(json_encode(array("to" => $client->UUID, "message" => "close")));
 			}
 		}
 	}

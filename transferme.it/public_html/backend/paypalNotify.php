@@ -6,7 +6,7 @@ include '/var/www/transferme.it/public_html/app/functions.php';
  */
 //custom variables
 $account_length = 31; //31 days from payment.
-$log_file = "/var/www/transferme.it/log/payments.log"; //31 days from payment.
+$log_file = "payments.log"; //31 days from payment.
 
 // Send an empty HTTP 200 OK response to acknowledge receipt of the notification 
 header('HTTP/1.1 200 OK'); 

@@ -12,13 +12,12 @@ require 'functions.php';
 $con = connect();
 
 //variables
-$key_len = 50;
+$key_len = 100;
 $max_allowed_mins = $default_max_mins;
 
 //POST
 $UUID = mysqli_real_escape_string($con, $_POST['UUID']);
 $wantedMins = mysqli_real_escape_string($con, $_POST['mins']);
-$security = mysqli_real_escape_string($con, $_POST['security']);
 if (isset($_POST['perm_user'])) $perm_user = $_POST['perm_user'];
 
 //validate inputs
@@ -54,11 +53,12 @@ $brute = isBrute($con);
 
 if(mysqli_num_rows($queryNewUser) == 0) {
     addIP($con);
+    $secureUUIDKey = generateRandomString($key_len);
     //if UUID doesn't exist this is the first time using transferme.it on device
     //create initial account
     $query = mysqli_query($con, "
 	INSERT INTO `user` (user, UUID, UUIDKey, created, registered)
-	VALUES ('" . myHash($user) . "', '" . myHash($UUID) . "','" . myHash(" ") . "', NOW(), NOW());");
+	VALUES ('" . myHash($user) . "', '" . myHash($UUID) . "','" . myHash($secureUUIDKey) . "', NOW(), NOW());");
 
     if (!$query) {
         echo("Error description: " . mysqli_error($con));
@@ -67,12 +67,12 @@ if(mysqli_num_rows($queryNewUser) == 0) {
             "user_code" => "$user",
             "bandwidth_left" => "$free_user_bandwidth",
             "mins_allowed" => "$max_allowed_mins",
-            "user_tier" => "1",
+            "user_tier" => "0",
+            "UUID_key" => "$secureUUIDKey"
         );
         die(json_encode($arr));
     }
 }else{
-
     addIP($con);
 	$hashedUser = myHash($user);
 
@@ -107,19 +107,10 @@ if(mysqli_num_rows($queryNewUser) == 0) {
 		$wantedMins = $userMaxMins;
 	}
 
-	//add security UUIDkey to account
-	$secureUUIDKey = "";
-    $addedSQL = "";
-	if ($security == "1" && $UUIDKey == myHash(" ")) {
-		//user does not already have extra security
-		$secureUUIDKey = generateRandomString($key_len);
-		$addedSQL = ", UUIDKey = '" . myHash($secureUUIDKey) . "'";
-	}
-
 	//update user data into db
 	$query = mysqli_query($con, "
 	UPDATE `user` 
-	SET user = '$hashedUser', wantedMins = '$wantedMins', created = NOW()" . $addedSQL . "
+	SET user = '$hashedUser', wantedMins = '$wantedMins', created = NOW()
 	WHERE UUID = '" . myHash($UUID) . "';
 	");
 
@@ -130,8 +121,7 @@ if(mysqli_num_rows($queryNewUser) == 0) {
 			"user_code" => "$user",
 			"bandwidth_left" => getBandwidthLeft($con, myHash($UUID)),
 			"mins_allowed" => "$userMaxMins",
-			"user_tier" => userTier(myHash($UUID)),
-			"UUID_key" => "$secureUUIDKey"
+			"user_tier" => userTier(myHash($UUID))
 		);
 		die(json_encode($arr));
 	}

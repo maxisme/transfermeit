@@ -24,7 +24,6 @@
 @property BOOL isGettingRegistrationCode;
 @property BOOL isProUser;
 @property int timeEndCount;
-@property NSString* timeLeft;
 @property NSString* uuid;
 @property NSDateFormatter *time_format;
 @property NSDate *current_time;

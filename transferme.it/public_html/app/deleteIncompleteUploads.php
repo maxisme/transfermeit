@@ -1,9 +1,6 @@
 <?php
-//runs from cron.
+//run from cron only
 (PHP_SAPI !== 'cli' || isset($_SERVER['HTTP_USER_AGENT'])) && die('cli only');
-
-error_reporting(E_ALL);
-ini_set("display_errors", 1);
 
 require 'functions.php';
 
@@ -25,13 +22,16 @@ AND (upload.updated IS NULL OR upload.updated + interval 1 minute <= NOW())
 AND `upload`.finished IS NULL
 ");
 
-$deleted=0;
 while ($row = mysqli_fetch_array($out_of_date_query)){
 	if(!deleteUpload($con, $row['toUUID'], $row['fromUUID'], $row['path'], true)){
-	    echo "ERROR with ".$row['id'];
+        customLog("Failed to delete: ".$row['path'], false, 'file_purge.log');
     }else{
-        $deleted++;
+        sendLocalSocket($row['fromUUID'], json_encode(array(
+            "type" => "downloaded",
+            "title" => "File expired and was deleted by server.",
+            "message" => "At: ".date("r")
+        )));
+        customLog("Deleted: ".$row['path'], false, 'file_purge.log');
     }
 }
-echo "Deleted $deleted rows";
 ?>

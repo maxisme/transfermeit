@@ -26,9 +26,10 @@ $con = connect();
 $user = mysqli_real_escape_string($con, $_POST['user']);
 $friend = mysqli_real_escape_string($con, $_POST['friend']);
 $UUID = mysqli_real_escape_string($con, $_POST['UUID']);
+$UUIDKey = mysqli_real_escape_string($con, $_POST['UUIDKey']);
 
 //validate inputs (not really necessary to do again)
-if (!UUIDRegistered($con, $UUID)) {
+if (!UUIDRegistered($con, $UUID, $UUIDKey)) {
 	uploadDie('1');
 }
 
@@ -62,7 +63,7 @@ if(!isLiveUpload($con, $upload_path, $userUUID, $friendUUID)){
 }
 
 $file_name = basename($_FILES["fileUpload"]["name"]);
-$file_path = getDirPath($upload_path) . $file_name;
+$file_path = addDirPath($upload_path) . $file_name;
 
 // validate file size and make sure it is the same as the one in innit
 $said_file_size = $_SESSION["filesize".$upload_id];
@@ -94,7 +95,13 @@ if (!move_uploaded_file($_FILES["fileUpload"]["tmp_name"], $file_path)) {
 	// update `updated` time
 	updateUploadTime($con, $userUUID, $upload_path);
 
+	customLog("upload_id: $upload_id",TRUE);
 	//successfully uploaded file
-	sendLocalSocket("file|$friendUUID|$file_path|$upload_id|$userUUID");
+	sendLocalSocket($friendUUID, json_encode(array(
+	    "type"  => "download",
+        "path"  => $file_path,
+        "ref"   => $upload_id,
+        "UUID"  => $userUUID
+    )));
 	echo "1";
 }

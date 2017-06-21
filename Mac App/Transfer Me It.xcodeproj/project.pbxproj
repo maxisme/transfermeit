@@ -21,6 +21,8 @@
 		4818940C1E4E786D007227EA /* up_b.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894021E4E786D007227EA /* up_b.png */; };
 		4818940D1E4E786D007227EA /* up.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894031E4E786D007227EA /* up.png */; };
 		4818940E1E4E786D007227EA /* upload.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894041E4E786D007227EA /* upload.png */; };
+		485574711E89675400CB7DFA /* drag.png in Resources */ = {isa = PBXBuildFile; fileRef = 485574701E89675400CB7DFA /* drag.png */; };
+		48FAFBA61E92BB3E001CBDC7 /* loader.svg in Resources */ = {isa = PBXBuildFile; fileRef = 48FAFBA51E92BB3E001CBDC7 /* loader.svg */; };
 		E723C70E01EC647391567723 /* Pods_Transfer_Me_It.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68851D7966FDC8A6FFADEC87 /* Pods_Transfer_Me_It.framework */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +44,8 @@
 		481894021E4E786D007227EA /* up_b.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = up_b.png; sourceTree = "<group>"; };
 		481894031E4E786D007227EA /* up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = up.png; sourceTree = "<group>"; };
 		481894041E4E786D007227EA /* upload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = upload.png; sourceTree = "<group>"; };
+		485574701E89675400CB7DFA /* drag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = drag.png; sourceTree = "<group>"; };
+		48FAFBA51E92BB3E001CBDC7 /* loader.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = loader.svg; sourceTree = "<group>"; };
 		5155CE64DBB11A9BFBCD445D /* Pods-Transfer Me It.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Transfer Me It.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Transfer Me It/Pods-Transfer Me It.debug.xcconfig"; sourceTree = "<group>"; };
 		68851D7966FDC8A6FFADEC87 /* Pods_Transfer_Me_It.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Transfer_Me_It.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		94ECA04043BBF2E7605FDAC8 /* Pods-Transfer Me It.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Transfer Me It.release.xcconfig"; path = "Pods/Target Support Files/Pods-Transfer Me It/Pods-Transfer Me It.release.xcconfig"; sourceTree = "<group>"; };
@@ -102,9 +106,11 @@
 		481893E41E4E7540007227EA /* images */ = {
 			isa = PBXGroup;
 			children = (
+				48FAFBA51E92BB3E001CBDC7 /* loader.svg */,
 				481893FB1E4E786D007227EA /* alert.png */,
 				481893FC1E4E786D007227EA /* download.png */,
 				481893FD1E4E786D007227EA /* icon.png */,
+				485574701E89675400CB7DFA /* drag.png */,
 				481893FE1E4E786D007227EA /* loading.png */,
 				481893FF1E4E786D007227EA /* mainicon.png */,
 				481894001E4E786D007227EA /* send_hover.png */,
@@ -198,7 +204,9 @@
 				481894091E4E786D007227EA /* mainicon.png in Resources */,
 				4818940C1E4E786D007227EA /* up_b.png in Resources */,
 				481894081E4E786D007227EA /* loading.png in Resources */,
+				48FAFBA61E92BB3E001CBDC7 /* loader.svg in Resources */,
 				4818940B1E4E786D007227EA /* send.png in Resources */,
+				485574711E89675400CB7DFA /* drag.png in Resources */,
 				481893E61E4E77F3007227EA /* Montserrat-Light.ttf in Resources */,
 				481894071E4E786D007227EA /* icon.png in Resources */,
 				4818940E1E4E786D007227EA /* upload.png in Resources */,
@@ -365,6 +373,7 @@
 			baseConfigurationReference = 5155CE64DBB11A9BFBCD445D /* Pods-Transfer Me It.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 3H49MXS325;
 				INFOPLIST_FILE = "Transfer Me It/Info.plist";
@@ -380,6 +389,7 @@
 			baseConfigurationReference = 94ECA04043BBF2E7605FDAC8 /* Pods-Transfer Me It.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 3H49MXS325;
 				INFOPLIST_FILE = "Transfer Me It/Info.plist";

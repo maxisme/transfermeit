@@ -14,10 +14,10 @@ $user = mysqli_real_escape_string($con, $_POST['user']);
 $friend = mysqli_real_escape_string($con, $_POST['friend']); 
 $UUID = mysqli_real_escape_string($con, $_POST['UUID']);
 $file_size = mysqli_real_escape_string($con, $_POST['filesize']);
-
+$UUIDKey = mysqli_real_escape_string($con, $_POST['UUIDKey']);
 
 //validate inputs
-if (!UUIDRegistered($con, $UUID)) {
+if (!UUIDRegistered($con, $UUID, $UUIDKey)) {
 	die('1');
 }
 
@@ -58,12 +58,12 @@ while ($row = mysqli_fetch_array($isAlreadyUploading)) {
 
 //create upload folder at random path
 $path = generateRandomString(200);
-$dir = getDirPath($path);
+$dir = addDirPath($path);
 mkdir($dir, 0775, true);
 
 //generate encryption key into two parts
 $key1 = generateRandomString(1024); //one part to send straight over socket now.
-$key2 = generateRandomString(1024); //other part to store in database until friend downloads - this is so that the user has to confirm a download
+$key2 = generateRandomString(1024); //other part to store in database until friend downloads - so that the user has to confirm the download to be able to decrypt it
 
 //check if upload is being made by a pro user
 $pro_upload = 0;
@@ -75,14 +75,18 @@ if($max_file_allowed_bytes > $default_max_file_upload){
 if(!mysqli_query($con, "
 INSERT INTO `upload` (fromUUID, toUUID, path, partialKey, pro)
 VALUES ('$userUUID', '$friendUUID', '$path', '$key2', '$pro_upload')")){
-	die("6");
+	die("Could not insert upload details into database");
 }
 
 //get upload id
 $upload_id = mysqli_insert_id($con);
 
 //send key directly over socket to friendID
-sendLocalSocket("key|$friendUUID|$key1|$upload_id");
+sendLocalSocket($friendUUID, json_encode(array(
+    "type" => "key",
+    "key" => $key1,
+    "ref" => $upload_id
+)));
 
 //store session variable for upload path - this makes sure it is not possible to run upload.php without initUpload.php
 $_SESSION["path".$upload_id] = $path;

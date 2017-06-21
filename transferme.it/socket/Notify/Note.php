@@ -8,6 +8,14 @@ ini_set("display_errors", 1);
 
 require '/var/www/transferme.it/public_html/app/functions.php';
 
+function jsonTime($time){
+    return json_encode(array("type" => "time", "time" => $time));
+}
+
+function jsonError($error_message){
+    return json_encode(array("type" => "error", "message" => $error_message));
+}
+
 //initial set all users as not connected
 mysqli_query(connect(), "
 UPDATE `user`
@@ -26,129 +34,141 @@ class Note implements MessageComponentInterface {
     public function onOpen(ConnectionInterface $conn) {
 		$connection_ip = $conn->WebSocket->request->getHeader('X-Real-IP');
 
-		//check if user has been active in last 20 seconds
-		$time_since = mysqli_query(connect(),"SELECT id
-		FROM `IPs`
-		WHERE ip = '$connection_ip'
-		AND last_access >= now() - interval 5 second");
+        if (!filter_var($connection_ip, FILTER_VALIDATE_IP) === false) {
+            //check if user has been active in last 5 seconds
+            $time_since = mysqli_query(connect(), "SELECT id
+            FROM `IPs`
+            WHERE ip = '$connection_ip'
+            AND last_access >= now() - interval 5 second");
 
-		if(mysqli_num_rows($time_since) > 0) {
-			customLog("New socket");
-			$this->clients->attach($conn);
-		}else{
-			customLog("Fishy connection from: $connection_ip");
-			$conn->send("fishy connection");
-			$conn->close();
-		}
+            if (mysqli_num_rows($time_since) > 0) {
+                customLog("New socket");
+                $this->clients->attach($conn);
+            } else {
+                customLog("Fishy connection from: $connection_ip");
+                $conn->send(jsonError("fishy connection"));
+                $conn->close();
+            }
+        }else{
+            customLog("Suspicious ip header: $connection_ip");
+        }
     }
 
-    public function onMessage(ConnectionInterface $from, $message) {
+    public function onMessage(ConnectionInterface $from, $input) {
 		$con = connect();
-		
-		$arr = explode("|", $message);
-		$message_type = $arr[0];
-		
-		if ($message_type === "time") {
-			//ASKING FOR TIME LEFT OF USER CODE
-            $user 	= mysqli_real_escape_string($con, $arr[1]);
-			$UUID 	= mysqli_real_escape_string($con, $arr[2]);
 
-			foreach ($this->clients as $client) {
-				if ($from === $client) {
-					// asking about UUID from socket linked with uuid
-					if(isset($client->UUID) && $client->UUID == myHash($UUID)) {
-						$client->activity = date("Y-m-d H:i:s");
-						$hashedUUID = userToHashedUUID($con, $user);
-						if($hashedUUID != null) {
-							$time_left = getUserTimeLeft($con, $hashedUUID);
-							$from->send("time|$time_left");
-						}else{
-							$from->send("time|00:00");
-						}
-					}
-				}
-			}
-		}else if($message_type === "keep") {
-			// USER IS STILL UPLOADING OR DOWNLOADING - tells server to postpone deleting the file.
-			$UUID 	= mysqli_real_escape_string($con, $arr[1]);
-			$user 	= mysqli_real_escape_string($con, $arr[2]);
-			$path	= mysqli_real_escape_string($con, $arr[3]);
-			
-			foreach ($this->clients as $client) {
-				if ($from === $client) {
-					// asking about UUID from socket linked with UUID
-					if (isset($client->UUID) && $client->UUID == myHash($UUID)) {
-						$hashedUUID = userToHashedUUID($con, $user);
-						if ($hashedUUID != null) {
-							updateUploadTime($con, $hashedUUID, $path);
-						}
-					}
-				}
-			}
-		}else if(validUUID($message_type)){
-			// first socket connection
-			$UUID 	= mysqli_real_escape_string($con, $message_type);
-			$key 	= mysqli_real_escape_string($con, $arr[1]);
+        $json = json_decode($input);
 
-			if(isConnected($con, myHash($UUID))){
-				$from->send("User already connected to socket");
-				$from->close();
-			} else {
-				if (!correctUUIDKey($con, $UUID, $key)) {
-                    customLog("Invalid Key: $UUID with key: $key");
-					$from->send("Invalid key. You have likely altered Keychain");
-					$from->close();
-				} else {
-					foreach ($this->clients as $client) {
-						if ($from === $client) {
-							//return time left
-							$time_left = getUserTimeLeft($con, myHash($UUID));
-							if ($time_left == "00:00") {
-							    echo "no time left";
-								$from->send("time|$time_left");
-								$from->close();
-							} else {
-								markUserSocketConnection($con, myHash($UUID), TRUE);
-								$client->UUID = myHash($UUID);
-								$client->activity = date("Y-m-d H:i:s");
-								$from->send("time|$time_left");
-								customLog("New client: " . $client->UUID);
-							}
-						}
-					}
-				}
-			}
-		}
+        if(json_last_error() != JSON_ERROR_NONE){
+            $from->close();
+        }else {
+            $type = $json->type;
+            if ($type === "time") {
+                //ASKING FOR TIME LEFT OF USER CODE
+                $user = mysqli_real_escape_string($con, $json->userCode);
+                $UUID = mysqli_real_escape_string($con, $json->UUID);
+                foreach ($this->clients as $client) {
+                    if ($from === $client) {
+                        // asking about UUID from socket linked with uuid
+                        if (isset($client->UUID) && $client->UUID == myHash($UUID)) {
+                            $client->activity = date("Y-m-d H:i:s");
+                            $hashedUUID = userToHashedUUID($con, $user);
+                            if ($hashedUUID != null) {
+                                $time_left = getUserTimeLeft($con, $hashedUUID);
+                                $from->send(jsonTime($time_left));
+                            } else {
+                                $from->send(jsonTime("-"));
+                            }
+                        }
+                    }
+                }
+            } else if ($type === "keep") {
+                // USER IS STILL UPLOADING OR DOWNLOADING - tells server to postpone deleting the file.
+                $user = mysqli_real_escape_string($con, $json->userCode);
+                $UUID = mysqli_real_escape_string($con, $json->UUID);
+                $path = mysqli_real_escape_string($con, $json->path);
+
+                foreach ($this->clients as $client) {
+                    if ($from === $client) {
+                        // asking about UUID from socket linked with UUID
+                        if (isset($client->UUID) && $client->UUID == myHash($UUID)) {
+                            $hashedUUID = userToHashedUUID($con, $user);
+                            if ($hashedUUID != null) {
+                                updateUploadTime($con, $hashedUUID, $path);
+                            }
+                        }
+                    }
+                }
+            }else if ($type == "connect") {
+                // initial socket connection
+                $UUID = mysqli_real_escape_string($con, $json->UUID);
+                $UUIDKey = mysqli_real_escape_string($con, $json->key);
+
+                if(!validUUID($UUID)){
+                    $from->close();
+                }
+
+                if (isConnected($con, myHash($UUID))) {
+                    $from->send(jsonError("User already connected to socket"));
+                    $from->close();
+                } else {
+                    if (!UUIDRegistered($con, $UUID, $UUIDKey)) {
+                        customLog("Invalid key match -> ".myHash($UUID)." with key: $UUIDKey");
+                        $from->send(jsonError("Invalid key. You have likely altered Keychain"));
+                        $from->close();
+                    } else {
+                        foreach ($this->clients as $client) {
+                            if ($from === $client) {
+                                //return time left
+                                $time_left = getUserTimeLeft($con, myHash($UUID));
+                                if ($time_left == "-") {
+                                    $from->send(jsonTime("-"));
+                                    $from->close();
+                                } else {
+                                    markUserSocketConnection($con, myHash($UUID), TRUE);
+                                    $client->UUID = myHash($UUID);
+                                    $client->activity = date("Y-m-d H:i:s");
+                                    $from->send(jsonTime($time_left));
+                                    customLog("New client: " . $client->UUID);
+                                }
+                            }
+                        }
+                    }
+                }
+            }else{
+                $from->close();
+            }
+        }
     }
 	
-	public function onLocal($message)
+	public function onLocal($input)
 	{
-		$con = connect();
-		$arr = explode("|", $message);
-		$hashedUUID = mysqli_real_escape_string($con, $arr[1]);
+	    $arr = json_decode($input);
+        if(json_last_error() != JSON_ERROR_NONE){
+            customLog("Error with json sent to onLocal: $input");
+        }else{
+            $to = $arr->to;
+            $message = $arr->message;
 
-		if ($arr[0] == "close") {
-			//user has expired force close socket user socket
-			foreach ($this->clients as $client) {
-				if(isset($client->UUID) && $hashedUUID == $client->UUID){
-					$client->send("time|00:00");
-					$client->close();
-					break;
-				}
-			} 
-		}else{
-			//forward socket message to client
-
-			//remove hashed UUID from message as irrelevant to client
-			$message = str_replace("$hashedUUID|", "", $message);
-
-			foreach ($this->clients as $client) {
-				if (isset($client->UUID) && $hashedUUID == $client->UUID) {
-					$client->send($message);
-					break;
-				}
-			}
-		}
+            if ($message == "close") {
+                //user has expired force close socket user socket
+                foreach ($this->clients as $client) {
+                    if (isset($client->UUID) && $to == $client->UUID) {
+                        $client->send(jsonTime("-")); //in turn will tell user to create a new user
+                        $client->close();
+                        break;
+                    }
+                }
+            } else {
+                //forward socket message to client
+                foreach ($this->clients as $client) {
+                    if (isset($client->UUID) && $to == $client->UUID) {
+                        $client->send($message);
+                        break;
+                    }
+                }
+            }
+        }
 	}
 
     public function onClose(ConnectionInterface $conn) {
