@@ -10,6 +10,12 @@
 #import <QuartzCore/QuartzCore.h>
 #import <CommonCrypto/CommonDigest.h>
 
+#ifdef DEBUG
+static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
+#else
+static const DDLogLevel ddLogLevel = DDLogLevelWarning;
+#endif
+
 //-----DRAG AND DROP MENU ICON
 @interface StatusItemView : NSView <NSMenuDelegate> {
 @private
@@ -139,7 +145,6 @@
     if(_thisapp.authedSocket){
         NSURL *url = [NSURL URLFromPasteboard:pb];
         _thisapp.uploadFilePath = url.path;
-        NSLog(@"path:%@",url.path);
         [_thisapp chooseFriend];
     }
     
@@ -148,9 +153,7 @@
 
 @end
 
-
 //-----MyWindow
-
 @interface MyWindow: NSWindow
 {
 }
@@ -223,7 +226,9 @@
 
 @implementation AppDelegate
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:[[NSBundle mainBundle] bundleIdentifier]];
+    [self setupLogging];
+    
+    //[[NSUserDefaults standardUserDefaults] removePersistentDomainForName:[[NSBundle mainBundle] bundleIdentifier]];
     
     [self onlyOneInstanceOfApp];
     
@@ -689,7 +694,6 @@ NSString* string_before;
            dispatch_async(dispatch_get_main_queue(), ^{
                //called when closed
                if(!_isDownloading){
-                   NSLog(@"PRESSED NO");
                    [self toldNotToDownload:notification];
                }
            });
@@ -813,7 +817,7 @@ bool dnd_was_on = false;
 
 - (void)updaterDidNotFindUpdate:(SUUpdater *)update
 {
-    NSLog(@"Sparkle: Updater Did Not Find Update");
+    DDLogVerbose(@"Sparkle: Updater Did Not Find Update");
 }
 
 -(BOOL)dndIsOn{ //do not disturb
@@ -833,29 +837,26 @@ bool dnd_was_on = false;
 
 -(NSString*)adDIR:(NSString*)title buttonTitle:(NSString*)buttonTitle dirBool:(BOOL)dir fileBool:(BOOL)file
 {
+    [_itemFive setEnabled:NO];
     [NSApp activateIgnoringOtherApps:YES];
-    _openPanel = [[NSOpenPanel alloc] init];
-    [_openPanel setLevel:NSFloatingWindowLevel];
-    
-    [_openPanel setAllowsMultipleSelection:NO];
-    [_openPanel setCanChooseDirectories:dir];
-    [_openPanel setCanCreateDirectories:dir];
-    
-    [_openPanel setCanChooseFiles:file];
-    
-    [_openPanel setMessage:title];
-    
-    [_openPanel setPrompt:buttonTitle];
-    
+    NSOpenPanel *openPanel = [[NSOpenPanel alloc] init];
+    [openPanel setLevel:NSFloatingWindowLevel];
+    [openPanel setAllowsMultipleSelection:NO];
+    [openPanel setCanChooseDirectories:dir];
+    [openPanel setCanCreateDirectories:dir];
+    [openPanel setCanChooseFiles:file];
+    [openPanel setMessage:title];
+    [openPanel setPrompt:buttonTitle];
     NSString* fileName;
-    if ([_openPanel runModal] == NSModalResponseOK)
+    if ([openPanel runModal] == NSModalResponseOK)
     {
-        for( NSURL* URL in [_openPanel URLs] )
+        for( NSURL* URL in [openPanel URLs] )
         {
             fileName = [URL path];
             return fileName;
         }
     }
+    [_itemFive setEnabled:YES];
     return fileName;
 }
 
@@ -881,7 +882,7 @@ bool dnd_was_on = false;
 
 - (void)onlyOneInstanceOfApp {
     if ([[NSRunningApplication runningApplicationsWithBundleIdentifier:[[NSBundle mainBundle] bundleIdentifier]] count] > 1) {
-        NSLog(@"instance of app already open");
+        DDLogVerbose(@"Instance of app already open");
         [NSApp terminate:self];
     }
 }
@@ -958,6 +959,10 @@ StatusItemView *statusItemView;
     
     //permenant menu
     [menu addItem:[NSMenuItem separatorItem]];
+    
+    NSMenuItem* view_log = [[NSMenuItem alloc] initWithTitle:@"View Log..." action:@selector(showLoggingFile) keyEquivalent:@""];
+    [view_log setTarget:self];
+    [menu addItem:view_log];
     
     NSMenuItem* quit = [[NSMenuItem alloc] initWithTitle:@"Quit Transfer Me It" action:@selector(quitApp) keyEquivalent:@""];
     [quit setTarget:self];
@@ -1131,6 +1136,8 @@ StatusItemView *statusItemView;
     
     _itemOne.title = @"Requesting Your Unique Code From Server...";
     [_itemOne setHidden:false];
+    _itemTwo.title = @"";
+    [_itemTwo setHidden:false];
 }
 
 - (NSMenu *)options {
@@ -1329,7 +1336,7 @@ StatusItemView *statusItemView;
         _isCreatingUser = true;
         _userCode = nil;
         
-        NSLog(@"creating a new user");
+        DDLogVerbose(@"creating a new user");
         
         if(_successfulNewUser){
             [self setRequestingCodeMenu];
@@ -1380,7 +1387,7 @@ StatusItemView *statusItemView;
                 }else if([status isEqual: @"socket_down"]){
                     _successfulNewUser = false;
                     [self setNoInternetMenu:@"Socket Down!"];
-                    NSLog(@"socket down");
+                    DDLogError(@"socket down");
                 }else{
                     [self desktopAlert:@"Error creating user!" message:status button1:@"" button2:@""];
                 }
@@ -1390,7 +1397,7 @@ StatusItemView *statusItemView;
         };
         
         r.errorBlock = ^(NSError *error) {
-            NSLog(@"USER ERROR: %@",[error localizedDescription]);
+            DDLogError(@"USER ERROR: %@",[error localizedDescription]);
             _successfulNewUser = false;
             _isCreatingUser = false;
             [self setNoInternetMenu];
@@ -1409,7 +1416,7 @@ StatusItemView *statusItemView;
     [_keychainQuery save:&error];
     
     if(!error) return TRUE;
-    NSLog(@"KEYCHAIN ERROR: %@", error);
+    DDLogError(@"KEYCHAIN ERROR: %@", error);
     return FALSE;
 }
 
@@ -1472,7 +1479,7 @@ StatusItemView *statusItemView;
         if(!_authedSocket){
             _authedSocket = true;
             [self setDefaultMenu];
-            NSLog(@"Authenticated socket");
+            DDLogVerbose(@"Authenticated socket");
         }
     }else if([type isEqual: @"downloaded"]){
         NSString* message = [self jsonToVal:json key:@"title"];
@@ -1485,7 +1492,7 @@ StatusItemView *statusItemView;
                    button2:@""];
     }else if(![type isEqual: @"Error"]){ //don't need to alert user of this
         NSString* message = [self jsonToVal:json key:@"message"];
-        NSLog(@"incoming socket error: %@",message);
+        DDLogError(@"incoming socket error: %@",message);
     }
 }
 
@@ -1496,7 +1503,7 @@ StatusItemView *statusItemView;
     if ([_itemFive.title  isEqual: @"Settings..."]) {
         //correct menu
         if (currentTime == _theTime5) {
-            NSLog(@"ERROR:time hasn't changed in 5 seconds!!");
+            DDLogError(@"ERROR:time hasn't changed in 5 seconds!!");
             [self createNewUser];
         }
     }
@@ -1562,7 +1569,7 @@ StatusItemView *statusItemView;
                     
                     if(downloadedError.length > 0){
                         [self desktopAlert:@"Error Downloading File!" message:downloadedError button1:@"" button2:@"Close"];
-                        NSLog(@"Download Error: %@",downloadedError);
+                        DDLogError(@"Download Error: %@",downloadedError);
                     }
                     
                     _isDownloading = false;
@@ -1591,7 +1598,7 @@ StatusItemView *statusItemView;
         
         [_downloadReq startAsynchronous];
     }else{
-        NSLog(@"Already downloading!");
+        DDLogError(@"Already downloading!");
     }
 }
 
@@ -1629,7 +1636,7 @@ StatusItemView *statusItemView;
     NSString *body = [r startSynchronousWithError:&error];
     
     if(error != nil){
-        NSLog(@"Error finishing download: %@",[error localizedDescription]);
+        DDLogError(@"Error finishing download: %@",[error localizedDescription]);
         [self desktopAlert:@"E R R O R" message:@"Unable to delete file from server. It will be deleted within the hour." button1:@"" button2:@"Close"];
         return @"";
     }
@@ -1713,11 +1720,11 @@ int userLength = 7;
                         fileToEncrypt = file;
                     }
                     
-                    NSLog(@"original size %lu, compressed size %lu", fileSize, (unsigned long)[compressedFile length]);
+                    DDLogVerbose(@"original size %lu, compressed size %lu", fileSize, (unsigned long)[compressedFile length]);
                     
                     NSDate *methodFinish = [NSDate date];
                     NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:methodStart];
-                    NSLog(@"Compression took %f", executionTime);
+                    DDLogVerbose(@"Compression took %f", executionTime);
                     
                     _itemTwo.title = @"Encrypting File...";
                     NSData* encryptedFile = [self encryptFile:fileToEncrypt password:pass];
@@ -1736,7 +1743,7 @@ int userLength = 7;
                         if(![body  isEqual: @"1"]){
                             NSString* err_message = [NSString stringWithFormat:@"Error code: %@. Contact hello@transferme.it",body];
                             [self desktopAlert:@"Major Error Uploading!" message:err_message button1:@"" button2:@""];
-                            NSLog(@"Upload %@",err_message);
+                            DDLogError(@"Upload Error (1):%@",err_message);
                         }
                         
                         [self setDefaultMenu];
@@ -1745,7 +1752,7 @@ int userLength = 7;
                     _uploadReq.errorBlock = ^(NSError *error) {
                         _isUploading = false;
                         if ([[error localizedDescription] rangeOfString:@"cancelled"].location == NSNotFound) {
-                            NSLog(@"Error: %@",[error localizedDescription]);
+                            DDLogError(@"Upload Error (2): %@",[error localizedDescription]);
                             [self desktopAlert:@"Network error while uploading!" message:@"Please check your network and try uploading again." button1:@"" button2:@"Close"];
                             
                             [self setDefaultMenu];
@@ -1770,14 +1777,14 @@ int userLength = 7;
 
 -(void)cancelDownloadUpload{
     if (_downloadReq) {
-        NSLog(@"canceled download");
+        DDLogVerbose(@"canceled download");
         [_downloadReq cancel];
         _downloadReq = nil;
         _isDownloading = false;
     }
     
     if (_uploadReq) {
-        NSLog(@"canceled upload");
+        DDLogVerbose(@"canceled upload");
         [_uploadReq cancel];
         _uploadReq = nil;
         _isUploading = false;
@@ -1786,8 +1793,17 @@ int userLength = 7;
     [self createNewUser];
 }
 
+int view_change_height = 10;
 -(void)sendError:(NSString*)message{
     [submitButton setEnabled:true];
+    
+//    int height = _view.frame.size.height;
+//    [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
+//        context.duration = 1;
+//        [_view setFrame:NSMakeRect(_view.frame.origin.x, _view.frame.origin.y, _view.frame.size.width, height)];
+//    } completionHandler:^{
+//        [_view setFrame:NSMakeRect(_view.frame.origin.x, _view.frame.origin.y, _view.frame.size.width, height - view_change_height)];
+//    }];
     
     //return to normal opacity
     CABasicAnimation *fadeOutAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
@@ -1833,7 +1849,6 @@ int userLength = 7;
     
     CABasicAnimation *rotate = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
     [rotate setToValue:[NSNumber numberWithFloat:DEGREES_RADIANS(15)]];
-    NSLog(@"%f",DEGREES_RADIANS(5));
     [rotate setBeginTime:0.3];
     [rotate setDuration:0.7];
     rotate.timingFunction = easing;
@@ -1906,15 +1921,15 @@ int userLength = 7;
         NSString *body = [r startSynchronousWithError:&error];
         
         if(error != nil){
-            NSLog(@"Error deleting file: %@", [error localizedDescription]);
+            DDLogError(@"Failed to delete file from server (1): %@", [error localizedDescription]);
             [self desktopAlert:@"E R R O R" message:@"Unable to delete file from server. It will be deleted within the hour anyway." button1:@"" button2:@"Close"];
         }else{
             NSString* firstLetter = [body substringToIndex:1];
             body = [body substringFromIndex:1];
-            if([firstLetter  isEqual: @"0"]){
+            if([firstLetter isEqual: @"0"]){
                 return true;
             }else{
-                NSLog(@"failed to delete file:%@",body);
+                DDLogError(@"Failed to delete file from server (2): %@",body);
             }
         }
     }
@@ -1926,7 +1941,7 @@ int userLength = 7;
     NSError *error = nil;
     NSData *encrypted_data = [RNEncryptor encryptData:data withSettings:kRNCryptorAES256Settings password:password error:&error];
     if (error != nil) {
-        NSLog(@"Encryption ERROR:%@", error);
+        DDLogError(@"RNEncryptor error:%@", error);
         return nil;
     }else{
         return encrypted_data;
@@ -1937,7 +1952,7 @@ int userLength = 7;
     NSError *error = nil;
     NSData *decrypted_data = [RNDecryptor decryptData:data withSettings:kRNCryptorAES256Settings password:password error:&error];
     if (error != nil) {
-        NSLog(@"Decryption ERROR:%@", error);
+        DDLogError(@"Decryption ERROR:%@", error);
         return nil;
     }else{
         return decrypted_data;
@@ -2039,7 +2054,7 @@ int userLength = 7;
     
     r.errorBlock = ^(NSError *error) {
         _settingPermUser = false;
-        NSLog(@"Error: %@",error);
+        DDLogError(@"Error setting perm user: %@",error);
     };
     
     [r startAsynchronous];
@@ -2091,13 +2106,13 @@ int userLength = 7;
             }else if ([body  isEqual: @"2"]) {
                 [self desktopAlert:@"Registration Key does not exist!" message:@"Make sure codes are case sensitive." button1:@"" button2:@"Close"];
             }else{
-                NSLog(@"key body: %@",body);
+                DDLogError(@"key body: %@",body);
                 [self desktopAlert:@"Incorrect key!" message:@"This key has either already been used or is incorrect." button1:@"" button2:@"Close"];
             }
         };
         
         r.errorBlock = ^(NSError *error) {
-            NSLog(@"Error: %@",error);
+            DDLogError(@"Error registering credit: %@",error);
         };
         
         [r startAsynchronous];
@@ -2194,10 +2209,10 @@ int animateY;
 
 -(void)showPhonetic{
     if([self isPhonetic]){
-        NSLog(@"mark as false");
+        DDLogError(@"mark as false");
         [[NSUserDefaults standardUserDefaults] setBool:FALSE forKey:@"phonetic"];
     }else{
-        NSLog(@"mark as true");
+        DDLogVerbose(@"mark as true");
         [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:@"phonetic"];
     }
     
@@ -2297,7 +2312,7 @@ int animateY;
 }
 
 - (void)openSocket{
-    NSLog(@"Openning socket");
+    DDLogVerbose(@"Openning socket");
     _connectedToSocket = false;
     _authedSocket = false;
     
@@ -2311,7 +2326,7 @@ int animateY;
 }
 
 -(void)closeSocket{
-    NSLog(@"closed socket");
+    DDLogVerbose(@"closed socket");
     _connectedToSocket = false;
     _authedSocket = false;
     _userCode = nil;
@@ -2327,7 +2342,7 @@ bool receivedPong = false;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
             [NSThread sleepForTimeInterval:1.0f];
             if(!receivedPong){
-                NSLog(@"Did not receive pong");
+                DDLogError(@"Did not receive pong");
                 [self closeSocket];
             }
         });
@@ -2340,7 +2355,7 @@ bool receivedPong = false;
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error{
-    NSLog(@"The websocket handshake/connection failed with an error: %@", error);
+    DDLogError(@"The websocket handshake/connection failed with an error: %@", error);
     [self closeSocket];
 }
 
@@ -2350,7 +2365,7 @@ bool receivedPong = false;
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean{
-    NSLog(@"WebSocket closed because: %@",reason);
+    DDLogVerbose(@"WebSocket closed because: %@",reason);
     [self closeSocket];
     _webSocket = nil;
 }
@@ -2492,5 +2507,20 @@ bool receivedPong = false;
 #pragma mark - quit app
 -(void)quitApp{
     [NSApp terminate:self];
+}
+
+#pragma mark - logging
+NSString *log_file_path;
+-(void)setupLogging{
+    DDFileLogger *fileLogger = [[DDFileLogger alloc] init];
+    fileLogger.rollingFrequency = 60 * 60 * 24; // 24 hour rolling
+    fileLogger.logFileManager.maximumNumberOfLogFiles = 7;
+    [DDLog addLogger:fileLogger];
+    [DDLog addLogger:[DDTTYLogger sharedInstance]];
+    log_file_path = [[fileLogger currentLogFileInfo] filePath];
+}
+
+-(void)showLoggingFile{
+    [[NSWorkspace sharedWorkspace] openFile:log_file_path];
 }
 @end

@@ -59,7 +59,7 @@ if(deleteUpload($con, $userUUID, $friendUUID, $db_path, $failed)) {
     if($failed) {
         $title = "Error with friend download";
         $mess = "Try send the file again";
-    }else { 
+    }else {
         $title = "Successful Download";
         $mess = "Your friend successfully downloaded and decrypted the file!";
     }

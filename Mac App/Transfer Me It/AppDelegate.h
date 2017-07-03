@@ -16,6 +16,9 @@
 #import <SAMKeychain/SAMKeychain.h>
 #import <GZIP/GZIP.h>
 
+#define LOG_LEVEL_DEF ddLogLevel
+@import CocoaLumberjack;
+
 @interface AppDelegate : NSObject <NSApplicationDelegate, NSURLConnectionDataDelegate, NSUserNotificationCenterDelegate>
 //other
 @property BOOL successfulNewUser;
@@ -58,10 +61,6 @@
 @property NSMenuItem* permUserItem;
 
 @property NSMenuItem* showOnStartupItem;
-
-
-//add file
-@property NSOpenPanel *openPanel;
 
 //upload
 @property NSWindow* window;

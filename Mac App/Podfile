@@ -5,5 +5,6 @@ target 'Transfer Me It' do
   pod 'RNCryptor-objc'
   pod 'SAMKeychain'
   pod 'GZIP'
+  pod 'CocoaLumberjack'
   use_frameworks!
 end
