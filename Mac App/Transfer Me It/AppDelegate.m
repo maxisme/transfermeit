@@ -13,7 +13,7 @@
 #ifdef DEBUG
 static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 #else
-static const DDLogLevel ddLogLevel = DDLogLevelWarning;
+static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 #endif
 
 //-----DRAG AND DROP MENU ICON
@@ -232,13 +232,13 @@ static const DDLogLevel ddLogLevel = DDLogLevelWarning;
     
     [self onlyOneInstanceOfApp];
     
-    //    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"hasShownStartUp"] == 1) {
-    //        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-    //            [self enableLoginItemWithURL];
-    //            [self startUpWindow];
-    //            [self showView];
-    //        });
-    //    }
+    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"hasShownStartUp"] == 1) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self enableLoginItemWithURL];
+            [self startUpWindow];
+            [self showView];
+        });
+    }
     
     //set colours
     pink = [NSColor colorWithRed:0.973 green:0.482 blue:0.529 alpha:1];
@@ -1190,7 +1190,7 @@ StatusItemView *statusItemView;
     [accountType setTarget:self];
     [accountType setEnabled:NO];
     [menu addItem:accountType];
-    accountType.title = [NSString stringWithFormat:@"Credit | %@ - Upload Bandwidth",bandwidthLeftStr];
+    accountType.title = [NSString stringWithFormat:@"Credit | %@ - Upload Bandwidth", bandwidthLeftStr];
     
     NSMenuItem* addCredit = [[NSMenuItem alloc] initWithTitle:@"Purchase Upload Credit" action:@selector(goPro) keyEquivalent:@""];
     [addCredit setTarget:self];
@@ -1372,7 +1372,7 @@ StatusItemView *statusItemView;
                 
                 _userCode       = user_code;
                 _phoneticUser   = [self stringToPhonetic:_userCode];
-                _bandwidthLeft  = [[self jsonToVal:body key:@"bandwidth_left"] integerValue]; //bytes
+                _bandwidthLeft  = [[self jsonToVal:body key:@"bandwidth_left"] integerValue] / 8; //bits
                 _maxTime        = [self jsonToVal:body key:@"mins_allowed"];
                 _userTier       = [[self jsonToVal:body key:@"user_tier"] intValue];
                 

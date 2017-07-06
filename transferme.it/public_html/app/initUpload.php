@@ -31,9 +31,9 @@ if($friendUUID == null){
 	die('Your friend does not exist!');
 }
 
-if(!ctype_digit((int)$file_size)){
-    die('6');
-}
+//if(!ctype_digit((int)$file_size)){
+//    die('6');
+//}
 
 //check if file size is allowed user single file limit
 $max_file_allowed_bytes = getMaxUploadSize($con, $userUUID);

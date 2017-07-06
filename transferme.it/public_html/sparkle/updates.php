@@ -1,7 +1,7 @@
 <?php
 header('Content-type: text/xml');
 $file = $_SERVER["DOCUMENT_ROOT"]."/Transfer Me It.dmg";
-$version = "1.00"; //and build
+$version = "1.01"; //and build
 $domain = "transferme.it";
 
 echo '<?xml version="1.1" encoding="utf-8"?>
