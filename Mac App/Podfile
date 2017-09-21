@@ -1,10 +1,12 @@
+
 target 'Transfer Me It' do
   pod 'SocketRocket'
   pod 'STHTTPRequest'
   pod 'Sparkle'
-  pod 'RNCryptor-objc'
+  pod 'RNCryptor-objc', '3.0.5'
   pod 'SAMKeychain'
   pod 'GZIP'
   pod 'CocoaLumberjack'
-  use_frameworks!
+  pod 'MIHCrypto'
+  #use_frameworks!
 end

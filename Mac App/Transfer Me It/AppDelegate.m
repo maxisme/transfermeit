@@ -9,12 +9,15 @@
 #import "AppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CommonCrypto/CommonDigest.h>
+#import <Security/Security.h>
+#import <MIHCrypto/MIHPublicKey.h>
+#import <MIHCrypto/MIHPrivateKey.h>
+#import <MIHCrypto/MIHRSAKeyFactory.h>
+#import <MIHCrypto/MIHKeyPair.h>
 
-#ifdef DEBUG
-static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
-#else
-static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
-#endif
+static DDLogLevel ddLogLevel = DDLogLevelVerbose;
+
+#define FILE_PASS_SIZE 128
 
 //-----DRAG AND DROP MENU ICON
 @interface StatusItemView : NSView <NSMenuDelegate> {
@@ -94,6 +97,7 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
+    [_thisapp.window close];
     NSMenu *menu = [super menu];
     [_statusItem popUpStatusItemMenu:menu];
     [NSApp sendAction:self.action to:self.target from:self];
@@ -228,11 +232,36 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     [self setupLogging];
     
+    //used to delete all locally stored data
     //[[NSUserDefaults standardUserDefaults] removePersistentDomainForName:[[NSBundle mainBundle] bundleIdentifier]];
+    
+    
+//    MIHRSAKeyFactory *factory = [[MIHRSAKeyFactory alloc] init];
+//    factory.preferedKeySize = MIHRSAKey4096;
+//    MIHKeyPair *keyPair       = [factory generateKeyPair];
+//
+//    id<MIHPublicKey> publicKey = keyPair.public;
+//    id<MIHPrivateKey> privateKey = keyPair.private;
+//
+//    NSString* pub_string = [self keyTo64String:publicKey];
+//    NSString* priv_string = [self keyTo64String:privateKey];
+//
+//    NSLog(@"public key: %@", pub_string);
+//    NSLog(@"private key: %@", priv_string);
+//
+//    NSString* encrypted_string = [self encryptWithKey:@"hi" publicKey:[self string64ToKey:pub_string]];
+//    NSLog(@"encrypted message: %@", encrypted_string);
+//    NSLog(@"private key: %@", [self decryptWithKey:encrypted_string privKey:[self string64ToKey:priv_string]]);
     
     [self onlyOneInstanceOfApp];
     
-    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"hasShownStartUp"] == 1) {
+    //initiate keychain access
+    _keychainQuery = [[SAMKeychainQuery alloc] init];
+    _keychainQuery.account = @"Transfer Me It";
+    
+    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"hasShownSetup"] == 1) {
+        [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"hasShownSetup"];
+        [self generateKeys];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self enableLoginItemWithURL];
             [self startUpWindow];
@@ -253,10 +282,6 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
     //initiate UUID
     _uuid = [self getSystemUUID];
     
-    //initiate keychain access
-    _keychainQuery = [[SAMKeychainQuery alloc] init];
-    _keychainQuery.account = @"Transfer Me It";
-    
     //default status variables
     _isMonitoring = false;
     _isCreatingUser = false;
@@ -264,7 +289,6 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
     
     //initiate file locations and decryption keys
     _files = [[NSMutableArray alloc] init];
-    _keys = [[NSMutableArray alloc] init];
     
     //get default user time
     _wantedTime = [[NSUserDefaults standardUserDefaults] objectForKey:@"setTime"];
@@ -333,7 +357,7 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 //    NSLog(@"decrypt size: %d", (int)[[self decryptFile:file password:@"7xuSq6FwfxdGemqXhrizbFnbPqwdBK"] length]);
     
     //$ mv /Users/maxmitch/Library/Caches/encrypted ~/Documents/transfermeit/transferme.it/testDownload/
-    [self sendToFriendView];
+//    [self genKeys];
 }
 
 -(void)applicationWillFinishLaunching:(NSNotification *)notification
@@ -509,9 +533,11 @@ NSString* string_before;
     if(![_label.stringValue  isEqual: @"E N T E R  R E G I S T R A T I O N  K E Y "]){
         NSTextField *textField = [notification object];
         NSString* string = textField.stringValue;
+        
         //make upper
         string = [string uppercaseString];
-        //make sure user is less than userLength
+        
+        //make sure user is less than userLength (7)
         if([string length] > userLength){
             string = string_before;
         }else{
@@ -551,12 +577,12 @@ NSString* string_before;
     
     //arrow
     NSImage *up = [NSImage imageNamed:@"up.png"];
-    NSImageView *upView = [[NSImageView alloc] initWithFrame:NSMakeRect(window_width/2 - 10, window_height-20, 20, 20)];
+    NSImageView *upView = [[NSImageView alloc] initWithFrame:NSMakeRect(window_width/2 - 10, window_height-28, 20, 28)];
     [upView setImage:up];
     [_view addSubview:upView];
     
     //LABELS
-    NSTextField* thankyou = [[NSTextField alloc] initWithFrame:CGRectMake(0, window_height -90, window_width, 50)];
+    NSTextField* thankyou = [[NSTextField alloc] initWithFrame:CGRectMake(0, window_height -145, window_width, 50)];
     thankyou.backgroundColor = [NSColor clearColor];
     [thankyou setAlignment:NSTextAlignmentCenter];
     [thankyou setFont:[NSFont fontWithName:@"Montserrat" size:12]];
@@ -566,28 +592,28 @@ NSString* string_before;
     [thankyou setStringValue:@"T h a n k   y o u   f o r   d o w n l o a d i n g"];
     [_view addSubview:thankyou];
     
-    NSTextField* tmi = [[NSTextField alloc] initWithFrame:CGRectMake(0, window_height -160, window_width, 100)];
+    NSTextField* tmi = [[NSTextField alloc] initWithFrame:CGRectMake(0, window_height -210, window_width, 100)];
     tmi.backgroundColor = [NSColor clearColor];
     [tmi setAlignment:NSTextAlignmentCenter];
-    [tmi setFont:[NSFont fontWithName:@"Montserrat" size:28]];
+    [tmi setFont:[NSFont fontWithName:@"Montserrat" size:25]];
     [tmi setTextColor:offWhite];
     tmi.editable = false;
     tmi.bordered =false;
     [tmi setStringValue:@"T R A N S F E R  M E  I T"];
     [_view addSubview:tmi];
     
-    NSTextField* clickIcon = [[NSTextField alloc] initWithFrame:CGRectMake(0, -75, window_width, 100)];
+    NSTextField* clickIcon = [[NSTextField alloc] initWithFrame:CGRectMake(0, 35, window_width, 100)];
     clickIcon.backgroundColor = [NSColor clearColor];
     [clickIcon setAlignment:NSTextAlignmentCenter];
     [clickIcon setFont:[NSFont fontWithName:@"Montserrat" size:8]];
-    [clickIcon setTextColor:offWhite];
+    [clickIcon setTextColor:grey];
     clickIcon.editable = false;
     clickIcon.bordered =false;
     [clickIcon setStringValue:@"Click the menu bar icon to close!"];
     [_view addSubview:clickIcon];
     
     NSImage *myImage = [NSImage imageNamed:@"mainicon.png"];
-    NSImageView *imView = [[NSImageView alloc] initWithFrame:NSMakeRect(0, -5, 400, 180)];
+    NSImageView *imView = [[NSImageView alloc] initWithFrame:NSMakeRect(window_width/2 - 40, 55, 80, 80)];
     [imView setImage:myImage];
     [_view addSubview:imView];
 }
@@ -784,6 +810,8 @@ bool dnd_was_on = false;
                             nil]
                          ]
         ];
+    }else{
+        DDLogError(@"not all params are avaliable for keep alive");
     }
 }
 
@@ -796,6 +824,8 @@ bool dnd_was_on = false;
                                                 nil]
                          ]
         ];
+    }else{
+        DDLogError(@"not all params are avaliable for real time");
     }
 }
 
@@ -1350,7 +1380,7 @@ StatusItemView *statusItemView;
         STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/addNewUser.php"];
         r.timeoutSeconds = 3;
         
-        r.POSTDictionary = @{ @"UUID":_uuid, @"mins":[self cleanUpString:_wantedTime], @"perm_user":permUser};
+        r.POSTDictionary = @{ @"UUID":_uuid, @"UUIDKey": [self getKey:@"UUIDKey"], @"mins":[self cleanUpString:_wantedTime], @"perm_user":permUser, @"pub_key": [self getKey:@"publicKey"]};
         
         r.completionBlock = ^(NSDictionary *headers, NSString *body) {
             NSString* user_code = [self jsonToVal:body key:@"user_code"];
@@ -1386,7 +1416,7 @@ StatusItemView *statusItemView;
                     [self setDefaultMenu];
                 }else if([status isEqual: @"socket_down"]){
                     _successfulNewUser = false;
-                    [self setNoInternetMenu:@"Socket Down!"];
+                    [self setNoInternetMenu:@"Server Socket Down!"];
                     DDLogError(@"socket down");
                 }else{
                     [self desktopAlert:@"Error creating user!" message:status button1:@"" button2:@""];
@@ -1461,11 +1491,6 @@ StatusItemView *statusItemView;
         }
         
         _hasRequestedDownload = true;
-    }else if([type  isEqual: @"key"]){
-        NSString* key = [self jsonToVal:json key:@"key"];
-        NSString* ref = [self jsonToVal:json key:@"ref"];
-        
-        [self storeValueInArray:_keys val:key ref:[ref intValue]];
     }else if([type  isEqual: @"time"]){
         NSString* time = [self jsonToVal:json key:@"time"];
         
@@ -1479,7 +1504,6 @@ StatusItemView *statusItemView;
         if(!_authedSocket){
             _authedSocket = true;
             [self setDefaultMenu];
-            DDLogVerbose(@"Authenticated socket");
         }
     }else if([type isEqual: @"downloaded"]){
         NSString* message = [self jsonToVal:json key:@"title"];
@@ -1517,7 +1541,6 @@ StatusItemView *statusItemView;
         [self createNewUser];
         [self setdownloadMenu:ref];
         NSString* downloadPath = [self getValueFromArray:ref array:_files];
-        NSString* key1 = [self getValueFromArray:ref array:_keys];
         
         _downloadReq = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/download.php"];
         _downloadReq.POSTDictionary = @{ @"UUID":_uuid, @"UUIDKey":[self getKey:@"UUIDKey"], @"path":downloadPath};
@@ -1528,40 +1551,49 @@ StatusItemView *statusItemView;
                 [_itemTwo setTitle:@"Decrypting File..."];
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     NSString* downloadedError = nil;
-                    //fetch other part of key by confirming download with hash of file
+                    
+                    //fetch encrypted string of friend which has password of file
                     NSString* fileHash = [self hash:downloadedData];
-                    NSString* key2 = [self finishedDownload:downloadPath friendUUID:friendUUID ref:ref newuser:true hash:fileHash];
-                    if ([downloadedData length] > 0 && [key2 length] == 1024) {
-                        //NSData* file = [self decryptFile:downloadedData password:@"7xuSq6FwfxdGemqXhrizbFnbPqwdBK"];
-                        NSData* file = [self decryptFile:downloadedData
-                                                password:[NSString stringWithFormat:@"%@%@", key1,key2]];
+                    NSString* encrypted_pass = [self finishedDownload:downloadPath friendUUID:friendUUID ref:ref newuser:true hash:fileHash];
+                    
+                    if ([downloadedData length] > 0 && [encrypted_pass length] > 10) { // 10 is arbiturary
+                        //fetch my private key
+                        id<MIHPrivateKey> privateKey = [self string64ToKey:[self getKey:@"privateKey"]];
+                        NSString* pass = [self decryptWithKey:encrypted_pass privKey:privateKey]; //decrypt password encrypted with your public key by friend
                         
-                        if([file isGzippedData]){
-                            //uncompress file
-                            file = [file gunzippedData];
-                        }
-                        
-                        if(file != nil){
-                            NSString* destinationPath = [NSString stringWithFormat:@"%@/%@", savedPath, [downloadPath lastPathComponent]];
+                        if(![pass isEqual: @""]){
+                            NSData* file = [self decryptFile:downloadedData password:pass];
                             
-                            //rename if file already at path.
-                            int x = 0;
-                            NSString* ext = [destinationPath pathExtension];
-                            NSString* filepath = [destinationPath stringByDeletingPathExtension];
-                            while ([[NSFileManager defaultManager] fileExistsAtPath:destinationPath]){
-                                x++;
-                                if(![ext isEqual: @""]){
-                                    destinationPath = [NSString stringWithFormat:@"%@ (%d).%@", filepath, x, ext];
-                                }else{
-                                    destinationPath = [NSString stringWithFormat:@"%@ (%d)", filepath, x];
-                                }
+                            if([file isGzippedData]){
+                                //uncompress file
+                                file = [file gunzippedData];
                             }
                             
-                            [file writeToFile:destinationPath atomically:YES];
-                            
-                            [self desktopAlert:@"Successful download!" message:@"The file has been downloaded and decrypted." button1:@"Show" button2:@"Close" variables:@{@"file_path":destinationPath}];
+                            if(file != nil){
+                                NSString* destinationPath = [NSString stringWithFormat:@"%@/%@", savedPath, [downloadPath lastPathComponent]];
+                                
+                                //rename if file already at path.
+                                int x = 0;
+                                NSString* ext = [destinationPath pathExtension];
+                                NSString* filepath = [destinationPath stringByDeletingPathExtension];
+                                while ([[NSFileManager defaultManager] fileExistsAtPath:destinationPath]){
+                                    x++;
+                                    if(![ext isEqual: @""]){
+                                        destinationPath = [NSString stringWithFormat:@"%@ (%d).%@", filepath, x, ext];
+                                    }else{
+                                        destinationPath = [NSString stringWithFormat:@"%@ (%d)", filepath, x];
+                                    }
+                                }
+                                
+                                [file writeToFile:destinationPath atomically:YES];
+                                
+                                [self desktopAlert:@"Successful download!" message:@"The file has been downloaded and decrypted." button1:@"Show" button2:@"Close" variables:@{@"file_path":destinationPath}];
+                            }else{
+                                downloadedError = @"Unable to decrypt file";
+                            }
                         }else{
-                            downloadedError = @"Unable to decrypt file";
+                            downloadedError = @"Unable to decrypt encrypted string.";
+                            DDLogError(@"encrypted_pass: %@", encrypted_pass);
                         }
                     }else{
                         downloadedError = @"Downloaded file is not as it should be.";
@@ -1627,7 +1659,6 @@ StatusItemView *statusItemView;
     _downloadingPath = nil;
     _hasRequestedDownload = false;
     [_files removeObject:[self getValueFromArray:ref array:_files]];
-    [_keys removeObject:[self getValueFromArray:ref array:_keys]];
     
     STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/finishedDownload.php"];
     r.POSTDictionary = @{ @"path":path, @"friendUUID": friendUUID, @"UUID":_uuid, @"UUIDKey":[self getKey:@"UUIDKey"], @"hash":hash, @"ref":[NSString stringWithFormat:@"%d",ref]};
@@ -1683,34 +1714,27 @@ int userLength = 7;
             //TODO zip if not already.
             [self sendError:@"You must Compress/zip folders!"];
         }else if(!_isUploading){
-            NSString* pass = nil;
-             
             STHTTPRequest* r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/initUpload.php"];
             
-            r.POSTDictionary = @{ @"user":_userCode, @"friend":friendCode, @"UUID":_uuid, @"UUIDKey":[self getKey:@"UUIDKey"], @"filesize":[NSString stringWithFormat:@"%lu",encryptedFileSize]};
+            r.POSTDictionary = @{ @"user":_userCode, @"friend":friendCode, @"UUID":_uuid, @"UUIDKey":[self getKey:@"UUIDKey"], @"filesize":[NSString stringWithFormat:@"%lu", encryptedFileSize]};
             
             NSError *error = nil;
             NSString *body = [r startSynchronousWithError:&error];
+            NSString* key = [self jsonToVal:body key:@"pub_key"]; // friends public key
             
-            if([body length] == 2048){ //2048 char key to use to encrypt the file
-                pass = body;
-            }else{
-                [self sendError:body];
+            if(![key isEqual: @""]){
+                //generate a password to encrypt the file with
+                NSString* pass = [self randomString:FILE_PASS_SIZE];
                 
-                if ([body rangeOfString:@"upload limit"].location != NSNotFound) {
-                    [self desktopAlert:@"File Upload Too Big!" message:@"Would you like to purchase some upload credit?" button1:@"Yes" button2:@"No"];
-                }
-            }
-            
-            if(pass != nil){
                 _isUploading = true;
                 
                 [self setUploadMenu:file_name];
                 [self animatePlane];
                 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    NSDate *methodStart = [NSDate date];
+                    NSDate *methodStart = [NSDate date]; // start log compression time
                     
+                    // attempt to compress file
                     NSData* compressedFile = [file gzippedDataWithCompressionLevel:0.7];
                     NSData* fileToEncrypt = nil;
                     if([compressedFile length] < fileSize){
@@ -1720,23 +1744,25 @@ int userLength = 7;
                         fileToEncrypt = file;
                     }
                     
+                    //print compression time
                     DDLogVerbose(@"original size %lu, compressed size %lu", fileSize, (unsigned long)[compressedFile length]);
-                    
                     NSDate *methodFinish = [NSDate date];
                     NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:methodStart];
                     DDLogVerbose(@"Compression took %f", executionTime);
                     
+                    //encrypt the password with friends public key
+                    id<MIHPublicKey> friendKey = [self string64ToKey:key];
+                    NSString* encrypted_pass = [self encryptWithKey:pass publicKey:friendKey];
+                    NSLog(@"encrypted pass:%@", encrypted_pass);
+                    //ENCRYPT THE FILE
                     _itemTwo.title = @"Encrypting File...";
                     NSData* encryptedFile = [self encryptFile:fileToEncrypt password:pass];
                     
+                    //UPLOAD FILE
                     _uploadReq = nil;
-                    
                     _uploadReq = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/upload.php"];
-                    
-                    _uploadReq.POSTDictionary = @{ @"user":_userCode, @"friend":friendCode, @"UUID":_uuid, @"UUIDKey":[self getKey:@"UUIDKey"]};
-                    
+                    _uploadReq.POSTDictionary = @{ @"user":_userCode, @"friend":friendCode, @"UUID":_uuid, @"UUIDKey":[self getKey:@"UUIDKey"], @"pass": encrypted_pass};
                     [_uploadReq addDataToUpload:encryptedFile parameterName:@"fileUpload" mimeType:@"application/octet-stream" fileName:[path lastPathComponent]];
-                    
                     
                     _uploadReq.completionBlock = ^(NSDictionary *headers, NSString *body) {
                         _isUploading = false;
@@ -1768,6 +1794,13 @@ int userLength = 7;
                     
                     [_uploadReq startAsynchronous];
                 });
+            }else{
+                
+                if ([body rangeOfString:@"upload limit"].location != NSNotFound) {
+                    [self desktopAlert:@"File Upload Too Big!" message:@"Would you like to purchase some upload credit?" button1:@"Yes" button2:@"No"];
+                }else{
+                    [self sendError:body];
+                }
             }
         }
     }else{
@@ -2504,6 +2537,16 @@ bool receivedPong = false;
     return string;
 }
 
+-(NSString *)randomString:(int)len {
+    NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    NSMutableString *randomString = [NSMutableString stringWithCapacity: len];
+    for (int i=0; i<len; i++) {
+        [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random_uniform((uint_fast32_t)[letters length])]];
+    }
+    
+    return randomString;
+}
+
 #pragma mark - quit app
 -(void)quitApp{
     [NSApp terminate:self];
@@ -2515,12 +2558,58 @@ NSString *log_file_path;
     DDFileLogger *fileLogger = [[DDFileLogger alloc] init];
     fileLogger.rollingFrequency = 60 * 60 * 24; // 24 hour rolling
     fileLogger.logFileManager.maximumNumberOfLogFiles = 7;
+    
     [DDLog addLogger:fileLogger];
     [DDLog addLogger:[DDTTYLogger sharedInstance]];
+    
     log_file_path = [[fileLogger currentLogFileInfo] filePath];
 }
 
 -(void)showLoggingFile{
     [[NSWorkspace sharedWorkspace] openFile:log_file_path];
 }
+
+#pragma mark - RSA keys
+
+-(void)generateKeys{
+    DDLogVerbose(@"creating new RSA Keys");
+    //create pub and private key
+    MIHRSAKeyFactory *factory = [[MIHRSAKeyFactory alloc] init];
+    factory.preferedKeySize = MIHRSAKey4096;
+    MIHKeyPair *keyPair       = [factory generateKeyPair];
+    
+    id<MIHPublicKey> publicKey = keyPair.public;
+    id<MIHPrivateKey> privateKey = keyPair.private;
+    
+    //store priv key in keychain
+    [self storeKey:@"privateKey" withPassword:[self keyTo64String:privateKey]];
+    [self storeKey:@"publicKey" withPassword:[self keyTo64String:publicKey]];
+    
+    NSLog(@"pk:%@",[self keyTo64String:publicKey]);
+}
+
+-(NSString*)keyTo64String:(id)key{
+    NSData *key_data = [NSKeyedArchiver archivedDataWithRootObject:key];
+    return [key_data base64EncodedStringWithOptions:0];
+}
+
+-(id)string64ToKey:(NSString*)key{
+    NSData* priv_actual_data = [[NSData alloc] initWithBase64EncodedString:key options:0];
+    return [NSKeyedUnarchiver unarchiveObjectWithData:priv_actual_data];
+}
+
+-(NSString*)encryptWithKey:(NSString*)string publicKey:(id<MIHPublicKey>)pk{
+    NSData* string_data = [string dataUsingEncoding:NSUTF8StringEncoding];
+    NSData* encr_data = [pk encrypt:string_data error:nil];
+    return [encr_data base64EncodedStringWithOptions:0];
+}
+
+-(NSString*)decryptWithKey:(NSString*)string privKey:(id<MIHPrivateKey>)pk{
+    string = [string stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]; //decode ascii charachters
+    NSData* encr_actual_data = [[NSData alloc] initWithBase64EncodedString:string options:0];
+    NSData *decryptedData = [pk decrypt:encr_actual_data error:nil];
+    return [NSString stringWithUTF8String:decryptedData.bytes];
+}
+
+
 @end

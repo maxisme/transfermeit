@@ -23,7 +23,7 @@
 		4818940E1E4E786D007227EA /* upload.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894041E4E786D007227EA /* upload.png */; };
 		485574711E89675400CB7DFA /* drag.png in Resources */ = {isa = PBXBuildFile; fileRef = 485574701E89675400CB7DFA /* drag.png */; };
 		48FAFBA61E92BB3E001CBDC7 /* loader.svg in Resources */ = {isa = PBXBuildFile; fileRef = 48FAFBA51E92BB3E001CBDC7 /* loader.svg */; };
-		E723C70E01EC647391567723 /* Pods_Transfer_Me_It.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68851D7966FDC8A6FFADEC87 /* Pods_Transfer_Me_It.framework */; };
+		D63DC42D1F73E84B0046278C /* libPods-Transfer Me It.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D63DC42E1F73E84B0046278C /* libPods-Transfer Me It.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,8 +47,25 @@
 		485574701E89675400CB7DFA /* drag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = drag.png; sourceTree = "<group>"; };
 		48FAFBA51E92BB3E001CBDC7 /* loader.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = loader.svg; sourceTree = "<group>"; };
 		5155CE64DBB11A9BFBCD445D /* Pods-Transfer Me It.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Transfer Me It.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Transfer Me It/Pods-Transfer Me It.debug.xcconfig"; sourceTree = "<group>"; };
-		68851D7966FDC8A6FFADEC87 /* Pods_Transfer_Me_It.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Transfer_Me_It.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		94ECA04043BBF2E7605FDAC8 /* Pods-Transfer Me It.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Transfer Me It.release.xcconfig"; path = "Pods/Target Support Files/Pods-Transfer Me It/Pods-Transfer Me It.release.xcconfig"; sourceTree = "<group>"; };
+		D63DC42C1F73E8140046278C /* libPods-Transfer Me It.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-Transfer Me It.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D63DC42E1F73E84B0046278C /* libPods-Transfer Me It.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-Transfer Me It.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D6EBB9A01F7188D6002A2A1E /* libcorecrypto.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcorecrypto.tbd; path = usr/lib/system/libcorecrypto.tbd; sourceTree = SDKROOT; };
+		D6EBB9A21F7188E0002A2A1E /* libCocoaLumberjack.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libCocoaLumberjack.a; path = Pods/../build/Debug/CocoaLumberjack/libCocoaLumberjack.a; sourceTree = "<group>"; };
+		D6EBB9A31F7188E0002A2A1E /* libGZIP.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGZIP.a; path = "../../../../../Users/hackintosh/Library/Developer/Xcode/DerivedData/Transfer_Me_It-gdirozlignxgsledbyytsnipbgam/Build/Products/Debug/GZIP/libGZIP.a"; sourceTree = "<group>"; };
+		D6EBB9A41F7188E0002A2A1E /* libMIHCrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMIHCrypto.a; path = Pods/../build/Debug/MIHCrypto/libMIHCrypto.a; sourceTree = "<group>"; };
+		D6EBB9A51F7188E0002A2A1E /* libRNCryptor-objc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libRNCryptor-objc.a"; path = "../../../../../Users/hackintosh/Library/Developer/Xcode/DerivedData/Transfer_Me_It-gdirozlignxgsledbyytsnipbgam/Build/Products/Debug/RNCryptor-objc/libRNCryptor-objc.a"; sourceTree = "<group>"; };
+		D6EBB9A61F7188E0002A2A1E /* libSAMKeychain.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSAMKeychain.a; path = "../../../../../Users/hackintosh/Library/Developer/Xcode/DerivedData/Transfer_Me_It-gdirozlignxgsledbyytsnipbgam/Build/Products/Debug/SAMKeychain/libSAMKeychain.a"; sourceTree = "<group>"; };
+		D6EBB9A71F7188E0002A2A1E /* libSocketRocket.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSocketRocket.a; path = "../../../../../Users/hackintosh/Library/Developer/Xcode/DerivedData/Transfer_Me_It-gdirozlignxgsledbyytsnipbgam/Build/Products/Debug/SocketRocket/libSocketRocket.a"; sourceTree = "<group>"; };
+		D6EBB9A81F7188E0002A2A1E /* libSTHTTPRequest.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSTHTTPRequest.a; path = "../../../../../Users/hackintosh/Library/Developer/Xcode/DerivedData/Transfer_Me_It-gdirozlignxgsledbyytsnipbgam/Build/Products/Debug/STHTTPRequest/libSTHTTPRequest.a"; sourceTree = "<group>"; };
+		D6EBB9B01F7188F7002A2A1E /* libCocoaLumberjack.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libCocoaLumberjack.a; path = Pods/../build/Release/CocoaLumberjack/libCocoaLumberjack.a; sourceTree = "<group>"; };
+		D6EBB9B11F7188F7002A2A1E /* libGZIP.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGZIP.a; path = Pods/../build/Release/GZIP/libGZIP.a; sourceTree = "<group>"; };
+		D6EBB9B21F7188F7002A2A1E /* libMIHCrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMIHCrypto.a; path = Pods/../build/Debug/MIHCrypto/libMIHCrypto.a; sourceTree = "<group>"; };
+		D6EBB9B31F7188F7002A2A1E /* libRNCryptor-objc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libRNCryptor-objc.a"; path = "Pods/../build/Release/RNCryptor-objc/libRNCryptor-objc.a"; sourceTree = "<group>"; };
+		D6EBB9B41F7188F7002A2A1E /* libSAMKeychain.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSAMKeychain.a; path = Pods/../build/Release/SAMKeychain/libSAMKeychain.a; sourceTree = "<group>"; };
+		D6EBB9B51F7188F7002A2A1E /* libSocketRocket.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSocketRocket.a; path = Pods/../build/Release/SocketRocket/libSocketRocket.a; sourceTree = "<group>"; };
+		D6EBB9B61F7188F7002A2A1E /* libSTHTTPRequest.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSTHTTPRequest.a; path = Pods/../build/Release/STHTTPRequest/libSTHTTPRequest.a; sourceTree = "<group>"; };
+		E0A9C7219966F7CB2C3C026D /* libPods-Transfer Me It.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Transfer Me It.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,7 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E723C70E01EC647391567723 /* Pods_Transfer_Me_It.framework in Frameworks */,
+				D63DC42D1F73E84B0046278C /* libPods-Transfer Me It.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,7 +142,24 @@
 		A2B12DD9E3E9B8B566AEB725 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				68851D7966FDC8A6FFADEC87 /* Pods_Transfer_Me_It.framework */,
+				D63DC42E1F73E84B0046278C /* libPods-Transfer Me It.a */,
+				D63DC42C1F73E8140046278C /* libPods-Transfer Me It.a */,
+				D6EBB9B01F7188F7002A2A1E /* libCocoaLumberjack.a */,
+				D6EBB9B11F7188F7002A2A1E /* libGZIP.a */,
+				D6EBB9B21F7188F7002A2A1E /* libMIHCrypto.a */,
+				D6EBB9B31F7188F7002A2A1E /* libRNCryptor-objc.a */,
+				D6EBB9B41F7188F7002A2A1E /* libSAMKeychain.a */,
+				D6EBB9B51F7188F7002A2A1E /* libSocketRocket.a */,
+				D6EBB9B61F7188F7002A2A1E /* libSTHTTPRequest.a */,
+				D6EBB9A21F7188E0002A2A1E /* libCocoaLumberjack.a */,
+				D6EBB9A31F7188E0002A2A1E /* libGZIP.a */,
+				D6EBB9A41F7188E0002A2A1E /* libMIHCrypto.a */,
+				D6EBB9A51F7188E0002A2A1E /* libRNCryptor-objc.a */,
+				D6EBB9A61F7188E0002A2A1E /* libSAMKeychain.a */,
+				D6EBB9A71F7188E0002A2A1E /* libSocketRocket.a */,
+				D6EBB9A81F7188E0002A2A1E /* libSTHTTPRequest.a */,
+				D6EBB9A01F7188D6002A2A1E /* libcorecrypto.tbd */,
+				E0A9C7219966F7CB2C3C026D /* libPods-Transfer Me It.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -227,13 +261,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Transfer Me It-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		9F56400429BBE1B99F6F5690 /* [CP] Embed Pods Frameworks */ = {
@@ -242,9 +279,14 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Transfer Me It/Pods-Transfer Me It-frameworks.sh",
+				"${PODS_ROOT}/Sparkle/Sparkle.framework",
+				"${PODS_ROOT}/Sparkle/Sparkle.framework.dSYM",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sparkle.framework",
+				"${DWARF_DSYM_FOLDER_PATH}/Sparkle.framework.dSYM",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -257,9 +299,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Transfer Me It/Pods-Transfer Me It-resources.sh",
+				"${PODS_ROOT}/SAMKeychain/Support/SAMKeychain.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -372,12 +417,27 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5155CE64DBB11A9BFBCD445D /* Pods-Transfer Me It.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 3H49MXS325;
 				INFOPLIST_FILE = "Transfer Me It/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/system",
+					"$(PROJECT_DIR)/build/Debug/CocoaLumberjack",
+					"$(PROJECT_DIR)/build/Debug/MIHCrypto",
+					"$(PROJECT_DIR)/build/Release/CocoaLumberjack",
+					"$(PROJECT_DIR)/build/Release/GZIP",
+					"$(PROJECT_DIR)/build/Release/RNCryptor-objc",
+					"$(PROJECT_DIR)/build/Release/SAMKeychain",
+					"$(PROJECT_DIR)/build/Release/SocketRocket",
+					"$(PROJECT_DIR)/build/Release/STHTTPRequest",
+					"$(PROJECT_DIR)/build/Release/SocketRocket",
+					"$(PROJECT_DIR)/build/Release/OpenSSL-Universal",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_BUNDLE_IDENTIFIER = "it.transferme.Transfer-Me-It";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -388,12 +448,26 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 94ECA04043BBF2E7605FDAC8 /* Pods-Transfer Me It.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 3H49MXS325;
 				INFOPLIST_FILE = "Transfer Me It/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/system",
+					"$(PROJECT_DIR)/build/Debug/CocoaLumberjack",
+					"$(PROJECT_DIR)/build/Debug/MIHCrypto",
+					"$(PROJECT_DIR)/build/Release/CocoaLumberjack",
+					"$(PROJECT_DIR)/build/Release/GZIP",
+					"$(PROJECT_DIR)/build/Release/RNCryptor-objc",
+					"$(PROJECT_DIR)/build/Release/SAMKeychain",
+					"$(PROJECT_DIR)/build/Release/SocketRocket",
+					"$(PROJECT_DIR)/build/Release/STHTTPRequest",
+					"$(PROJECT_DIR)/build/Release/OpenSSL-Universal",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_BUNDLE_IDENTIFIER = "it.transferme.Transfer-Me-It";
 				PRODUCT_NAME = "$(TARGET_NAME)";

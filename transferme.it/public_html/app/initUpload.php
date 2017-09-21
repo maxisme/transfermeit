@@ -61,10 +61,6 @@ $path = generateRandomString(200);
 $dir = addDirPath($path);
 mkdir($dir, 0775, true);
 
-//generate encryption key into two parts
-$key1 = generateRandomString(1024); //one part to send straight over socket now.
-$key2 = generateRandomString(1024); //other part to store in database until friend downloads - so that the user has to confirm the download to be able to decrypt it
-
 //check if upload is being made by a pro user
 $pro_upload = 0;
 if($max_file_allowed_bytes > $default_max_file_upload){
@@ -73,26 +69,43 @@ if($max_file_allowed_bytes > $default_max_file_upload){
 
 //insert initial `upload` row
 if(!mysqli_query($con, "
-INSERT INTO `upload` (fromUUID, toUUID, path, partialKey, pro)
-VALUES ('$userUUID', '$friendUUID', '$path', '$key2', '$pro_upload')")){
+INSERT INTO `upload` (fromUUID, toUUID, path, pro)
+VALUES ('$userUUID', '$friendUUID', '$path', '$pro_upload')")){
+    customLog("Could not insert upload details: " . mysqli_error($con), TRUE);
 	die("Could not insert upload details into database");
 }
 
 //get upload id
 $upload_id = mysqli_insert_id($con);
+if(!$upload_id) die("unable to get last row id");
 
-//send key directly over socket to friendID
-sendLocalSocket($friendUUID, json_encode(array(
-    "type" => "key",
-    "key" => $key1,
-    "ref" => $upload_id
-)));
+//get friends public key
+$isAlreadyUploading = mysqli_query($con,"SELECT pubKey 
+FROM `user`
+WHERE UUID = '$friendUUID'");
+$pubKey = NULL;
+while ($row = mysqli_fetch_array($isAlreadyUploading)) {
+    $pubKey = $row['pubKey'];
+}
 
-//store session variable for upload path - this makes sure it is not possible to run upload.php without initUpload.php
+if(!$pubKey){
+    die("Your friend does not have a public key");
+}
+
+////send key directly over socket to friendID
+//sendLocalSocket($friendUUID, json_encode(array(
+//    "type" => "key",
+//    "ref" => $upload_id
+//)));
+
+//store session variable for upload path - this also makes sure it is not possible to run upload.php without initUpload.php
 $_SESSION["path".$upload_id] = $path;
 $_SESSION["filesize".$upload_id] = $file_size;
 $_SESSION["friendUUID".$upload_id] = $friendUUID;
 
-die($key1.$key2); //return key to user
+die(json_encode(array(
+    "type" => "key",
+    "pub_key" => $pubKey
+)));
 
 ?>

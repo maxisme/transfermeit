@@ -28,13 +28,14 @@ if(!isLiveUpload($con, $db_path, $friendUUID, $userUUID)){
     die('3');
 }
 
-$partialKey = "";
+$encrypted_pass = null;
 $failed = true;
-//get other part of encryption key
+
+//get encrypted password
 if(!empty($fileHash)){
     $failed = false;
 
-	$partialKeyQuery = mysqli_query($con, "SELECT partialKey
+	$partialKeyQuery = mysqli_query($con, "SELECT password
 	FROM `upload`
 	WHERE fromUUID = '$friendUUID'
 	AND toUUID = '$userUUID'
@@ -42,13 +43,13 @@ if(!empty($fileHash)){
 	AND `hash` = '$fileHash'
 	AND `id` = '$ref'");
 
-	$partialKey = null;
+    $encrypted_pass = null;
 	while ($row = mysqli_fetch_array($partialKeyQuery)) {
-        // succesfully finished download as user has hash
-		$partialKey = $row['partialKey'];
+        // successfully finished download as user has hash
+        $encrypted_pass = $row['password'];
 	}
 
-	if($partialKey == null){
+	if($encrypted_pass == null){
 		$failed = true;
 	}
 }
@@ -61,13 +62,13 @@ if(deleteUpload($con, $userUUID, $friendUUID, $db_path, $failed)) {
         $mess = "Try send the file again";
     }else {
         $title = "Successful Download";
-        $mess = "Your friend successfully downloaded and decrypted the file!";
+        $mess = "Your friend successfully downloaded the file!";
     }
 
     sendLocalSocket($friendUUID, json_encode(array("type" => "downloaded", "title" => $title, "message" => "$mess")));
 
-    if (!$failed) die($partialKey);
-    die("1");
+    if ($failed) die("1");
+    die($encrypted_pass); // successful download
 }else{
 	echo "Failed to delete file: ".$db_path;
 }

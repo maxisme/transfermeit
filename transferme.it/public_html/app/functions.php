@@ -164,9 +164,8 @@ function allowedMins($min){
 	return in_array($min, array(5, 10, 15, 20, 30, 45, 60));
 }
 
-// 36^7 = 78,364,164,096 possible users
 function genUser(){
-	return strtoupper(generateRandomString(7));
+	return generateRandomString(7); // 35^7 = 64,339,296,875 possible users
 }
 
 // Returns true if the user code is 7 chars long and consists of only capitals and numbers
@@ -434,11 +433,10 @@ function sendLocalSocket($to, $message){
 	$socket->send($mess);
 }
 
-//functions
 function generateRandomString($length) {
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $characters = '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $charactersLength = strlen($characters);
-    $randomString = ''; 
+    $randomString = '';
     for ($i = 0; $i < $length; $i++) {
         $randomString .= $characters[rand(0, $charactersLength - 1)];
     }
@@ -452,8 +450,7 @@ function customLog($message, $silent=false, $file = 'server.log'){
 	$message = date("Y-m-d H:i:s")."\t $message";
 
 	//output log
-	if(!$silent)
-		echo $message."\n";
+	if(!$silent) echo $message."\n";
 
 	//store log
 	file_put_contents($file_path, $message.PHP_EOL , FILE_APPEND | LOCK_EX);
@@ -519,4 +516,5 @@ function dieStatus($status){
     }
     die(json_encode($status_arr));
 }
+
 ?>

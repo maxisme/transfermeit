@@ -17,13 +17,19 @@ $max_allowed_mins = $default_max_mins;
 
 //POST
 $UUID = mysqli_real_escape_string($con, $_POST['UUID']);
+$UUIDKey = mysqli_real_escape_string($con, $_POST['UUIDKey']);
 $wantedMins = mysqli_real_escape_string($con, $_POST['mins']);
+$pub_key = mysqli_real_escape_string($con, $_POST['pub_key']);
 if (isset($_POST['perm_user'])) $perm_user = $_POST['perm_user'];
 
 //validate inputs
 if (!validUUID($UUID)) {
 	//not valid UUID
     die(json_encode(array("status" => "invalid_uuid")));
+}
+
+if(strlen($pub_key) < 10){ // a pub key is always going to be longer than 10 chars
+    die(json_encode(array("status" => "You have not added a public key")));
 }
 
 if(!allowedMins($wantedMins)){
@@ -46,19 +52,20 @@ while ($row = mysqli_fetch_array($queryNewUser)){
 	$old_user = $row['user'];
 	$created = $row['created'];
 	$oldWantedMins = $row['wantedMins'];
-	$UUIDKey = $row['UUIDKey'];
 }
 
-$brute = isBrute($con);
+// will catch lots of new accounts being created
+//if(isBrute($con) != "") die(json_encode(array("status" => "brute")));
+
+addIP($con); // used to find "fishy" socket connections
 
 if(mysqli_num_rows($queryNewUser) == 0) {
-    addIP($con);
     $secureUUIDKey = generateRandomString($key_len);
     //if UUID doesn't exist this is the first time using transferme.it on device
     //create initial account
     $query = mysqli_query($con, "
-	INSERT INTO `user` (user, UUID, UUIDKey, created, registered)
-	VALUES ('" . myHash($user) . "', '" . myHash($UUID) . "','" . myHash($secureUUIDKey) . "', NOW(), NOW());");
+	INSERT INTO `user` (user, UUID, UUIDKey, pubKey, created, registered)
+	VALUES ('" . myHash($user) . "', '" . myHash($UUID) . "','" . myHash($secureUUIDKey) . "', '".$pub_key."', NOW(), NOW());");
 
     if (!$query) {
         echo("Error description: " . mysqli_error($con));
@@ -72,12 +79,11 @@ if(mysqli_num_rows($queryNewUser) == 0) {
         );
         die(json_encode($arr));
     }
-}else{
-    addIP($con);
+}else if (UUIDRegistered($con, $UUID, $UUIDKey)){
 	$hashedUser = myHash($user);
 
 	//get perm user code if exists
-	if (!empty($perm_user) && $UUIDKey != myHash(" ")) {
+	if (!empty($perm_user)) {
 		$pro_user_info = mysqli_query($con, "
 		SELECT perm_user
 		FROM `pro`
@@ -110,7 +116,7 @@ if(mysqli_num_rows($queryNewUser) == 0) {
 	//update user data into db
 	$query = mysqli_query($con, "
 	UPDATE `user` 
-	SET user = '$hashedUser', wantedMins = '$wantedMins', created = NOW()
+	SET user = '$hashedUser', wantedMins = '$wantedMins', created = NOW(), pubKey = '$pub_key'
 	WHERE UUID = '" . myHash($UUID) . "';
 	");
 
@@ -125,12 +131,7 @@ if(mysqli_num_rows($queryNewUser) == 0) {
 		);
 		die(json_encode($arr));
 	}
+}else{
+    die(json_encode(array("status" => "Not a valid UUID and key match")));
 }
-//else{
-//    $arr = array(
-//        "status" => "brute",
-//        "brute_left" => $brute
-//	);
-//    die(json_encode($arr));
-//}
 ?>

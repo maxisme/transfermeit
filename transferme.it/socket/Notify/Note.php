@@ -2,7 +2,7 @@
 namespace Notify;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
- 
+
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
@@ -22,13 +22,13 @@ UPDATE `user`
 SET connected = 0
 ");
 
-class Note implements MessageComponentInterface { 
+class Note implements MessageComponentInterface {
     public $clients;
 	protected $UUID;
 	protected $activity;
 
     public function __construct() {
-        $this->clients = new \SplObjectStorage; 
+        $this->clients = new \SplObjectStorage;
     }
 
     public function onOpen(ConnectionInterface $conn) {
@@ -113,7 +113,7 @@ class Note implements MessageComponentInterface {
                     $from->close();
                 } else {
                     if (!UUIDRegistered($con, $UUID, $UUIDKey)) {
-                        customLog("Invalid key match -> ".myHash($UUID)." with key: $UUIDKey");
+                        customLog("Invalid key match -> ".myHash($UUID)." with key: ".myHash($UUIDKey));
                         $from->send(jsonError("Invalid key. You have likely altered Keychain"));
                         $from->close();
                     } else {
@@ -140,7 +140,7 @@ class Note implements MessageComponentInterface {
             }
         }
     }
-	
+
 	public function onLocal($input)
 	{
 	    $arr = json_decode($input);

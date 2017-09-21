@@ -11,13 +11,13 @@
 #import <SocketRocket/SRWebSocket.h>
 #import <SocketRocket/SocketRocket.h>
 #import <Sparkle/Sparkle.h>
-#import <RNCryptor_objc/RNDecryptor.h>
-#import <RNCryptor_objc/RNEncryptor.h>
+#import "RNDecryptor.h"
+#import "RNEncryptor.h"
 #import <SAMKeychain/SAMKeychain.h>
 #import <GZIP/GZIP.h>
+#import <CocoaLumberjack/CocoaLumberjack.h>
 
 #define LOG_LEVEL_DEF ddLogLevel
-@import CocoaLumberjack;
 
 @interface AppDelegate : NSObject <NSApplicationDelegate, NSURLConnectionDataDelegate, NSUserNotificationCenterDelegate>
 //other
