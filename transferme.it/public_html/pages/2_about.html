@@ -1,0 +1,36 @@
+<div class="row">
+    <div class="col s12 l6">
+        <h3>Why use Transfer Me It?</h3>
+        <span class="info">
+            Have you ever wanted to be able to send a file seamlessly to a friend, client or colleague... Of course you have!<br><br>
+            Have you ever wanted this task to take less than 5 minutes... Obviously!<br><br>
+            We have all been there, your friend in Paris wants that photo you took of them, your client in Hong-Kong wants an up to date proposal, your colleague needs the new promo video.<br><br>
+            You want this to be done fast, hassle free and without worrying about large intermediates who may be looking at your personal files.<br><br>
+            With <strong>Transfer Me It</strong>&nbsp;all you need is to download the very light weight application - <strong>FOR FREE</strong>, to sit quietly on your menubar and you are ready to go! There is no long convoluted sign up process.
+        </span>
+    </div>
+    <div class="col s12 l6">
+        <h3>Behind the scenes!</h3>
+        <span class="info">
+        <p>
+            <i>TLDR; We do not take or want any of your files and we couldn't access your files even if we wanted to - thanks to encryption!</i>
+        </p>
+        <p>
+            Each time you send a file, behind the scenes the file is encrypted locally with <a target="_blank" href="https://github.com/RNCryptor/RNCryptor">AES</a> encryption using a locally generated random string.<br><br>
+            This random string is then encrypted with your friends <a target="_blank" href="https://en.wikipedia.org/wiki/Public-key_cryptography">public key</a> (generated locally on your friends Mac and stored on our server) before being uploaded to our server along with the encrypted file.<br><br>
+            Your friend will then receive this now encrypted string, after they have downloaded and then <a target="_blank" href="https://en.wikipedia.org/wiki/SHA-2">authenticated</a> the file.<br><br>
+            Your friend will then be able to decrypt this encrypted string using their <a target="_blank" href="https://en.wikipedia.org/wiki/Public-key_cryptography">private key</a> and with the decrypted string then decrypt the file.
+        </p>
+        <p>
+            Files are deleted from our server after the lifetime of your code or immediately after your friend downloads the file.
+        </p>
+        <p>
+            All connections between your computer and our server are with TLS encryption.
+        </p>
+        <p>
+        You also don't need to take our word for it. Transfer Me It is <a target="_blank" href="https://github.com/maxisme/transfermeit">open source</a>!
+        </p>
+
+        </span>
+    </div>
+</div>

@@ -2,25 +2,28 @@
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
+//for checking whether user has given a valid public key
+require_once "/var/www/transferme.it/public_html/vendor/autoload.php";
+use ASN1\Type\Constructed\Sequence;
+
 if (!@fsockopen('127.0.0.1', 48341)) {
     die(json_encode(array( "status" => "socket_down")));
 }
 
 require 'functions.php';
 
+// most important check to see if the client knows the encrypted key in the tmi binary
+if((string)$_POST['server_key'] != file_get_contents("../../secret_server_code.pass")) die();
+
 //connect to database
 $con = connect();
 
-//variables
-$key_len = 100;
-$max_allowed_mins = $default_max_mins;
-
 //POST
-$UUID = mysqli_real_escape_string($con, $_POST['UUID']);
-$UUIDKey = mysqli_real_escape_string($con, $_POST['UUIDKey']);
-$wantedMins = mysqli_real_escape_string($con, $_POST['mins']);
-$pub_key = mysqli_real_escape_string($con, $_POST['pub_key']);
-if (isset($_POST['perm_user'])) $perm_user = $_POST['perm_user'];
+$UUID = san($con, $_POST['UUID']);
+$UUIDKey = san($con, $_POST['UUIDKey']);
+$wantedMins = san($con, $_POST['mins']);
+$pubKey = san($con, $_POST['pub_key']);
+$permCode = $_POST['perm_user_code'];
 
 //validate inputs
 if (!validUUID($UUID)) {
@@ -28,17 +31,20 @@ if (!validUUID($UUID)) {
     die(json_encode(array("status" => "invalid_uuid")));
 }
 
-if(strlen($pub_key) < 10){ // a pub key is always going to be longer than 10 chars
-    die(json_encode(array("status" => "You have not added a public key")));
-}
+// Check pub key is actually an RSA key
+// works by checking whether the oid matches the key type -> http://www.alvestrand.no/objectid/1.2.840.113549.1.1.1.html
+$str = base64_decode($pubKey);
+$seq = Sequence::fromDER($str);
+$oid = $seq->at(0)->at(0)->oid();
+if($oid != "1.2.840.113549.1.1.1") die(json_encode(array("status" => "invalid_pub_key")));
 
 if(!allowedMins($wantedMins)){
 	//not in array of allowed times
-    die(json_encode(array("status" => "invalid_mins")));
+    die(json_encode(array("status" => "invalid_mins $wantedMins")));
 }
 
 //generate unique code for user
-$user = genUser();
+$userCode = genUser($con);
 
 //select users account against UUID
 $queryNewUser = mysqli_query($con, "
@@ -55,58 +61,44 @@ while ($row = mysqli_fetch_array($queryNewUser)){
 }
 
 // will catch lots of new accounts being created
-//if(isBrute($con) != "") die(json_encode(array("status" => "brute")));
+//if(!notBrute($con)) die(json_encode(array("status" => "brute")));
 
-addIP($con); // used to find "fishy" socket connections
+addIP($con); // used to find "fishy" socket connections and DDOS account creation
 
 if(mysqli_num_rows($queryNewUser) == 0) {
+    // UUID doesn't exist this is the first time using transferme.it on device
+    // create initial account
     $secureUUIDKey = generateRandomString($key_len);
-    //if UUID doesn't exist this is the first time using transferme.it on device
-    //create initial account
+
     $query = mysqli_query($con, "
 	INSERT INTO `user` (user, UUID, UUIDKey, pubKey, created, registered)
-	VALUES ('" . myHash($user) . "', '" . myHash($UUID) . "','" . myHash($secureUUIDKey) . "', '".$pub_key."', NOW(), NOW());");
+	VALUES ('" . myHash($userCode) . "', '" . myHash($UUID) . "','" . myHash($secureUUIDKey) . "', '".$pubKey."', NOW(), NOW());");
 
     if (!$query) {
         echo("Error description: " . mysqli_error($con));
     } else {
         $arr = array(
-            "user_code" => "$user",
-            "bandwidth_left" => "$free_user_bandwidth",
-            "mins_allowed" => "$max_allowed_mins",
-            "user_tier" => "0",
-            "UUID_key" => "$secureUUIDKey"
+            "user_code" => $userCode,
+            "bw_left" => $daily_allowed_free_user_bandwidth,
+            "max_fs" => $default_max_file_upload,
+            "mins_allowed" => $max_allowed_mins,
+            "user_tier" => 0,
+            "UUID_key" => $secureUUIDKey,
+            "time_left" => getUserTimeLeft($con, myHash($UUID))
         );
         die(json_encode($arr));
     }
 }else if (UUIDRegistered($con, $UUID, $UUIDKey)){
-	$hashedUser = myHash($user);
-
 	//get perm user code if exists
-	if (!empty($perm_user)) {
-		$pro_user_info = mysqli_query($con, "
-		SELECT perm_user
-		FROM `pro`
-		WHERE UUID = '" . myHash($UUID) . "'
-		AND credit >= '$perm_user_credit_min'
-		ORDER BY created ASC
-		LIMIT 1
-		"); //pick oldest first
+    if (!empty($permCode)){
+        $userCode = getUserPermCode($con, $UUID, $permCode);
+    	if(!$userCode) die(json_encode(array("status" => "perm_code_lie")));
+    }
 
-		if (mysqli_num_rows($pro_user_info) > 0) {
-			while ($row = mysqli_fetch_array($pro_user_info)) {
-				if (isset($row['perm_user'])) {
-					if (myHash($perm_user) == $row['perm_user']) {
-						//perm_code is what the user says
-						$hashedUser = $row['perm_user'];
-						$user = $perm_user;
-					}
-				}
-			}
-		}
-	}
+    $hashedUserCode = myHash($userCode);
 
-	//validate mins
+	// validate user is allowed mins they asked for.
+	// if they are not set max they are allowed.
 	$userMaxMins = userMaxMins(myHash($UUID));
 	if ($wantedMins > $userMaxMins) {
 		//over limit
@@ -116,22 +108,26 @@ if(mysqli_num_rows($queryNewUser) == 0) {
 	//update user data into db
 	$query = mysqli_query($con, "
 	UPDATE `user` 
-	SET user = '$hashedUser', wantedMins = '$wantedMins', created = NOW(), pubKey = '$pub_key'
+	SET user = '$hashedUserCode', wantedMins = '$wantedMins', created = NOW(), pubKey = '$pubKey'
 	WHERE UUID = '" . myHash($UUID) . "';
 	");
 
 	if (!$query) {
 		die("04");
 	} else {
+		$bw_left = getBandwidthLeft($con, myHash($UUID));
+		$max_fs = getMaxUploadSize($bw_left);
 		$arr = array(
-			"user_code" => "$user",
-			"bandwidth_left" => getBandwidthLeft($con, myHash($UUID)),
+			"user_code" => $userCode,
+			"bw_left" => $bw_left,
+            "max_fs" => $max_fs,
 			"mins_allowed" => "$userMaxMins",
-			"user_tier" => userTier(myHash($UUID))
+			"user_tier" => userTier(myHash($UUID)),
+			"time_left" => getUserTimeLeft($con, myHash($UUID))
 		);
 		die(json_encode($arr));
 	}
 }else{
-    die(json_encode(array("status" => "Not a valid UUID and key match")));
+    die(json_encode(array("status" => "Not a valid UUID and key match. Please remove UUIDKey from keychain.")));
 }
 ?>

@@ -10,9 +10,9 @@ ini_set("display_errors", 1);
 require 'functions.php';
 
 function uploadDie($error_num){
-	global $con, $user, $friend, $upload_path;
+	global $con, $userUUID, $promisedFriendUUID, $promisedUploadPath;
 
-	if(deleteUpload($con, $user, $friend, $upload_path, true)) {
+	if(deleteUpload($con, $userUUID, $promisedFriendUUID, $promisedUploadPath, true)) {
 		die("$error_num");
 	}else {
 		die("$error_num - error deleting upload - ". $_SERVER["CONTENT_LENGTH"]);
@@ -23,45 +23,45 @@ function uploadDie($error_num){
 $con = connect();
 
 //initial variables
-$user = mysqli_real_escape_string($con, $_POST['user']);
-$friend = mysqli_real_escape_string($con, $_POST['friend']);
-$UUID = mysqli_real_escape_string($con, $_POST['UUID']);
-$UUIDKey = mysqli_real_escape_string($con, $_POST['UUIDKey']);
-$pass = mysqli_real_escape_string($con, $_POST['pass']);
+$friend = san($con, $_POST['friend']);
+$UUID = san($con, $_POST['UUID']);
+$UUIDKey = san($con, $_POST['UUIDKey']);
+$pass = san($con, $_POST['pass']);
 
 //validate inputs (not really necessary to do again)
 if (!UUIDRegistered($con, $UUID, $UUIDKey)) uploadDie('1');
 
-$userUUID = userToHashedUUID($con, $user);
-if($userUUID == null) uploadDie('2');
+$userUUID = myHash($UUID);
 
 $upload_id = getUploadID($con, $userUUID);
 if($upload_id == null) uploadDie("4");
 
 // get friendUUID from session
-$friendUUID = $_SESSION["friendUUID".$upload_id];
-//initUpload.php was probably not used.
-if(!isset($friendUUID)) uploadDie("5");
+$promisedFriendUUID = $_SESSION["friendUUID".$upload_id];
+if(!isset($promisedFriendUUID)) uploadDie("5"); //initUpload.php was not successful.
+if(userToHashedUUID($con, $friend) != $promisedFriendUUID) uploadDie("12"); // not sending to the same friend as promised
 
 // get file path from session
-$upload_path = $_SESSION["path".$upload_id];
-if(!isset($upload_path)) uploadDie("6"); //initUpload.php won't have been used.
+$promisedUploadPath = $_SESSION["path".$upload_id];
+if(!isset($promisedUploadPath)) uploadDie("6"); //initUpload.php was not successful.
 
-//no such upload initiated
-if(!isLiveUpload($con, $upload_path, $userUUID, $friendUUID)) die('7');
+// no such upload initiated
+if(!isLiveUpload($con, $promisedUploadPath, $userUUID, $promisedFriendUUID)) die('7');
 
-//validate password
+// validate password
 if(empty($pass)) uploadDie("8");
 
 $file_name = basename($_FILES["fileUpload"]["name"]);
-$file_path = addDirPath($upload_path) . $file_name;
+$file_path = addDirPath($promisedUploadPath) . $file_name;
 
 // validate file size and make sure it is the same as the one in innit
-$said_file_size = $_SESSION["filesize".$upload_id];
-if($said_file_size){
-	if ($_FILES["fileUpload"]["size"] > $said_file_size) { //greater than as compression is applied
+$promised_file_size = $_SESSION["filesize".$upload_id];
+// get actual file size
+$actual_file_size = $_FILES["fileUpload"]["size"];
+if($promised_file_size){
+	if ($actual_file_size > $promised_file_size) { // greater than (rather than equal) as compression may have been applied
 		//file is too big
-		uploadDie("2 said:$said_file_size actual: ".$_FILES["fileUpload"]["size"]);
+		uploadDie("2 said:$promised_file_size actual: ".$_FILES["fileUpload"]["size"]);
 	}
 }else{
 	uploadDie('9');
@@ -69,31 +69,32 @@ if($said_file_size){
 
 // upload file
 if (!move_uploaded_file($_FILES["fileUpload"]["tmp_name"], $file_path)) {
-	uploadDie('10');
+	uploadDie($file_path);
 }else{
-	//get sha512 of file
-	$fileHash = hash_file("sha512", "$file_path");
+	//get sha256 of file
+	$fileHash = hash_file("sha256", "$file_path");
 
 	// set upload size
 	if(!mysqli_query($con, "UPDATE `upload`
-	SET size = '$said_file_size', `hash` = '$fileHash', `password` = '$pass'
+	SET size = '$actual_file_size', `hash` = '$fileHash', `password` = '$pass'
 	WHERE fromUUID = '$userUUID'
-	AND toUUID = '$friendUUID'
-	AND path='$upload_path'")){
+	AND toUUID = '$promisedFriendUUID'
+	AND path = '$promisedUploadPath'")){
 		uploadDie('11');
 	}
 
 	// update `updated` time
-	updateUploadTime($con, $userUUID, $upload_path);
+	updateUploadTime($con, $userUUID, $promisedUploadPath);
 
 	customLog("upload_id: $upload_id",TRUE);
 
 	//successfully uploaded file - now tell friend to download
-	sendLocalSocket($friendUUID, json_encode(array(
+	sendLocalSocket($promisedFriendUUID, json_encode(array(
 	    "type"  => "download",
         "path"  => $file_path,
         "ref"   => $upload_id,
-        "UUID"  => $userUUID
+        "UUID"  => $userUUID,
+        "file-size"  => "$actual_file_size"
     )));
 	echo "1";
 }

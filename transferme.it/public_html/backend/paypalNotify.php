@@ -48,100 +48,57 @@ fputs($fp, $header . $req);
 while (!feof($fp)) {                     // While not EOF
 	$res = fgets($fp, 1024);               // Get the acknowledgement response
 	//logM($res); 
-	if (strpos(trim($res),'VERIFIED') !== false) { 
-		if($payment_status != "Completed"){
-			$die = 1;
-			customLog("INCOMPLETED PAYMENT: $payment_status",true,$log_file);
-		}
-		
-		if($receiver_email != "info@transferme.it"){
-			$die = 1;
-			customLog("WRONG EMAIL: $receiver_email",true,$log_file);
-		}
-		
-		if($payment_currency != "GBP") { //CHANGE GBP
-			$die = 1;
-			customLog("WRONG CURRENCY: $payment_currency", true, $log_file);
-		}
-		
-		if($payment_amount % 0.5 == 0){
-			$die = 1;
-			customLog("$payer_email -> Payed wrong ammount: $payment_amount ".$_POST['mc_fee']." ".$_POST['mc_gross1'],true,$log_file);
-		}
-		
-		if($die == 1){
-			sendMail("info@transferme.it", "Transfer Me It", $payer_email, "Unfortunately there has been an error with your PayPal transaction. Please get in contact with us!");
-			customLog("FAILED", true, $log_file);
-			fclose($fp); 
-			die();
-		}else{
-			$startDate = date("Y-m-d H:i:s");
-			//connect to database
-			$con = connect();
-			
-			//check if payee already exists
-			$exists = mysqli_query($con, "
-				SELECT * FROM `pro`
-				WHERE email = '".$payer_email."'
-				ORDER BY 
-			");
-			
-			if(mysqli_num_rows($exists) > 0){
-				//received a payment from email before
-				customLog("Payee already exists.", true, $log_file);
+	if (strpos(trim($res),'VERIFIED') !== false) {
+		$die = false;
+        if ($payment_status != "Completed") {
+            $die = true;
+            customLog("INCOMPLETED PAYMENT: $payment_status", true, $log_file);
+        }
 
-				//update database with another month until expired account
-				//get current limit
-				while ($row = mysqli_fetch_array($exists)){
-					$expiryDate = date("Y-m-d H:i:s", strtotime($row['expiryDate']." + $account_length days"));
-					$startDate = $row['expiryDate'];
-				}
-				
-				$updateQuery = mysqli_query($con, "
-					UPDATE `pro`
-					SET expiryDate = '".$expiryDate."', credit = '".$payment_amount."'
-					WHERE userEmail = '".$payer_email."'
-				");
-				
-				if($updateQuery){
-					logM("updated payment for 1 month: $payer_email");  
-					sendMail("info@transferme.it", "Transfer Me It", $payer_email, "Successfull Payment","Subscription payed for the next month for the account registered with your email. Expires: ".$expiryDate);
-				}else{
-					logM("failed to update payment for 1 month: $payer_email");  
-					
-					sendMail("info@transferme.it", "Transfer Me It", "info@transferme.it", "FAILED PAYMENT UPDATE", "UPDATE `pro`
-					SET expiryDate = expiryDate + INTERVAL $account_length DAY, credit = '$payment_amount'
-					WHERE userEmail = '$payer_email'");
-					die();
-				}
-			}else{
-				//user does not exist
-				logM("user does not exist");
-				//generate unique code for user to enter
-				$code = generateRandomString(100);
-				
-				$query = mysqli_query($con, "
-				INSERT INTO `pro` (code, credit, userEmail, expiryDate)
-				VALUES ('".$code."', '".$payment_amount."', '".$payer_email."', '".$expiryDate."');
-				");
-				
-				if($query){
-					logM("created new user: $payer_email");  
-					sendMail("info@transferme.it", "Transfer Me It", $payer_email, "Successfull Payment","Thank you for your payment to transferme.it!<br> To apply your new capabilites to Transfer Me It: Open the app > Options... > Enter Registration Key. And enter the key below:<br><br><strong>$randString</strong>");
-				}else{
-					logM("failed to create new user INSERT INTO `pro` (code, credit, userEmail, expiryDate)
-				VALUES ('".$randString."', '".$payment_amount."', '".$payer_email."', '".$expiryDate."');");
-				 
-					sendMail("info@transferme.it", "Transfer Me It", "info@transferme.it", "FAILED PAYMENT", "INSERT INTO `pro` (code, credit, userEmail, expiryDate)
-				VALUES ('".$randString."', '".$payment_amount."', '".$payer_email."', NOW() + INTERVAL $account_length DAY);");
-				}
-			}
-			$query = mysqli_query($con, "
-			INSERT INTO `pro` (code, credit, email, created, expiryDate)
-			VALUES ('".$code."', '".$payment_amount."', '".$payer_email."', '".$expiryDate."');
+        if ($receiver_email != "info@transferme.it") {
+            $die = true;
+            customLog("WRONG EMAIL: $receiver_email", true, $log_file);
+        }
+
+        if ($payment_currency != "GBP") { //CHANGE GBP
+            $die = true;
+            customLog("WRONG CURRENCY: $payment_currency", true, $log_file);
+        }
+
+        if ($payment_amount % 0.5 == 0) {
+            $die = true;
+            customLog("$payer_email -> Payed wrong ammount: $payment_amount " . $_POST['mc_fee'] . " " . $_POST['mc_gross1'], true, $log_file);
+        }
+
+        if ($die) {
+            sendMail("info@transferme.it", "Transfer Me It", $payer_email, "Unfortunately there has been an error with your PayPal transaction. Please get in contact with us!");
+            customLog("FAILED", true, $log_file);
+            fclose($fp);
+            die();
+        } else {
+            //connect to database
+            $con = connect();
+
+            //generate unique code for user to enter
+            $pro_code = generateRandomString($pro_code_len);
+
+            $query = mysqli_query($con, "
+			INSERT INTO `pro` (code, credit, userEmail)
+			VALUES ('" . $pro_code . "', '" . $payment_amount . "', '" . $payer_email . "');
 			");
-		}
-	}
+
+            if ($query) {
+                logM("created new user: $payer_email");
+                sendMail("info@transferme.it", "Transfer Me It", $payer_email, "Successfull Payment", "Thank you for your payment to transferme.it!<br> To apply your new capabilites to Transfer Me It: Open the app > Settings... > Enter Credit Key. And enter the key below:<br><br><strong>$pro_code</strong>");
+            } else {
+                logM("failed to create new user INSERT INTO `pro` (code, credit, userEmail)
+			VALUES ('" . $randString . "', '" . $payment_amount . "', '" . $payer_email . "');");
+
+                sendMail("info@transferme.it", "Transfer Me It", "info@transferme.it", "FAILED PAYMENT", "INSERT INTO `pro` (code, credit, userEmail)
+			VALUES ('" . $randString . "', '" . $payment_amount . "', '" . $payer_email . "');");
+            }
+        }
+    }
 }
 
 fclose($fp);

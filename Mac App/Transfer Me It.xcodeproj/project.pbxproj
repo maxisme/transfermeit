@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		48110572201F4BBB004D2040 /* MenuBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 48110571201F4BBB004D2040 /* MenuBar.m */; };
+		48110575201F4EE9004D2040 /* SubmitButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 48110574201F4EE9004D2040 /* SubmitButton.m */; };
+		4811057C201F51B1004D2040 /* PopUpWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 4811057B201F51B1004D2040 /* PopUpWindow.m */; };
+		4811057F201F54CD004D2040 /* DesktopNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 4811057E201F54CD004D2040 /* DesktopNotification.m */; };
 		481893C51E4E73EF007227EA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 481893C41E4E73EF007227EA /* AppDelegate.m */; };
 		481893C81E4E73EF007227EA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 481893C71E4E73EF007227EA /* main.m */; };
-		481893CA1E4E73EF007227EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 481893C91E4E73EF007227EA /* Assets.xcassets */; };
-		481893E61E4E77F3007227EA /* Montserrat-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 481893E51E4E77F3007227EA /* Montserrat-Light.ttf */; };
 		481894051E4E786D007227EA /* alert.png in Resources */ = {isa = PBXBuildFile; fileRef = 481893FB1E4E786D007227EA /* alert.png */; };
 		481894061E4E786D007227EA /* download.png in Resources */ = {isa = PBXBuildFile; fileRef = 481893FC1E4E786D007227EA /* download.png */; };
 		481894071E4E786D007227EA /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 481893FD1E4E786D007227EA /* icon.png */; };
@@ -18,22 +20,41 @@
 		481894091E4E786D007227EA /* mainicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 481893FF1E4E786D007227EA /* mainicon.png */; };
 		4818940A1E4E786D007227EA /* send_hover.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894001E4E786D007227EA /* send_hover.png */; };
 		4818940B1E4E786D007227EA /* send.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894011E4E786D007227EA /* send.png */; };
-		4818940C1E4E786D007227EA /* up_b.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894021E4E786D007227EA /* up_b.png */; };
 		4818940D1E4E786D007227EA /* up.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894031E4E786D007227EA /* up.png */; };
 		4818940E1E4E786D007227EA /* upload.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894041E4E786D007227EA /* upload.png */; };
 		485574711E89675400CB7DFA /* drag.png in Resources */ = {isa = PBXBuildFile; fileRef = 485574701E89675400CB7DFA /* drag.png */; };
-		48FAFBA61E92BB3E001CBDC7 /* loader.svg in Resources */ = {isa = PBXBuildFile; fileRef = 48FAFBA51E92BB3E001CBDC7 /* loader.svg */; };
+		48729CD620294E1700206428 /* FileCrypter.m in Sources */ = {isa = PBXBuildFile; fileRef = 48729CD520294E1700206428 /* FileCrypter.m */; };
+		4874367B201D51B70030B1EF /* RSAClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 4874367A201D51B70030B1EF /* RSAClass.m */; };
+		48743681201D55E40030B1EF /* Keys.m in Sources */ = {isa = PBXBuildFile; fileRef = 4874367F201D55E40030B1EF /* Keys.m */; };
+		48AF4B61202DF37B004DE865 /* file.png in Resources */ = {isa = PBXBuildFile; fileRef = 48AF4B60202DF37B004DE865 /* file.png */; };
+		48AF4B64202DF8DF004DE865 /* Button.m in Sources */ = {isa = PBXBuildFile; fileRef = 48AF4B63202DF8DF004DE865 /* Button.m */; };
+		D624441A2043015100D23F11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D62444192043015100D23F11 /* Assets.xcassets */; };
+		D62FFFCF2033306600954FA4 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = D62FFFCE2033306600954FA4 /* User.m */; };
 		D63DC42D1F73E84B0046278C /* libPods-Transfer Me It.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D63DC42E1F73E84B0046278C /* libPods-Transfer Me It.a */; };
+		D69CEEAA2022818000CD3719 /* Download.m in Sources */ = {isa = PBXBuildFile; fileRef = D69CEEA92022818000CD3719 /* Download.m */; };
+		D6A84E2E203A47D300EA0F47 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D6A84E2D203A47C900EA0F47 /* Montserrat-Regular.ttf */; };
+		D6A84E30203A481F00EA0F47 /* Montserrat-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D6A84E2F203A480B00EA0F47 /* Montserrat-Medium.ttf */; };
+		D6BD9FA72021E6AE0099E7DE /* CustomVars.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD9FA52021E6AE0099E7DE /* CustomVars.m */; };
+		D6BD9FAA2021FD090099E7DE /* Upload.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD9FA92021FD090099E7DE /* Upload.m */; };
+		D6F63858201E0A9600EA9866 /* Socket.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F63857201E0A9600EA9866 /* Socket.m */; };
+		D6F6385B201E0AB900EA9866 /* CustomFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F6385A201E0AB900EA9866 /* CustomFunctions.m */; };
+		D6FE1D9A2036039700C74518 /* LOOCryptString.m in Sources */ = {isa = PBXBuildFile; fileRef = D6FE1D992036039700C74518 /* LOOCryptString.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		48110570201F4BBB004D2040 /* MenuBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenuBar.h; sourceTree = "<group>"; };
+		48110571201F4BBB004D2040 /* MenuBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MenuBar.m; sourceTree = "<group>"; };
+		48110573201F4EE9004D2040 /* SubmitButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SubmitButton.h; sourceTree = "<group>"; };
+		48110574201F4EE9004D2040 /* SubmitButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SubmitButton.m; sourceTree = "<group>"; };
+		4811057A201F51B1004D2040 /* PopUpWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PopUpWindow.h; sourceTree = "<group>"; };
+		4811057B201F51B1004D2040 /* PopUpWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PopUpWindow.m; sourceTree = "<group>"; };
+		4811057D201F54CD004D2040 /* DesktopNotification.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DesktopNotification.h; sourceTree = "<group>"; };
+		4811057E201F54CD004D2040 /* DesktopNotification.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DesktopNotification.m; sourceTree = "<group>"; };
 		481893C01E4E73EF007227EA /* Transfer Me It.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Transfer Me It.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		481893C31E4E73EF007227EA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		481893C41E4E73EF007227EA /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		481893C71E4E73EF007227EA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		481893C91E4E73EF007227EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		481893CE1E4E73EF007227EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		481893E51E4E77F3007227EA /* Montserrat-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Light.ttf"; sourceTree = "<group>"; };
 		481893FB1E4E786D007227EA /* alert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = alert.png; sourceTree = "<group>"; };
 		481893FC1E4E786D007227EA /* download.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = download.png; sourceTree = "<group>"; };
 		481893FD1E4E786D007227EA /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
@@ -41,15 +62,33 @@
 		481893FF1E4E786D007227EA /* mainicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mainicon.png; sourceTree = "<group>"; };
 		481894001E4E786D007227EA /* send_hover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = send_hover.png; sourceTree = "<group>"; };
 		481894011E4E786D007227EA /* send.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = send.png; sourceTree = "<group>"; };
-		481894021E4E786D007227EA /* up_b.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = up_b.png; sourceTree = "<group>"; };
 		481894031E4E786D007227EA /* up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = up.png; sourceTree = "<group>"; };
 		481894041E4E786D007227EA /* upload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = upload.png; sourceTree = "<group>"; };
 		485574701E89675400CB7DFA /* drag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = drag.png; sourceTree = "<group>"; };
-		48FAFBA51E92BB3E001CBDC7 /* loader.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = loader.svg; sourceTree = "<group>"; };
+		48729CD420294E1700206428 /* FileCrypter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FileCrypter.h; sourceTree = "<group>"; };
+		48729CD520294E1700206428 /* FileCrypter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FileCrypter.m; sourceTree = "<group>"; };
+		48743679201D51B70030B1EF /* RSAClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RSAClass.h; sourceTree = "<group>"; };
+		4874367A201D51B70030B1EF /* RSAClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RSAClass.m; sourceTree = "<group>"; };
+		4874367F201D55E40030B1EF /* Keys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Keys.m; sourceTree = "<group>"; };
+		48743680201D55E40030B1EF /* Keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keys.h; sourceTree = "<group>"; };
+		48AF4B60202DF37B004DE865 /* file.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = file.png; sourceTree = "<group>"; };
+		48AF4B62202DF8DF004DE865 /* Button.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Button.h; sourceTree = "<group>"; };
+		48AF4B63202DF8DF004DE865 /* Button.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Button.m; sourceTree = "<group>"; };
 		5155CE64DBB11A9BFBCD445D /* Pods-Transfer Me It.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Transfer Me It.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Transfer Me It/Pods-Transfer Me It.debug.xcconfig"; sourceTree = "<group>"; };
 		94ECA04043BBF2E7605FDAC8 /* Pods-Transfer Me It.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Transfer Me It.release.xcconfig"; path = "Pods/Target Support Files/Pods-Transfer Me It/Pods-Transfer Me It.release.xcconfig"; sourceTree = "<group>"; };
+		D62444192043015100D23F11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D62FFFCD2033306600954FA4 /* User.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
+		D62FFFCE2033306600954FA4 /* User.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		D63DC42C1F73E8140046278C /* libPods-Transfer Me It.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-Transfer Me It.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D63DC42E1F73E84B0046278C /* libPods-Transfer Me It.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-Transfer Me It.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D69CEEA82022818000CD3719 /* Download.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Download.h; sourceTree = "<group>"; };
+		D69CEEA92022818000CD3719 /* Download.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Download.m; sourceTree = "<group>"; };
+		D6A84E2D203A47C900EA0F47 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Regular.ttf"; sourceTree = "<group>"; };
+		D6A84E2F203A480B00EA0F47 /* Montserrat-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Medium.ttf"; sourceTree = "<group>"; };
+		D6BD9FA52021E6AE0099E7DE /* CustomVars.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomVars.m; sourceTree = "<group>"; };
+		D6BD9FA62021E6AE0099E7DE /* CustomVars.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomVars.h; sourceTree = "<group>"; };
+		D6BD9FA82021FD090099E7DE /* Upload.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Upload.h; sourceTree = "<group>"; };
+		D6BD9FA92021FD090099E7DE /* Upload.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Upload.m; sourceTree = "<group>"; };
 		D6EBB9A01F7188D6002A2A1E /* libcorecrypto.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcorecrypto.tbd; path = usr/lib/system/libcorecrypto.tbd; sourceTree = SDKROOT; };
 		D6EBB9A21F7188E0002A2A1E /* libCocoaLumberjack.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libCocoaLumberjack.a; path = Pods/../build/Debug/CocoaLumberjack/libCocoaLumberjack.a; sourceTree = "<group>"; };
 		D6EBB9A31F7188E0002A2A1E /* libGZIP.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGZIP.a; path = "../../../../../Users/hackintosh/Library/Developer/Xcode/DerivedData/Transfer_Me_It-gdirozlignxgsledbyytsnipbgam/Build/Products/Debug/GZIP/libGZIP.a"; sourceTree = "<group>"; };
@@ -65,6 +104,12 @@
 		D6EBB9B41F7188F7002A2A1E /* libSAMKeychain.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSAMKeychain.a; path = Pods/../build/Release/SAMKeychain/libSAMKeychain.a; sourceTree = "<group>"; };
 		D6EBB9B51F7188F7002A2A1E /* libSocketRocket.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSocketRocket.a; path = Pods/../build/Release/SocketRocket/libSocketRocket.a; sourceTree = "<group>"; };
 		D6EBB9B61F7188F7002A2A1E /* libSTHTTPRequest.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSTHTTPRequest.a; path = Pods/../build/Release/STHTTPRequest/libSTHTTPRequest.a; sourceTree = "<group>"; };
+		D6F63856201E0A9500EA9866 /* Socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Socket.h; sourceTree = "<group>"; };
+		D6F63857201E0A9600EA9866 /* Socket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Socket.m; sourceTree = "<group>"; };
+		D6F63859201E0AB900EA9866 /* CustomFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomFunctions.h; sourceTree = "<group>"; };
+		D6F6385A201E0AB900EA9866 /* CustomFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomFunctions.m; sourceTree = "<group>"; };
+		D6FE1D982036039700C74518 /* LOOCryptString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LOOCryptString.h; sourceTree = "<group>"; };
+		D6FE1D992036039700C74518 /* LOOCryptString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LOOCryptString.m; sourceTree = "<group>"; };
 		E0A9C7219966F7CB2C3C026D /* libPods-Transfer Me It.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Transfer Me It.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -80,6 +125,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		48110576201F5121004D2040 /* GUI */ = {
+			isa = PBXGroup;
+			children = (
+				48110570201F4BBB004D2040 /* MenuBar.h */,
+				48110571201F4BBB004D2040 /* MenuBar.m */,
+				4811057A201F51B1004D2040 /* PopUpWindow.h */,
+				4811057B201F51B1004D2040 /* PopUpWindow.m */,
+				48110573201F4EE9004D2040 /* SubmitButton.h */,
+				48110574201F4EE9004D2040 /* SubmitButton.m */,
+				48AF4B62202DF8DF004DE865 /* Button.h */,
+				48AF4B63202DF8DF004DE865 /* Button.m */,
+			);
+			name = GUI;
+			sourceTree = "<group>";
+		};
 		481893B71E4E73EF007227EA = {
 			isa = PBXGroup;
 			children = (
@@ -103,10 +163,12 @@
 			children = (
 				481893C31E4E73EF007227EA /* AppDelegate.h */,
 				481893C41E4E73EF007227EA /* AppDelegate.m */,
-				481893E51E4E77F3007227EA /* Montserrat-Light.ttf */,
-				481893C91E4E73EF007227EA /* Assets.xcassets */,
 				481893CE1E4E73EF007227EA /* Info.plist */,
+				D62444192043015100D23F11 /* Assets.xcassets */,
+				48743678201D45ED0030B1EF /* Custom Classes */,
+				D6FE1D972036032000C74518 /* Classes */,
 				481893E41E4E7540007227EA /* images */,
+				D6A84E27203A466B00EA0F47 /* Fonts */,
 				481893C61E4E73EF007227EA /* Supporting Files */,
 			);
 			path = "Transfer Me It";
@@ -123,7 +185,7 @@
 		481893E41E4E7540007227EA /* images */ = {
 			isa = PBXGroup;
 			children = (
-				48FAFBA51E92BB3E001CBDC7 /* loader.svg */,
+				48AF4B60202DF37B004DE865 /* file.png */,
 				481893FB1E4E786D007227EA /* alert.png */,
 				481893FC1E4E786D007227EA /* download.png */,
 				481893FD1E4E786D007227EA /* icon.png */,
@@ -132,11 +194,35 @@
 				481893FF1E4E786D007227EA /* mainicon.png */,
 				481894001E4E786D007227EA /* send_hover.png */,
 				481894011E4E786D007227EA /* send.png */,
-				481894021E4E786D007227EA /* up_b.png */,
 				481894031E4E786D007227EA /* up.png */,
 				481894041E4E786D007227EA /* upload.png */,
 			);
 			name = images;
+			sourceTree = "<group>";
+		};
+		48743678201D45ED0030B1EF /* Custom Classes */ = {
+			isa = PBXGroup;
+			children = (
+				D6181F5D20212296001FEE99 /* Server */,
+				48110576201F5121004D2040 /* GUI */,
+				D62FFFCD2033306600954FA4 /* User.h */,
+				D62FFFCE2033306600954FA4 /* User.m */,
+				48743680201D55E40030B1EF /* Keys.h */,
+				4874367F201D55E40030B1EF /* Keys.m */,
+				48743679201D51B70030B1EF /* RSAClass.h */,
+				4874367A201D51B70030B1EF /* RSAClass.m */,
+				D6F63856201E0A9500EA9866 /* Socket.h */,
+				D6F63857201E0A9600EA9866 /* Socket.m */,
+				D6F63859201E0AB900EA9866 /* CustomFunctions.h */,
+				D6F6385A201E0AB900EA9866 /* CustomFunctions.m */,
+				D6BD9FA62021E6AE0099E7DE /* CustomVars.h */,
+				D6BD9FA52021E6AE0099E7DE /* CustomVars.m */,
+				4811057D201F54CD004D2040 /* DesktopNotification.h */,
+				4811057E201F54CD004D2040 /* DesktopNotification.m */,
+				48729CD420294E1700206428 /* FileCrypter.h */,
+				48729CD520294E1700206428 /* FileCrypter.m */,
+			);
+			name = "Custom Classes";
 			sourceTree = "<group>";
 		};
 		A2B12DD9E3E9B8B566AEB725 /* Frameworks */ = {
@@ -173,6 +259,35 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		D6181F5D20212296001FEE99 /* Server */ = {
+			isa = PBXGroup;
+			children = (
+				D6BD9FA82021FD090099E7DE /* Upload.h */,
+				D6BD9FA92021FD090099E7DE /* Upload.m */,
+				D69CEEA82022818000CD3719 /* Download.h */,
+				D69CEEA92022818000CD3719 /* Download.m */,
+			);
+			name = Server;
+			sourceTree = "<group>";
+		};
+		D6A84E27203A466B00EA0F47 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				D6A84E2F203A480B00EA0F47 /* Montserrat-Medium.ttf */,
+				D6A84E2D203A47C900EA0F47 /* Montserrat-Regular.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		D6FE1D972036032000C74518 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				D6FE1D982036039700C74518 /* LOOCryptString.h */,
+				D6FE1D992036039700C74518 /* LOOCryptString.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -181,7 +296,9 @@
 			buildConfigurationList = 481893D11E4E73EF007227EA /* Build configuration list for PBXNativeTarget "Transfer Me It" */;
 			buildPhases = (
 				6277DC051C71ABFF048C921A /* [CP] Check Pods Manifest.lock */,
+				48115EFF2035142A00B11B54 /* Write Secret Server Code */,
 				481893BC1E4E73EF007227EA /* Sources */,
+				48115F0020351AD300B11B54 /* Remove Secret Server Code */,
 				481893BD1E4E73EF007227EA /* Frameworks */,
 				481893BE1E4E73EF007227EA /* Resources */,
 				9F56400429BBE1B99F6F5690 /* [CP] Embed Pods Frameworks */,
@@ -209,6 +326,11 @@
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = 3H49MXS325;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};
@@ -235,26 +357,56 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D6A84E30203A481F00EA0F47 /* Montserrat-Medium.ttf in Resources */,
+				D6A84E2E203A47D300EA0F47 /* Montserrat-Regular.ttf in Resources */,
 				481894091E4E786D007227EA /* mainicon.png in Resources */,
-				4818940C1E4E786D007227EA /* up_b.png in Resources */,
 				481894081E4E786D007227EA /* loading.png in Resources */,
-				48FAFBA61E92BB3E001CBDC7 /* loader.svg in Resources */,
+				D624441A2043015100D23F11 /* Assets.xcassets in Resources */,
 				4818940B1E4E786D007227EA /* send.png in Resources */,
 				485574711E89675400CB7DFA /* drag.png in Resources */,
-				481893E61E4E77F3007227EA /* Montserrat-Light.ttf in Resources */,
 				481894071E4E786D007227EA /* icon.png in Resources */,
 				4818940E1E4E786D007227EA /* upload.png in Resources */,
-				481893CA1E4E73EF007227EA /* Assets.xcassets in Resources */,
 				4818940D1E4E786D007227EA /* up.png in Resources */,
 				481894051E4E786D007227EA /* alert.png in Resources */,
 				4818940A1E4E786D007227EA /* send_hover.png in Resources */,
 				481894061E4E786D007227EA /* download.png in Resources */,
+				48AF4B61202DF37B004DE865 /* file.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		48115EFF2035142A00B11B54 /* Write Secret Server Code */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Write Secret Server Code";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "CODE=$(cat \"$SRCROOT/../transferme.it/secret_server_code.pass\")\nfind \"$SRCROOT/Transfer Me It/LOOCryptString.m\" -type f -exec sed -i '' -e \"s/secret_server_code/${CODE}/g\" {} +";
+			showEnvVarsInLog = 0;
+		};
+		48115F0020351AD300B11B54 /* Remove Secret Server Code */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Remove Secret Server Code";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "CODE=$(cat \"$SRCROOT/../transferme.it/secret_server_code.pass\")\nfind \"$SRCROOT/Transfer Me It/LOOCryptString.m\" -type f -exec sed -i '' -e \"s/${CODE}/secret_server_code/g\" {} +";
+			showEnvVarsInLog = 0;
+		};
 		6277DC051C71ABFF048C921A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -318,8 +470,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D62FFFCF2033306600954FA4 /* User.m in Sources */,
+				48110575201F4EE9004D2040 /* SubmitButton.m in Sources */,
+				D6F6385B201E0AB900EA9866 /* CustomFunctions.m in Sources */,
+				D6F63858201E0A9600EA9866 /* Socket.m in Sources */,
+				D69CEEAA2022818000CD3719 /* Download.m in Sources */,
+				48110572201F4BBB004D2040 /* MenuBar.m in Sources */,
+				48729CD620294E1700206428 /* FileCrypter.m in Sources */,
+				D6FE1D9A2036039700C74518 /* LOOCryptString.m in Sources */,
+				4874367B201D51B70030B1EF /* RSAClass.m in Sources */,
+				4811057F201F54CD004D2040 /* DesktopNotification.m in Sources */,
+				48AF4B64202DF8DF004DE865 /* Button.m in Sources */,
+				48743681201D55E40030B1EF /* Keys.m in Sources */,
 				481893C81E4E73EF007227EA /* main.m in Sources */,
+				D6BD9FAA2021FD090099E7DE /* Upload.m in Sources */,
+				4811057C201F51B1004D2040 /* PopUpWindow.m in Sources */,
 				481893C51E4E73EF007227EA /* AppDelegate.m in Sources */,
+				D6BD9FA72021E6AE0099E7DE /* CustomVars.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -420,6 +587,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 3H49MXS325;
 				INFOPLIST_FILE = "Transfer Me It/Info.plist";
@@ -441,6 +609,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_BUNDLE_IDENTIFIER = "it.transferme.Transfer-Me-It";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
@@ -451,6 +620,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 3H49MXS325;
 				INFOPLIST_FILE = "Transfer Me It/Info.plist";
@@ -471,6 +641,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_BUNDLE_IDENTIFIER = "it.transferme.Transfer-Me-It";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};

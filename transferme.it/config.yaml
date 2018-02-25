@@ -1,0 +1,22 @@
+title: Transfer Me It
+email: hello@transferme.it
+recaptcha:
+  pub: 6LcrQ0cUAAAAAAFkcQdXKLdFDAOiPlzhSJgcCIiS
+  priv: 6LcrQ0cUAAAAAGxAlLM_Z6GTZYxo_MteXIQfdjKj
+meta:
+  keywords: transfer me it, transfermeit, file, send, transfer, me, it, transfer, file transfer, send files, mac, osx, mac to mac
+  description: A minimal file transfer app for MacOS.
+app:
+  version:
+    num: 1.00
+    description: >
+      <h2>New Features</h2>
+
+      <h2>Bugs</h2>
+
+      <h4>Untested Release</h4>
+      Thank you for testing!<br><br>
+      Maximilian Mitchell
+  download-loc: Transfer Me It.dmg
+
+

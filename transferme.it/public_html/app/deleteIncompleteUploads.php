@@ -1,5 +1,5 @@
 <?php
-//run from cron only
+//run from cron jobs only
 (PHP_SAPI !== 'cli' || isset($_SERVER['HTTP_USER_AGENT'])) && die('cli only');
 
 require 'functions.php';
@@ -22,14 +22,16 @@ AND (upload.updated IS NULL OR upload.updated + interval 1 minute <= NOW())
 AND `upload`.finished IS NULL
 ");
 
+//TODO: `user`.`wantedMins` minute <= NOW() means that this will adapt if the user changes the wantedMins after uploading.
+
 while ($row = mysqli_fetch_array($out_of_date_query)){
 	if(!deleteUpload($con, $row['toUUID'], $row['fromUUID'], $row['path'], true)){
         customLog("Failed to delete: ".$row['path'], false, 'file_purge.log');
     }else{
         sendLocalSocket($row['fromUUID'], json_encode(array(
             "type" => "downloaded",
-            "title" => "File expired and was deleted by server.",
-            "message" => "At: ".date("r")
+            "title" => "Upload Purged!",
+            "message" => "A file you uploaded was never downloaded."
         )));
         customLog("Deleted: ".$row['path'], false, 'file_purge.log');
     }

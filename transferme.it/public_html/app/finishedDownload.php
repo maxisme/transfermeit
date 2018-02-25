@@ -1,16 +1,21 @@
 <?php
+/* security check list:
+    - UUIDRegistered() success followed by select statement guarantees that the file was 100% destined
+      for this user.
+    - sql
+*/
 require 'functions.php';
 
 //connect to database
 $con = connect();
 
 //initial variables
-$friendUUID = mysqli_real_escape_string($con, $_POST['friendUUID']);
-$UUID = mysqli_real_escape_string($con, $_POST['UUID']);
-$UUIDKey = mysqli_real_escape_string($con, $_POST['UUIDKey']);
-$path = mysqli_real_escape_string($con, $_POST['path']);
-$fileHash = trim(mysqli_real_escape_string($con, $_POST['hash']));
-$ref = trim(mysqli_real_escape_string($con, $_POST['ref']));
+$friendUUID = san($con, $_POST['friendUUID']);
+$UUID = san($con, $_POST['UUID']);
+$UUIDKey = san($con, $_POST['UUIDKey']);
+$path = san($con, $_POST['path']);
+$fileHash = san($con, $_POST['hash']);
+$ref = san($con, $_POST['ref']);
 
 if (!UUIDRegistered($con, $UUID, $UUIDKey)) {
 	die('1');
@@ -56,19 +61,17 @@ if(!empty($fileHash)){
 
 //finished upload
 if(deleteUpload($con, $userUUID, $friendUUID, $db_path, $failed)) {
-    //send message to uploader that file has been downloaded by user successfully
     if($failed) {
-        $title = "Error with friend download";
-        $mess = "Try send the file again";
-    }else {
+        $title = "Unsuccessful download";
+        $mess = "Your friend may have ignored the download or there was an error.";
+    }else{
         $title = "Successful Download";
         $mess = "Your friend successfully downloaded the file!";
     }
+    sendLocalSocket($friendUUID, json_encode(array("type" => "downloaded", "title" => "$title", "message" => "$mess")));
 
-    sendLocalSocket($friendUUID, json_encode(array("type" => "downloaded", "title" => $title, "message" => "$mess")));
-
-    if ($failed) die("1");
-    die($encrypted_pass); // successful download
+    if ($failed) die("failed");
+    die($encrypted_pass); // return encrypted password for file
 }else{
 	echo "Failed to delete file: ".$db_path;
 }

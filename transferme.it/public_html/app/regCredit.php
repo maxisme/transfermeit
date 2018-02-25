@@ -8,30 +8,26 @@ require 'functions.php';
 $con = connect();
 
 //initial variables
-$UUID = mysqli_real_escape_string($con, $_POST['UUID']);
-$UUIDKey = trim(mysqli_real_escape_string($con, $_POST['UUIDKey']));
-$pro_code = trim(mysqli_real_escape_string($con, $_POST['code']));
+$UUID = san($con, $_POST['UUID']);
+$UUIDKey = san($con, $_POST['UUIDKey']);
+$creditCode = san($con, $_POST['credit_code']);
 
-if (!UUIDRegistered($con, $UUID, $UUIDKey)) {
-	die('1');
-}
+if (!UUIDRegistered($con, $UUID, $UUIDKey)) die('1');
 
-if(strlen($pro_code) != 100 || hasSpecialChars($pro_code)){
-	die('2');
-}
+if(strlen($creditCode) != 100 || hasSpecialChars($creditCode)) die('2');
 
 $result = mysqli_query($con,"
 SELECT * 
 FROM `pro`
-WHERE `code` = '$pro_code'
+WHERE `code` = '$creditCode'
 AND activation IS NULL
 AND UUID IS NULL");
 
 if(mysqli_num_rows($result) > 0) {
-	//there is a pro code that has not been used, and has not expired in the db
+	//there is a pro code that has not been used
 	$updatePro = mysqli_query($con, "UPDATE `pro`
 	SET UUID = '".myHash($UUID)."', activation = NOW()
-	WHERE code = '$pro_code'");
+	WHERE code = '$creditCode'");
 
 	if($updatePro){
 		die("0");

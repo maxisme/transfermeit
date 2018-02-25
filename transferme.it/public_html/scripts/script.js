@@ -25,14 +25,14 @@ function changeCredit(credit){
 
     //perm code
     if(credit >= 5){
-        $("#permCode").html("<p>A permanent user code.</p>");
+        $("#customCode").html("<p>A <strong>permanent</strong> user code - Forever!</p>");
     }
 
     //single file
-    $("#file_size").html("<p>A <span class='highlight'>"+credit+"GB</span> file upload limit.</p>");
+    $("#file_size").html("<p>Upload, up to a <span class='highlight'>"+credit+"GB</span> file*</p>");
 
     //bandwidth
-    $("#bandwidth").html("<p><span class='highlight'>"+credit+"GB</span> bandwidth to upload files with.</p>");
+    $("#bandwidth").html("<p><span class='highlight'>"+credit+"GB</span> of bandwidth to upload files with*</p>");
 
     if (lastCredit != credit && !fetchingButton) {
         $.ajax({

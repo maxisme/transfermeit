@@ -4,14 +4,14 @@ ini_set("display_errors", 1);
 
 require '/var/www/transferme.it/public_html/app/functions.php';
 $con = connect();
-$user = "ba1d634d96a0d55017716f763ea71ce7fdabd57d1f1368262d186c435a768aac";
+$user = "f13ed47e715c28e0b436c40ea9829cc5454ebbfb2ff3f9aa668063b8a07c32f9";
 
 echo megaToBytes(3000)."<br>";
-echo "1.".getCredit($con, $user)."<br>";
-echo getUsedBandwidth($con, $user, true)."<br>";
+echo "1.".getTotalUserPayments($con, $user)."<br>";
+echo getTotalUserBandwidth($con, $user, true)."<br>";
 echo $bandwidth_left = getBandwidthLeft($con, $user);
 echo "<p>Bandwidth Left ".bytesToMega($bandwidth_left)." MB</p>";
-echo "<p>Max Upload ".bytesToMega(getMaxUploadSize($con,$user))." MB";
+echo "<p>Max Upload ".bytesToMega(getUserMaxUploadSize($con,$user))." MB";
 
 //--------------------------
 $test_MB = 4000;
@@ -21,15 +21,15 @@ $bandwidth_left = megaToBytes($test_MB);
 
 echo "<p>Bandwidth Left $test_MB MB</p>";
 
-echo "<p>Max Upload ".bytesToMega(maxUploadSize($bandwidth_left))." MB</p>";
+echo "<p>Max Upload ".bytesToMega(getMaxUploadSize($bandwidth_left))." MB</p>";
 
-$credit = bandwidthToCredit($bandwidth_left);
+$credit = uploadBandwidthToCredit($bandwidth_left);
 
 echo "<p>Credit £$credit</p>";
 
-echo bytesToMega(creditToBandwidth(0))."<br>";
-echo bytesToMega(creditToBandwidth(0.5))."<br>";
-echo bytesToMega(creditToBandwidth(1))."<br>";
+echo bytesToMega(creditToUploadBandwidth(0))."<br>";
+echo bytesToMega(creditToUploadBandwidth(0.5))."<br>";
+echo bytesToMega(creditToUploadBandwidth(1))."<br>";
 
 echo bytesToMega(2147483647);
 
@@ -65,3 +65,13 @@ echo "<br>";
 echo myHash("KII2B5E");
 
 echo "<br>".bytesToMega(2443181424);
+
+
+$bw_left = getBandwidthLeft($con, $user);
+$max_fs = getMaxUploadSize($bw_left);
+
+echo json_encode(array(
+    "type" => "bw",
+    "bw_left" => $bw_left,
+    "max_fs" => $max_fs
+));

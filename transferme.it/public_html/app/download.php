@@ -1,8 +1,11 @@
 <?php 
 function downloadFile($file){
+    /* https://stackoverflow.com/questions/138374/close-a-connection-early */
+    /* ----- hack ------ */
 	ob_end_clean();
 	header("Connection: close");
 	ignore_user_abort(true);
+	/* ----------------- */
 	header('Content-Type: application/octet-stream');
 	header('Content-Transfer-Encoding: binary');
 	header('Expires: 0');
@@ -16,20 +19,18 @@ require 'functions.php';
 $con = connect();
 
 //initial variables
-$UUID = mysqli_real_escape_string($con, $_POST['UUID']);
-$UUIDKey = mysqli_real_escape_string($con, $_POST['UUIDKey']);
-$path = mysqli_real_escape_string($con, $_POST['path']);
+$UUID = san($con, $_POST['UUID']);
+$UUIDKey = san($con, $_POST['UUIDKey']);
+$path = san($con, $_POST['path']);
 
 //validation
 if (!UUIDRegistered($con, $UUID, $UUIDKey)) {
 	die("1");
 }
 
-$db_path = removeDirPath($path);
-
-if(updateUploadTime($con, myHash($UUID), $db_path)) {
+if(updateUploadTime($con, myHash($UUID), removeDirPath($path))) {
     downloadFile($path);
 }else{
-    die("2");
+    die("2"); // extremely likely that this is due to an expired download TODO: make it 100% likely
 }
 ?>

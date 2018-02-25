@@ -15,13 +15,14 @@ $server = IoServer::factory(
 	48341
 );
 
-//local socket for on curl requests to Ratchet socket
+// local socket to nest inside wss
 $context = new React\ZMQ\Context($server->loop);
 $pull = $context->getSocket(ZMQ::SOCKET_PULL);
 $pull->bind('tcp://127.0.0.1:47802');
 $pull->on('message', array($note, 'onLocal'));
 
-//check for users that have not been active in the last 15 seconds and close them.
+// check for users that have not been active (asked for the time) in the last 15 seconds and close them.
+// kind of acting as a ping for us rather than the client.
 $server->loop->addPeriodicTimer(15, function () use ($note) {
 	foreach($note->clients as $client)
 	{
@@ -31,7 +32,7 @@ $server->loop->addPeriodicTimer(15, function () use ($note) {
 			$endTime = date("Y-m-d H:i:s", strtotime($client->activity . " +" . 16 . " seconds"));
 
 			if (new DateTime($now) > new DateTime($endTime)){
-				//send message to socket object to close client UUID
+				// closing asks the user to create a code again
 				$note->onLocal(json_encode(array("to" => $client->UUID, "message" => "close")));
 			}
 		}
