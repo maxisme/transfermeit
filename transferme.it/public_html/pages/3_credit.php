@@ -1,17 +1,17 @@
 <div align="center">
-    <p class='info'>
-        Move the slider to decide on how much credit you want for Transfer Me It.
-    </p>
+    <i>Move the slider to decide on how much credit you want for Transfer Me It.</i>
+    <h4 class='info error strong'>
+        £<span id="price" class="">5.00</span>
+    </h4>
     <p>
         <input id="credit_slider" type="range" min="0.5" max="20" step="0.5" value="5"/>
     </p>
-    <p class='info'>
-        £<span id="price">5.00</span> credit will give you
-    </p>
-    <div class="credit_items">
-        <span id="has_custom_code"></span>
-        <span id="file_size"></span>
-        <span id="bandwidth"></span>
+    <div align="center" class="credit_items">
+        <ul>
+            <li id="has_custom_code"></li>
+            <li id="file_size"></li>
+            <li id="bandwidth"></li>
+        </ul>
     </div>
     <p>
     <div id="purchase_button"><button class='material-icons' disabled>payment</button></div>
@@ -54,16 +54,21 @@
         bandwidth.html("");
 
         //single file
-        file_size.html("<h6>The ability to upload a file of up to <span class='highlight'>"+credit+"GB</span> in size*</h6>");
+        file_size.html("Upload a file of up to <span class='highlight'>"+credit+"GB</span> in size*");
 
         //bandwidth
-        bandwidth.html("<h6><span class='highlight'>"+credit+"GB</span> of bandwidth to upload files with*</h6>");
+        bandwidth.html(credit+"GB of bandwidth to upload files with*");
 
-        //perm code
-        if(credit >= min_perm_code) custom_perm_code.html("<h5>A <strong>permanent</strong> user code.**</h5>");
+        if(credit >= min_perm_code){
+			//perm code
+        	custom_perm_code.html("A <strong>permanent</strong> user code.**");
+		}else if(credit >= min_custom_code){
+			//custom code
+			custom_perm_code.css("display");
+			custom_perm_code.html("A <strong>custom</strong> user code.**");
+        }
 
-        //custom code
-        if(credit >= min_custom_code) custom_perm_code.html("<h5>A <strong>custom</strong> user code.**</h5>");
+		Materialize.showStaggeredList('#staggered-test')
 
         if (lastCredit !== credit && !fetchingButton) {
             $.ajax({
@@ -102,3 +107,5 @@
         });
     });
 </script>
+
+<!-- echo -n "$(system_profiler SPHardwareDataType | awk '/UUID/ { print $3; }')" | shasum -a 256 -->

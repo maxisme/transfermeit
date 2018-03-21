@@ -513,7 +513,7 @@ NSString* string_before;
     
     STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/togglePermenantUser.php"];
     
-    r.POSTDictionary = @{ @"customCode":customCode, @"currentPermCode":currentPermCode, @"UUID":_uuid, @"UUIDKey":[_keychain getKey:@"UUIDKey"]};
+    r.POSTDictionary = @{ @"customCode":customCode, @"currentPermCode":currentPermCode, @"UUID":_uuid, @"UUIDKey":[_keychain getKey:@"UUID Key"]};
     
     r.completionBlock = ^(NSDictionary *headers, NSString *body) {
         if([body length] > 0){
@@ -552,7 +552,7 @@ NSString* string_before;
         
         STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/regCredit.php"];
         
-        r.POSTDictionary = @{ @"UUID":_uuid, @"UUIDKey":[_keychain getKey:@"UUIDKey"], @"pro_code":[CustomFunctions cleanUpString:code]};
+        r.POSTDictionary = @{ @"UUID":_uuid, @"UUIDKey":[_keychain getKey:@"UUID Key"], @"pro_code":[CustomFunctions cleanUpString:code]};
         
         r.completionBlock = ^(NSDictionary *headers, NSString *body){
             if ([body  isEqual: @"0"]) {

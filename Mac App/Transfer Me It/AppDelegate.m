@@ -24,9 +24,6 @@
     
     [CustomFunctions onlyOneInstanceOfApp];
     
-    // to allow notifications even when app is at front
-    [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:self];
-    
     // finder right click
     [NSApp setServicesProvider:self];
     NSUpdateDynamicServices();
@@ -50,9 +47,4 @@
         [_w setSendToFriendView:[[_mb valueForKey:@"window"] frame] filePath:fileArray[0]];
     }
 }
-
-- (BOOL)userNotificationCenter:(NSUserNotificationCenter *)center shouldPresentNotification:(NSUserNotification *)notification {
-    return YES;
-}
-
 @end

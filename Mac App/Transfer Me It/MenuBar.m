@@ -335,8 +335,11 @@
     
     //CODE STUFF
     NSMenuItem* codeItem = [[NSMenuItem alloc] initWithTitle:@"Code" action:nil keyEquivalent:@""];
+    [codeItem setAttributedTitle:[self stringToCentre:codeItem.title]];
     [codeItem setEnabled:false];
     [menu addItem:codeItem];
+    
+    [menu addItem:[NSMenuItem separatorItem]];
     
     NSMenuItem* phoneticOptionItem = [[NSMenuItem alloc] initWithTitle:@"Show phonetics" action:@selector(showPhonetic) keyEquivalent:@""];
     [phoneticOptionItem setTarget:self];
@@ -353,8 +356,11 @@
     //DOWNLOAD STUFF
     
     NSMenuItem* saveItem = [[NSMenuItem alloc] initWithTitle:@"Saving Incoming Files" action:nil keyEquivalent:@""];
+    [saveItem setAttributedTitle:[self stringToCentre:saveItem.title]];
     [saveItem setEnabled:false];
     [menu addItem:saveItem];
+    
+    [menu addItem:[NSMenuItem separatorItem]];
     
     NSMenuItem* saveLocation = [[NSMenuItem alloc] initWithTitle:@"Set a Default Download Location" action:@selector(setAutoSaveLocation) keyEquivalent:@""];
     [saveLocation setTarget:self];
@@ -375,17 +381,20 @@
     [menu addItem:[NSMenuItem separatorItem]];
     
     NSMenuItem* accntItem = [[NSMenuItem alloc] initWithTitle:@"Account" action:nil keyEquivalent:@""];
+    [accntItem setAttributedTitle:[self stringToCentre:accntItem.title]];
     [accntItem setEnabled:false];
     [menu addItem:accntItem];
+    
+    [menu addItem:[NSMenuItem separatorItem]];
     
     NSString*bandwidthLeftStr = [NSByteCountFormatter stringFromByteCount:bandwidthLeft countStyle:NSByteCountFormatterCountStyleFile];
     NSMenuItem* bw = [[NSMenuItem alloc] init];
     [bw setTarget:self];
     [bw setEnabled:NO];
     if(userTier > 0){
-        [bw setTitle:[NSString stringWithFormat:@"Bandwidth - %@", bandwidthLeftStr]];
+        [bw setTitle:[NSString stringWithFormat:@"Bandwidth: %@", bandwidthLeftStr]];
     }else{
-        [bw setTitle:[NSString stringWithFormat:@"Todays Bandwidth - %@", bandwidthLeftStr]];
+        [bw setTitle:[NSString stringWithFormat:@"Todays Bandwidth: %@", bandwidthLeftStr]];
     }
     [menu addItem:bw];
     
@@ -393,7 +402,7 @@
     NSMenuItem* fs = [[NSMenuItem alloc] init];
     [fs setTarget:self];
     [fs setEnabled:NO];
-    [fs setTitle:[NSString stringWithFormat:@"Max File Upload Size - %@", maxFileUploadStr]];
+    [fs setTitle:[NSString stringWithFormat:@"Max File Upload Size: %@", maxFileUploadStr]];
     [menu addItem:fs];
     
     NSMenuItem* addCredit = [[NSMenuItem alloc] initWithTitle:@"Purchase Upload Credit" action:@selector(goPro) keyEquivalent:@""];
@@ -406,6 +415,12 @@
     
     [menu addItem:[NSMenuItem separatorItem]];
     
+    
+    NSMenuItem* extraItem = [[NSMenuItem alloc] initWithTitle:@"Extras" action:nil keyEquivalent:@""];
+    [extraItem setAttributedTitle:[self stringToCentre:extraItem.title]];
+    [extraItem setEnabled:false];
+    [menu addItem:extraItem];
+    [menu addItem:[NSMenuItem separatorItem]];
     
     NSMenuItem* showOnStartupItem = [[NSMenuItem alloc] initWithTitle:@"Start Transfer Me It at login" action:@selector(openOnStartup) keyEquivalent:@""];
     [showOnStartupItem setTarget:self];
@@ -425,6 +440,15 @@
     [menu setAutoenablesItems:NO];
     [menu setDelegate:(id)self];
     return menu;
+}
+
+-(NSAttributedString*)stringToCentre:(NSString*)string{
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    [paragraphStyle setAlignment:NSTextAlignmentCenter];
+    
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:string];
+    [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [string length])];
+    return attributedString;
 }
 
 - (NSMenu *)timeIntervalsWithMaxTime:(int)maxTime wantedTime:(int)wantedTime userTier:(int)userTier {
@@ -509,6 +533,10 @@
 }
 
 #pragma mark - menu actions
+- (void)goPro{
+    [CustomFunctions goPro];    
+}
+
 -(void)chooseFile{
     NSString* filePath = [CustomFunctions choosePathWindow:@"Choose the file you want to send!" buttonTitle:@"Choose" allowDir:NO allowFile:YES];
     if(filePath){

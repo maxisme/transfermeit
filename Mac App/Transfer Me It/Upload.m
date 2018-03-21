@@ -36,6 +36,7 @@
 }
 
 -(void)uploadFile:(NSString*)path friend:(NSString*)friendCode keys:(Keys*)keys{
+    
     NSData* file = [NSData dataWithContentsOfFile:path];
     unsigned long long fileSize = (unsigned long long)[file length];
     if(fileSize > 0){ // is a valid file
@@ -63,7 +64,7 @@
             
             r.POSTDictionary = @{ @"friend":friendCode,
                                   @"UUID":[CustomFunctions getSystemUUID],
-                                  @"UUIDKey":[keys getKey:@"UUIDKey"],
+                                  @"UUIDKey":[keys getKey:@"UUID Key"],
                                   @"filesize":[NSString stringWithFormat:@"%llu", encryptedFileSize]};
             NSError *error = nil;
             NSString *body = [r startSynchronousWithError:&error];
@@ -104,7 +105,7 @@
                 // UPLOAD ENCRYPTED FILE along with encrypted password of file.
                 _ul = nil;
                 _ul = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/upload.php"];
-                _ul.POSTDictionary = @{ @"friend":friendCode, @"UUID":[CustomFunctions getSystemUUID], @"UUIDKey":[keys getKey:@"UUIDKey"], @"pass": encrypted_pass};
+                _ul.POSTDictionary = @{ @"friend":friendCode, @"UUID":[CustomFunctions getSystemUUID], @"UUIDKey":[keys getKey:@"UUID Key"], @"pass": encrypted_pass};
                 
                 [_ul addDataToUpload:encryptedFile parameterName:@"fileUpload" mimeType:@"application/octet-stream" fileName:[path lastPathComponent]];
                 

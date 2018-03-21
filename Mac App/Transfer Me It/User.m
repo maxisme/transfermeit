@@ -91,7 +91,7 @@
     STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/addNewUser.php"];
     r.timeoutSeconds = 3;
     
-    NSString *uuidKey = [_keychain getKey:@"UUIDKey"];
+    NSString *uuidKey = [_keychain getKey:@"UUID Key"];
     if(uuidKey == nil) uuidKey = @"";
     
     r.POSTDictionary = @{ @"server_key":[LOOCryptString serverKey],
@@ -110,7 +110,7 @@
             NSString* newUUIDkey = [CustomFunctions jsonToVal:body key:@"UUID_key"];
             if([newUUIDkey length] == 100){ // only happens when using tmi for the first time.
                 //receiving the key
-                if(![_keychain setKey:@"UUIDKey" withPassword:newUUIDkey]){
+                if(![_keychain setKey:@"UUID Key" withPassword:newUUIDkey]){
                     NSAlert *alert = [[NSAlert alloc] init];
                     [alert setMessageText:@"Major Key Error"];
                     [alert setInformativeText:@"Problem storing key in keychain. Please contact hello@transferme.it"];
@@ -162,6 +162,9 @@
                 [DesktopNotification send:@"Permenant Code Error!" message:@"You have had your perm code removed."];
                 [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"perm_user_code"];
                 [self create];
+            }else if([status isEqual: @"invalid_UUID_key"]){
+                [_keychain deleteKey:@"UUID Key"];
+                [DesktopNotification send:@"Emergency!" message:@"Your UUID Key has been purged. Please contact hello@transferme.it."];
             }else{
                 NSLog(@"Error creating user %@", body);
                 [DesktopNotification send:@"Error Creating User!" message:status];
@@ -238,8 +241,12 @@
         
     }else if(![type isEqual: @"Error"]){ //don't need to alert user of this
         NSString* message = [CustomFunctions jsonToVal:json key:@"message"];
-        NSLog(@"incoming socket error: %@",message);
-        [DesktopNotification send:@"Socket Error" message:message];
+        if([message isEqual: @"already_connected"]){
+            [self.menuBar setErrorMenu:@"Two user error!"];
+        }else{
+            NSLog(@"incoming socket error: %@",message);
+            [DesktopNotification send:@"Socket Error" message:message];
+        }
     }else{
         NSLog(@"%@",json);
     }
@@ -313,7 +320,7 @@
                                               @"serverKey": [LOOCryptString serverKey],
                                               @"type":@"connect",
                                               @"UUID": _uuid,
-                                              @"UUIDKey": [_keychain getKey:@"UUIDKey"]
+                                              @"UUIDKey": [_keychain getKey:@"UUID Key"]
                                               }];
 }
 

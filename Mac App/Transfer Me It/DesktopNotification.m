@@ -25,7 +25,6 @@
     notification.title = title;
     notification.userInfo = variables;
     notification.informativeText = message;
-    notification.identifier = [CustomFunctions randomString:10];
     
     if(button1.length > 0){
         notification.actionButtonTitle = button1;
@@ -40,14 +39,21 @@
     }
     
     [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
+    
+    // to allow notifications even when app is at front
+    [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:(id)self];
+    
 }
 
 #pragma mark - handle notifications
++ (BOOL)userNotificationCenter:(NSUserNotificationCenter *)center shouldPresentNotification:(NSUserNotification *)notification {
+    return YES;
+}
 
 + (void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification{
     NSLog(@"activated notification");
     NSString* filePath = notification.userInfo[@"file_path"];
-
+    
     if([notification.title isEqual: @"File Too Big!"]){
         [CustomFunctions goPro];
     }else if(filePath){

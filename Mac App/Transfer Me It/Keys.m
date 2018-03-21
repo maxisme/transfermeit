@@ -45,5 +45,11 @@
     
     return [self password];
 }
+
+-(void)deleteKey:(NSString*)service{
+    NSError* error;
+    self.service = service;
+    [self deleteItem:&error];
+}
 @end
 

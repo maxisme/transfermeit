@@ -39,7 +39,7 @@
     
     _dl = nil;
     _dl = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/download.php"];
-    _dl.POSTDictionary = @{ @"UUID":[CustomFunctions getSystemUUID], @"UUIDKey":[_keychain getKey:@"UUIDKey"], @"path":path};
+    _dl.POSTDictionary = @{ @"UUID":[CustomFunctions getSystemUUID], @"UUIDKey":[_keychain getKey:@"UUID Key"], @"path":path};
     
     // start keep alive (tell server not to delete a file still downloading)
     [NSTimer scheduledTimerWithTimeInterval:10.f target:self selector:@selector(keepAlive:) userInfo:@{@"path": path} repeats:YES];
@@ -151,7 +151,7 @@
                          @"path":path,
                          @"friendUUID": friendUUID,
                          @"UUID":[CustomFunctions getSystemUUID],
-                         @"UUIDKey":[_keychain getKey:@"UUIDKey"],
+                         @"UUIDKey":[_keychain getKey:@"UUID Key"],
                          @"hash":hash,
                          @"ref":[NSNumber numberWithUnsignedLongLong:ref]
                          };

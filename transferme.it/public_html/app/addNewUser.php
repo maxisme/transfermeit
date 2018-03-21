@@ -58,6 +58,7 @@ while ($row = mysqli_fetch_array($queryNewUser)){
 	$old_user = $row['user'];
 	$created = $row['created'];
 	$oldWantedMins = $row['wantedMins'];
+    $storedUUIDKey = $row['UUIDKey'];
 }
 
 // will catch lots of new accounts being created
@@ -65,9 +66,39 @@ while ($row = mysqli_fetch_array($queryNewUser)){
 
 addIP($con); // used to find "fishy" socket connections and DDOS account creation
 
-if(mysqli_num_rows($queryNewUser) == 0) {
-    // UUID doesn't exist this is the first time using transferme.it on device
+if(empty($UUIDKey) && empty($storedUUIDKey)) {
+	////////////////////
+	// UUIDKey reset.
+    ////////////////////
+
+    $secureUUIDKey = generateRandomString($key_len);
+
+    $query = mysqli_query($con, "
+	UPDATE `user` 
+	SET UUIDKey = '" . myHash($secureUUIDKey) . "'
+	WHERE UUID = '" . myHash($UUID) . "';
+	");
+
+    if (!$query) {
+        echo("Error description: " . mysqli_error($con));
+        customLog("Error description 1: " . mysqli_error($con), true, "error.log");
+    } else {
+        $arr = array(
+            "user_code" => $userCode,
+            "bw_left" => $daily_allowed_free_user_bandwidth,
+            "max_fs" => $default_max_file_upload,
+            "mins_allowed" => $max_allowed_mins,
+            "user_tier" => 0,
+            "UUID_key" => $secureUUIDKey,
+            "time_left" => getUserTimeLeft($con, myHash($UUID))
+        );
+        die(json_encode($arr));
+    }
+
+}else if(mysqli_num_rows($queryNewUser) == 0){
+    ////////////////////
     // create initial account
+    ////////////////////
     $secureUUIDKey = generateRandomString($key_len);
 
     $query = mysqli_query($con, "
@@ -76,6 +107,7 @@ if(mysqli_num_rows($queryNewUser) == 0) {
 
     if (!$query) {
         echo("Error description: " . mysqli_error($con));
+        customLog("Error description 2: " . mysqli_error($con), true, "error.log");
     } else {
         $arr = array(
             "user_code" => $userCode,
@@ -89,6 +121,10 @@ if(mysqli_num_rows($queryNewUser) == 0) {
         die(json_encode($arr));
     }
 }else if (UUIDRegistered($con, $UUID, $UUIDKey)){
+    ////////////////////
+	/// already exists
+	///////////////////
+
 	//get perm user code if exists
     if (!empty($permCode)){
         $userCode = getUserPermCode($con, $UUID, $permCode);
@@ -128,6 +164,6 @@ if(mysqli_num_rows($queryNewUser) == 0) {
 		die(json_encode($arr));
 	}
 }else{
-    die(json_encode(array("status" => "Not a valid UUID and key match. Please remove UUIDKey from keychain.")));
+    die(json_encode(array("status" => "invalid_UUID_key")));
 }
 ?>

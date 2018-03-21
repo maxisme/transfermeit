@@ -29,11 +29,11 @@
 }
 
 -(NSString*)getPub{
-    return [_keychain getKey:@"publicKey"];
+    return [_keychain getKey:@"Public Key"];
 }
 
 -(NSString*)getPriv{
-    return [_keychain getKey:@"privateKey"];
+    return [_keychain getKey:@"Private Key"];
 }
 
 -(void)generatePair{
@@ -44,8 +44,8 @@
     id<MIHPrivateKey> privateKey = keyPair.private;
     
     //store priv key in keychain
-    [_keychain setKey:@"privateKey" withPassword:[RSAClass keyTo64String:privateKey]];
-    [_keychain setKey:@"publicKey" withPassword:[RSAClass keyTo64String:publicKey]];
+    [_keychain setKey:@"Private Key" withPassword:[RSAClass keyTo64String:privateKey]];
+    [_keychain setKey:@"Public Key" withPassword:[RSAClass keyTo64String:publicKey]];
 }
 
 // used to make sure stored keys are not tampered with and work correctly.

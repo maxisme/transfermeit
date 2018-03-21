@@ -105,11 +105,8 @@ class Note implements MessageComponentInterface
                     if ($from === $client) {
                         // asking about UUID from socket linked with uuid
                         if (isset($client->UUID) && $client->UUID == $hashedUUID) {
-                            customLog("1");
                             $bw_left = getBandwidthLeft($con, $hashedUUID);
-                            customLog("2");
                             $max_fs = getMaxUploadSize($bw_left);
-                            customLog("3");
                             $from->send(json_encode(array(
                                 "type" => "bw",
                                 "bw_left" => $bw_left,
@@ -146,8 +143,8 @@ class Note implements MessageComponentInterface
                 if (!validUUID($UUID)) $from->close();
 
                 if (isConnected($con, myHash($UUID))) {
-                    // TODO: better way to handle this case such as a ping.
-                    $from->send(jsonError("User already connected to socket. Please wait a few seconds."));
+                    // TODO: better way to handle this case such as a forced ping.
+                    $from->send(jsonError("already_connected"));
                     $from->close();
                 } else {
                     if (!UUIDRegistered($con, $UUID, $UUIDKey)) {

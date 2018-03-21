@@ -12,4 +12,5 @@
 @interface Keys : SAMKeychainQuery
 -(BOOL)setKey:(NSString*)service withPassword:(NSString*)pass;
 -(NSString*)getKey:(NSString*)service;
+-(void)deleteKey:(NSString*)service;
 @end
