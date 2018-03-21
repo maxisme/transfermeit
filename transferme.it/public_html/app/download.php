@@ -9,8 +9,8 @@ function downloadFile($file){
 	header('Content-Type: application/octet-stream');
 	header('Content-Transfer-Encoding: binary');
 	header('Expires: 0');
-	header('Content-Length: ' . filesize($file));
-	readfile($file);
+	header('Content-Length: ' . filesize("$file"));
+	readfile("$file");
 }
 
 require 'functions.php';
@@ -21,7 +21,7 @@ $con = connect();
 //initial variables
 $UUID = san($con, $_POST['UUID']);
 $UUIDKey = san($con, $_POST['UUIDKey']);
-$path = san($con, $_POST['path']);
+$path = $_POST['path'];
 
 //validation
 if (!UUIDRegistered($con, $UUID, $UUIDKey)) {
