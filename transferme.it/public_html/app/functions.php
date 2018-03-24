@@ -389,10 +389,10 @@ function userMaxMins($hashedUUID){
 // Updates the `updated` time in the `upload` database.
 // This is so that the file is not deleted if a user is still downloading or uploading a file.
 // see: deleteIncompleteUploads.php to see how the `updated` param is used
-function updateUploadTime($con, $aUUID, $path){
+function updateUploadTime($con, $aUUID, $dir){
 	$sql_where_query = "WHERE (fromUUID = '$aUUID'
     OR toUUID = '$aUUID')
-    AND path='$path'";
+    AND path='".san($con, $dir)."'";
 
 	$exists_query = mysqli_query($con, "SELECT `id` FROM `upload` $sql_where_query");
 	if(mysqli_num_rows($exists_query) == 1) {
@@ -467,7 +467,7 @@ function addDirPath($path){
 	return $upload_dir.$path.'/';
 }
 
-//returns the path stored in the database.
+//returns just the random dir stored in the database.
 function removeDirPath($path){
 	global $upload_dir;
 	return strtok(str_replace($upload_dir, "", $path),"/");
