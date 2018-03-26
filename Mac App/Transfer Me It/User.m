@@ -62,7 +62,6 @@
     NSTimer*timer = [NSTimer scheduledTimerWithTimeInterval:1.f target:self selector:@selector(everySecond) userInfo:nil repeats:YES];
     NSRunLoop * rl = [NSRunLoop mainRunLoop];
     [rl addTimer:timer forMode:NSRunLoopCommonModes];
-    
     return self;
 }
 

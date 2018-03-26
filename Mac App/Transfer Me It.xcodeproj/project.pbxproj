@@ -18,7 +18,6 @@
 		481894071E4E786D007227EA /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 481893FD1E4E786D007227EA /* icon.png */; };
 		481894081E4E786D007227EA /* loading.png in Resources */ = {isa = PBXBuildFile; fileRef = 481893FE1E4E786D007227EA /* loading.png */; };
 		481894091E4E786D007227EA /* mainicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 481893FF1E4E786D007227EA /* mainicon.png */; };
-		4818940A1E4E786D007227EA /* send_hover.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894001E4E786D007227EA /* send_hover.png */; };
 		4818940B1E4E786D007227EA /* send.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894011E4E786D007227EA /* send.png */; };
 		4818940D1E4E786D007227EA /* up.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894031E4E786D007227EA /* up.png */; };
 		4818940E1E4E786D007227EA /* upload.png in Resources */ = {isa = PBXBuildFile; fileRef = 481894041E4E786D007227EA /* upload.png */; };
@@ -26,6 +25,7 @@
 		48729CD620294E1700206428 /* FileCrypter.m in Sources */ = {isa = PBXBuildFile; fileRef = 48729CD520294E1700206428 /* FileCrypter.m */; };
 		4874367B201D51B70030B1EF /* RSAClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 4874367A201D51B70030B1EF /* RSAClass.m */; };
 		48743681201D55E40030B1EF /* Keys.m in Sources */ = {isa = PBXBuildFile; fileRef = 4874367F201D55E40030B1EF /* Keys.m */; };
+		487F8CE420686792004CD8CF /* Montserrat-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 487F8CE320686791004CD8CF /* Montserrat-SemiBold.ttf */; };
 		48AF4B61202DF37B004DE865 /* file.png in Resources */ = {isa = PBXBuildFile; fileRef = 48AF4B60202DF37B004DE865 /* file.png */; };
 		48AF4B64202DF8DF004DE865 /* Button.m in Sources */ = {isa = PBXBuildFile; fileRef = 48AF4B63202DF8DF004DE865 /* Button.m */; };
 		D624441A2043015100D23F11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D62444192043015100D23F11 /* Assets.xcassets */; };
@@ -34,6 +34,7 @@
 		D69CEEAA2022818000CD3719 /* Download.m in Sources */ = {isa = PBXBuildFile; fileRef = D69CEEA92022818000CD3719 /* Download.m */; };
 		D6A84E2E203A47D300EA0F47 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D6A84E2D203A47C900EA0F47 /* Montserrat-Regular.ttf */; };
 		D6A84E30203A481F00EA0F47 /* Montserrat-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D6A84E2F203A480B00EA0F47 /* Montserrat-Medium.ttf */; };
+		D6B6242B20692573002252EC /* exit.png in Resources */ = {isa = PBXBuildFile; fileRef = D6B6242A20692573002252EC /* exit.png */; };
 		D6BD9FA72021E6AE0099E7DE /* CustomVars.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD9FA52021E6AE0099E7DE /* CustomVars.m */; };
 		D6BD9FAA2021FD090099E7DE /* Upload.m in Sources */ = {isa = PBXBuildFile; fileRef = D6BD9FA92021FD090099E7DE /* Upload.m */; };
 		D6F63858201E0A9600EA9866 /* Socket.m in Sources */ = {isa = PBXBuildFile; fileRef = D6F63857201E0A9600EA9866 /* Socket.m */; };
@@ -60,7 +61,6 @@
 		481893FD1E4E786D007227EA /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		481893FE1E4E786D007227EA /* loading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loading.png; sourceTree = "<group>"; };
 		481893FF1E4E786D007227EA /* mainicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mainicon.png; sourceTree = "<group>"; };
-		481894001E4E786D007227EA /* send_hover.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = send_hover.png; sourceTree = "<group>"; };
 		481894011E4E786D007227EA /* send.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = send.png; sourceTree = "<group>"; };
 		481894031E4E786D007227EA /* up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = up.png; sourceTree = "<group>"; };
 		481894041E4E786D007227EA /* upload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = upload.png; sourceTree = "<group>"; };
@@ -71,6 +71,7 @@
 		4874367A201D51B70030B1EF /* RSAClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RSAClass.m; sourceTree = "<group>"; };
 		4874367F201D55E40030B1EF /* Keys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Keys.m; sourceTree = "<group>"; };
 		48743680201D55E40030B1EF /* Keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keys.h; sourceTree = "<group>"; };
+		487F8CE320686791004CD8CF /* Montserrat-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-SemiBold.ttf"; sourceTree = "<group>"; };
 		48AF4B60202DF37B004DE865 /* file.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = file.png; sourceTree = "<group>"; };
 		48AF4B62202DF8DF004DE865 /* Button.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Button.h; sourceTree = "<group>"; };
 		48AF4B63202DF8DF004DE865 /* Button.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Button.m; sourceTree = "<group>"; };
@@ -85,6 +86,7 @@
 		D69CEEA92022818000CD3719 /* Download.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Download.m; sourceTree = "<group>"; };
 		D6A84E2D203A47C900EA0F47 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Regular.ttf"; sourceTree = "<group>"; };
 		D6A84E2F203A480B00EA0F47 /* Montserrat-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Medium.ttf"; sourceTree = "<group>"; };
+		D6B6242A20692573002252EC /* exit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = exit.png; sourceTree = "<group>"; };
 		D6BD9FA52021E6AE0099E7DE /* CustomVars.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomVars.m; sourceTree = "<group>"; };
 		D6BD9FA62021E6AE0099E7DE /* CustomVars.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomVars.h; sourceTree = "<group>"; };
 		D6BD9FA82021FD090099E7DE /* Upload.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Upload.h; sourceTree = "<group>"; };
@@ -185,6 +187,7 @@
 		481893E41E4E7540007227EA /* images */ = {
 			isa = PBXGroup;
 			children = (
+				D6B6242A20692573002252EC /* exit.png */,
 				48AF4B60202DF37B004DE865 /* file.png */,
 				481893FB1E4E786D007227EA /* alert.png */,
 				481893FC1E4E786D007227EA /* download.png */,
@@ -192,7 +195,6 @@
 				485574701E89675400CB7DFA /* drag.png */,
 				481893FE1E4E786D007227EA /* loading.png */,
 				481893FF1E4E786D007227EA /* mainicon.png */,
-				481894001E4E786D007227EA /* send_hover.png */,
 				481894011E4E786D007227EA /* send.png */,
 				481894031E4E786D007227EA /* up.png */,
 				481894041E4E786D007227EA /* upload.png */,
@@ -273,6 +275,7 @@
 		D6A84E27203A466B00EA0F47 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				487F8CE320686791004CD8CF /* Montserrat-SemiBold.ttf */,
 				D6A84E2F203A480B00EA0F47 /* Montserrat-Medium.ttf */,
 				D6A84E2D203A47C900EA0F47 /* Montserrat-Regular.ttf */,
 			);
@@ -366,9 +369,10 @@
 				485574711E89675400CB7DFA /* drag.png in Resources */,
 				481894071E4E786D007227EA /* icon.png in Resources */,
 				4818940E1E4E786D007227EA /* upload.png in Resources */,
+				487F8CE420686792004CD8CF /* Montserrat-SemiBold.ttf in Resources */,
 				4818940D1E4E786D007227EA /* up.png in Resources */,
+				D6B6242B20692573002252EC /* exit.png in Resources */,
 				481894051E4E786D007227EA /* alert.png in Resources */,
-				4818940A1E4E786D007227EA /* send_hover.png in Resources */,
 				481894061E4E786D007227EA /* download.png in Resources */,
 				48AF4B61202DF37B004DE865 /* file.png in Resources */,
 			);

@@ -37,7 +37,6 @@
     [CustomFunctions checkForUpdate:false];
 }
 
-
 # pragma mark - finder right click
 - (void)finderService:(NSPasteboard *)pboard
               userData:(NSString *)userData

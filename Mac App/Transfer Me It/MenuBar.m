@@ -534,7 +534,7 @@
 
 #pragma mark - menu actions
 - (void)goPro{
-    [CustomFunctions goPro];    
+    [CustomFunctions goPro];
 }
 
 -(void)chooseFile{

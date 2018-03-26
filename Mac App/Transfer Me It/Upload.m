@@ -36,7 +36,6 @@
 }
 
 -(void)uploadFile:(NSString*)path friend:(NSString*)friendCode keys:(Keys*)keys{
-    
     NSData* file = [NSData dataWithContentsOfFile:path];
     unsigned long long fileSize = (unsigned long long)[file length];
     if(fileSize > 0){ // is a valid file

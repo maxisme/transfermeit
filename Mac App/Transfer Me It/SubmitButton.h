@@ -11,6 +11,6 @@
 @interface SubmitButton : NSButton
 @property (nonatomic) NSString* uploadFilePath;
 @property (nonatomic, strong) NSTrackingArea* trackingArea;
-@property (nonatomic, strong) NSImage *hover_image;
 @property (strong) NSCursor *cursor;
+-(void)animateHover;
 @end

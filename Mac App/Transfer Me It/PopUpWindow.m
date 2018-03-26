@@ -63,15 +63,14 @@
 
 #pragma mark - windows
 -(void)setSendToFriendView:(NSRect)statusBarFrame filePath:(NSString*)filePath{
-    _viewName = @"stf";
-    
     [self createDynamicInputWindow];
+    _viewName = @"stf";
 
-    [self createLabel:@"E N T E R  F R I E N D S  C O D E"];
+    [self createLabel:@"E N T E R   F R I E N D S   C O D E"];
 
     // create a on hover tooltip which tells you the file path you are wanting to upload
     int tooltip_wh = 15;
-    Button* fileButton = [[Button alloc] initWithFrame:CGRectMake(_windowWidth - (tooltip_wh + 5), _windowHeight - tooltip_wh - 20, tooltip_wh, tooltip_wh)];
+    Button* fileButton = [[Button alloc] initWithFrame:CGRectMake(_windowWidth - (tooltip_wh + 7), _windowHeight - tooltip_wh - 20, tooltip_wh, tooltip_wh)];
     [fileButton setImage:[NSImage imageNamed:@"file.png"]];
     [fileButton setImageScaling:NSImageScaleProportionallyDown];
     [fileButton setBordered:false];
@@ -98,11 +97,11 @@
 }
 
 -(void)setEnterPermCodeView:(NSRect)statusBarFrame{
-    _viewName = @"epc";
     [self createDynamicInputWindow];
+    _viewName = @"epc";
     
     //change labels
-    [_label setStringValue:@"E N T E R  C U S T O M  C O D E"];
+    [_label setStringValue:@"E N T E R   C U S T O M   C O D E"];
     _inputCode.stringValue = @"";
     
     [self createSubButton];
@@ -114,11 +113,11 @@
 }
 
 -(void)setEnterRegistrationKeyView:(NSRect)statusBarFrame{
-    _viewName = @"erk";
     [self createDynamicInputWindow];
+    _viewName = @"erk";
     
     //change labels
-    [self createLabel:@"E N T E R  C R E D I T  C O D E"];
+    [self createLabel:@"E N T E R   C R E D I T   C O D E"];
     
     [self createSubButton];
     [_subButton setAction:@selector(setCreditCode)];
@@ -136,7 +135,6 @@
     [_subButton updateTrackingAreas];
     [_subButton setEnabled:true];
     [_subButton setImage:[NSImage imageNamed:@"send.png"]];
-    [_subButton setAlternateImage:[NSImage imageNamed:@"send_hover.png"]];
     [_subButton setImageScaling:NSImageScaleProportionallyDown];
     [_subButton setButtonType:NSMomentaryChangeButton];
     [_subButton setBordered:NO];
@@ -147,6 +145,7 @@
 
 -(void)createLabel:(NSString*)string{
     [_label setStringValue:string];
+    
 }
 
 -(void)createWindow{
@@ -155,14 +154,17 @@
                                   _windowWidth,
                                   _windowWidth);
     
+    
     _window = [[KeyWindow alloc] initWithContentRect:viewFrame styleMask:0 backing:NSBackingStoreBuffered defer:YES];
+    
+    
     [_window setIdentifier:@"default"];
     [_window setOpaque:NO];
     [_window setBackgroundColor: [NSColor clearColor]];
-    [_window setReleasedWhenClosed: NO];
+    [_window setReleasedWhenClosed:NO];
     [_window setDelegate:(id)self];
     [_window setHasShadow: YES];
-    [_window setHidesOnDeactivate:YES];
+    [_window setHidesOnDeactivate:NO]; // only allow window to be closed manually
     [_window setLevel:NSFloatingWindowLevel];
     
     // Create NSview
@@ -179,13 +181,12 @@
     [_view addSubview:_up_arrow];
     
     //fill background
-    NSTextField* bg = [[NSTextField alloc] initWithFrame:CGRectMake(0, 0, _windowWidth, _windowHeight-15)]; // -15 for up icon
-    bg.backgroundColor = [CustomVars offwhite];
-    bg.editable = false;
-    bg.bordered = false;
-    bg.wantsLayer = true;
-    bg.layer.cornerRadius = 10.0f;
-    [_view addSubview:bg];
+    NSVisualEffectView* contentView = [[NSVisualEffectView alloc] initWithFrame:CGRectMake(0, 0, _windowWidth, _windowHeight-15)];
+    [contentView setWantsLayer:YES];
+    [contentView setState:NSVisualEffectStateActive];
+    [contentView setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameVibrantLight]];
+    [contentView.layer setCornerRadius:10.0f];
+    [_view addSubview:contentView];
     
     //create hidden pastebutton
     NSButton *pasteButton = [[NSButton alloc] initWithFrame:CGRectMake(0,0,0,0)];
@@ -215,47 +216,88 @@
 // - input of reg code
 // - input of perm code
 -(void)createDynamicInputWindow{
-    [self createWindow];
-    
-    _label = [[NSTextField alloc] initWithFrame:CGRectMake((_windowWidth/2) - (250/2), (_windowHeight/2)+25, 250, 20)];
-    _label.backgroundColor = [NSColor clearColor];
-    [_label setAlignment:NSTextAlignmentCenter];
-    [_label setFont:[NSFont fontWithName:@"Montserrat-Medium" size:13]];
-    [_label setTextColor:[CustomVars black]];
-    [_label setEditable:false];
-    [_label setBordered:false];
-    [_view addSubview:_label];
-    
-    //create editable text field
-    _inputCode = [[BorderTextField alloc] initWithFrame:CGRectMake(
-                                                               (_windowWidth/2) - (150/2),
-                                                               (_windowHeight/2) - (30/2) -10,
-                                                               150,
-                                                               30)];
-    [_inputCode setAlignment:NSTextAlignmentCenter];
-    [_inputCode.cell setWraps:NO];
-    [_inputCode.cell setScrollable:YES];
-    [_inputCode setFont:[NSFont systemFontOfSize:20]];
-    [_inputCode setTextColor:[CustomVars black]];
-    [_inputCode setFocusRingType:NSFocusRingTypeNone];
-    [_inputCode setDelegate:(id)self];
-    [_view addSubview:_inputCode];
-    
-    // create submit button
-    _subButton = [[SubmitButton alloc] init];
-    [_view addSubview:_subButton];
-    
-    //file path textfield
-    _errorMessage = [[NSTextField alloc] init];
-    [_errorMessage setBackgroundColor:[NSColor clearColor]];
-    [_errorMessage setAlignment:NSTextAlignmentCenter];
-    [_errorMessage setFont:[NSFont fontWithName:@"Montserrat-Regular" size:9]];
-    [_errorMessage setTextColor:[CustomVars red]];
-    [_errorMessage setEditable:false];
-    [_errorMessage setBordered:false];
-    [_errorMessage setFrame:CGRectMake(0, 0, _windowWidth, 15)];
-    [_view addSubview:_errorMessage];
-    
+    if(_viewName == nil){
+        int input_width = 150;
+        [self createWindow];
+        
+        
+        // create exit button
+        int tooltip_wh = 10;
+        Button* exitButton = [[Button alloc] initWithFrame:CGRectMake(10, _windowHeight - tooltip_wh - 22, tooltip_wh, tooltip_wh)];
+        [exitButton setImage:[NSImage imageNamed:@"exit.png"]];
+        [exitButton setImageScaling:NSImageScaleProportionallyDown];
+        [exitButton setBordered:false];
+        [exitButton setFocusRingType:NSFocusRingTypeNone];
+        [exitButton updateTrackingAreas];
+        [exitButton setAction:@selector(closeWindow)];
+        [_view addSubview:exitButton];
+        
+        _label = [[NSTextField alloc] initWithFrame:CGRectMake((_windowWidth/2) - (250/2), (_windowHeight/2)+20, 250, 20)];
+        _label.backgroundColor = [NSColor clearColor];
+        [_label setAlignment:NSTextAlignmentCenter];
+        [_label setFont:[NSFont fontWithName:@"Montserrat-SemiBold" size:13]];
+        [_label setTextColor:[CustomVars black]];
+        [_label setEditable:false];
+        [_label setBordered:false];
+        [_view addSubview:_label];
+        
+        //create editable text field
+        _inputCode = [[BorderTextField alloc] initWithFrame:CGRectMake(
+                                                                   (_windowWidth/2) - (input_width/2),
+                                                                   (_windowHeight/2) - (30/2) -10,
+                                                                   input_width,
+                                                                   30)];
+        [_inputCode setAlignment:NSTextAlignmentCenter];
+        [_inputCode.cell setWraps:NO];
+        [_inputCode.cell setScrollable:YES];
+        [_inputCode setFont:[NSFont systemFontOfSize:20]];
+        [_inputCode setTextColor:[CustomVars black]];
+        [_inputCode setFocusRingType:NSFocusRingTypeNone];
+        [_inputCode setDelegate:(id)self];
+        [_view addSubview:_inputCode];
+        
+        float line_width = 2.5;
+        
+        //underline
+        NSView *line = [[NSView alloc] initWithFrame:CGRectMake(input_width / 2 , _inputCode.frame.origin.y, _windowWidth - input_width, line_width)];
+        line.wantsLayer = TRUE;
+        [line.layer setBackgroundColor:[[CustomVars black] CGColor]];
+        [_view addSubview:line];
+        
+        //overline
+        NSView *line2 = [[NSView alloc] initWithFrame:CGRectMake(input_width / 2 , _inputCode.frame.origin.y + _inputCode.frame.size.height - line_width, _windowWidth - input_width, line_width)];
+        line2.wantsLayer = TRUE;
+        [line2.layer setBackgroundColor:[[CustomVars black] CGColor]];
+        [_view addSubview:line2];
+        
+        //leftline
+        NSView *line3 = [[NSView alloc] initWithFrame:CGRectMake(_inputCode.frame.origin.x , _inputCode.frame.origin.y, line_width, _inputCode.frame.size.height)];
+        line3.wantsLayer = TRUE;
+        [line3.layer setBackgroundColor:[[CustomVars black] CGColor]];
+        [_view addSubview:line3];
+        
+        //rightline
+        NSView *line4 = [[NSView alloc] initWithFrame:CGRectMake(_inputCode.frame.origin.x + _inputCode.frame.size.width - line_width, _inputCode.frame.origin.y, line_width, _inputCode.frame.size.height)];
+        line4.wantsLayer = TRUE;
+        [line4.layer setBackgroundColor:[[CustomVars black] CGColor]];
+        [_view addSubview:line4];
+        
+        
+        // create submit button
+        _subButton = [[SubmitButton alloc] init];
+        [_view addSubview:_subButton];
+        
+        //file path textfield
+        _errorMessage = [[NSTextField alloc] init];
+        [_errorMessage setBackgroundColor:[NSColor clearColor]];
+        [_errorMessage setAlignment:NSTextAlignmentCenter];
+        [_errorMessage setFont:[NSFont fontWithName:@"Montserrat-Regular" size:9]];
+        [_errorMessage setTextColor:[CustomVars red]];
+        [_errorMessage setEditable:false];
+        [_errorMessage setBordered:false];
+        [_errorMessage setFrame:CGRectMake(0, 0, _windowWidth, 18)];
+        [_view addSubview:_errorMessage];
+    }
 }
 
 -(void)createDownloadWindow:(NSString*)downloadInfo{
@@ -449,6 +491,7 @@ NSString* string_before;
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
             context.duration = 0.4;
             _window.animator.alphaValue = 1.0f;
+            [_subButton animateHover];
         } completionHandler:nil];
     });
 }
@@ -546,7 +589,7 @@ NSString* string_before;
     NSString* code = [CustomFunctions cleanUpString:_inputCode.stringValue];
     
     if([code length] != 100){
-        [DesktopNotification send:@"Credit Code Invalid!" message:@"The code may already be in use. Make sure codes are case sensitive."];
+        [self inputError:@"Invalid Credit Code!"];
     }else{
         [self closeWindow];
         
@@ -559,7 +602,7 @@ NSString* string_before;
                 [DesktopNotification send:@"Success!" message:@"You have added credit to your account."];
                 [CustomFunctions sendNotificationCenter:nil name:@"create-user"];
             }else{
-                [DesktopNotification send:@"Credit Code Invalid!" message:@"The code may already be in use. Make sure codes are case sensitive."];
+                [self inputError:@"Invalid Credit Code!!"];
             }
         };
         
@@ -586,9 +629,12 @@ NSString* string_before;
 }
 
 -(void)closeWindow{
+    NSLog(@"Closing %@", _viewName);
     _viewName = nil; // allows user to click on MenuBar again after download.
-    [_window close];
-    [_window orderOut:self];
+    if(_window != nil){
+        [_window close];
+        [_window orderOut:self];
+    }
 }
 
 -(void)inputError:(NSString*)message{
@@ -601,7 +647,7 @@ NSString* string_before;
     [_errorMessage.layer addAnimation:fadeOutAnimation forKey:nil];
     
     NSLog(@"error send %@", message);
-    _errorMessage.stringValue = message;
+    _errorMessage.stringValue = [NSString stringWithFormat:@"❌ %@ ❌",message];
     [self shakeLayer:_subButton.layer];
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(fadeOutErrorText) object:@""];
     [self performSelector:@selector(fadeOutErrorText) withObject:@"" afterDelay:4];
@@ -619,35 +665,38 @@ NSString* string_before;
 }
 
 -(void)animatePlane{
+    float duration = 0.4;
     CAMediaTimingFunction*easing = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
     
     CABasicAnimation *xAnimation = [CABasicAnimation animationWithKeyPath:@"transform.translation.x"];
     [xAnimation setToValue:[NSNumber numberWithFloat:200]];
     [xAnimation setBeginTime:0.0];
-    [xAnimation setDuration:0.7];
+    [xAnimation setDuration:duration];
     xAnimation.timingFunction = easing;
     
     CABasicAnimation *yAnimation = [CABasicAnimation animationWithKeyPath:@"transform.translation.y"];
+    [yAnimation setFromValue:[NSNumber numberWithFloat:0]];
     [yAnimation setToValue:[NSNumber numberWithFloat:10]];
-    [yAnimation setBeginTime:0.2];
-    [yAnimation setDuration:0.7];
+    [yAnimation setBeginTime:0.14];
+    [yAnimation setDuration:duration];
     yAnimation.timingFunction = easing;
     
     CABasicAnimation *rotate = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
-    [rotate setToValue:[NSNumber numberWithFloat:(15/180) * M_PI]];
-    [rotate setBeginTime:0.3];
-    [rotate setDuration:0.7];
+    [rotate setFromValue:[NSNumber numberWithFloat:0]];
+    [rotate setToValue:[NSNumber numberWithFloat:0.04 * M_PI]];
+    [rotate setBeginTime:0.13];
+    [rotate setDuration:duration];
     rotate.timingFunction = easing;
     
     CAAnimationGroup *group = [CAAnimationGroup animation];
     group.fillMode = kCAFillModeForwards;
     group.removedOnCompletion = NO;
-    [group setDuration:0.7];
+    [group setDuration:duration];
     [group setAnimations:[NSArray arrayWithObjects:xAnimation, yAnimation, rotate, nil]];
     
     [_subButton.layer addAnimation:group forKey:nil];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.8 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(duration + 0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         
         _window.alphaValue = 1.0;
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
