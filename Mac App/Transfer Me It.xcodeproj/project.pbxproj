@@ -361,6 +361,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D6A84E30203A481F00EA0F47 /* Montserrat-Medium.ttf in Resources */,
+				487F8CE420686792004CD8CF /* Montserrat-SemiBold.ttf in Resources */,
 				D6A84E2E203A47D300EA0F47 /* Montserrat-Regular.ttf in Resources */,
 				481894091E4E786D007227EA /* mainicon.png in Resources */,
 				481894081E4E786D007227EA /* loading.png in Resources */,
@@ -369,7 +370,6 @@
 				485574711E89675400CB7DFA /* drag.png in Resources */,
 				481894071E4E786D007227EA /* icon.png in Resources */,
 				4818940E1E4E786D007227EA /* upload.png in Resources */,
-				487F8CE420686792004CD8CF /* Montserrat-SemiBold.ttf in Resources */,
 				4818940D1E4E786D007227EA /* up.png in Resources */,
 				D6B6242B20692573002252EC /* exit.png in Resources */,
 				481894051E4E786D007227EA /* alert.png in Resources */,
@@ -460,7 +460,7 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SAMKeychain.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

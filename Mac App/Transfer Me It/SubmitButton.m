@@ -69,7 +69,6 @@
     [r2 setDuration:0.2];
     r2.timingFunction = easing;
     
-    
     CABasicAnimation *up = [CABasicAnimation animationWithKeyPath:@"transform.translation.y"];
     [up setFromValue:[NSNumber numberWithFloat:0]];
     [up setToValue:[NSNumber numberWithFloat:10]];
@@ -87,9 +86,8 @@
     CAAnimationGroup *group = [CAAnimationGroup animation];
     group.fillMode = kCAFillModeForwards;
     group.removedOnCompletion = NO;
-    group.duration = 0.5;
+    group.duration = 0.6;
     [group setAnimations:[NSArray arrayWithObjects:up,down,r1, r2, r3, nil]];
-//    [group setAnimations:[NSArray arrayWithObjects:up,down,r3,r1,r2, nil]];
     
     [self.layer addAnimation:group forKey:nil];
 }

@@ -63,7 +63,9 @@
 
 #pragma mark - windows
 -(void)setSendToFriendView:(NSRect)statusBarFrame filePath:(NSString*)filePath{
-    [self createDynamicInputWindow];
+    _inputWindow = [self createDynamicInputWindow];
+    NSView* view = [_inputWindow contentView];
+    
     _viewName = @"stf";
 
     [self createLabel:@"E N T E R   F R I E N D S   C O D E"];
@@ -78,26 +80,21 @@
     [fileButton updateTrackingAreas];
     fileButton.message = filePath;
     [fileButton setAction:@selector(popUpMessage:)];
-    [_view addSubview:fileButton];
+    [view addSubview:fileButton];
     
     // create the plane submit button
     [self createSubButton];
     [_subButton setUploadFilePath:filePath];
     [_subButton setAction:@selector(uploadFile)];
 
-    [[self window] makeFirstResponder:_inputCode];
+    [_inputWindow makeFirstResponder:_inputCode];
     
-    [self showView:statusBarFrame];
+    [self showView:statusBarFrame window:_inputWindow];
 }
 
--(void)downloadView:(NSRect)statusBarFrame downloadInfo:(NSString*)downloadInfo{
-    _viewName = @"dlv";
-    [self createDownloadWindow:downloadInfo];
-    [self showView:statusBarFrame];
-}
 
 -(void)setEnterPermCodeView:(NSRect)statusBarFrame{
-    [self createDynamicInputWindow];
+    _inputWindow = [self createDynamicInputWindow];
     _viewName = @"epc";
     
     //change labels
@@ -107,13 +104,13 @@
     [self createSubButton];
     [_subButton setAction:@selector(togglePermenantUser)];
     
-    [[self window] makeFirstResponder:_inputCode];
+    [_inputWindow makeFirstResponder:_inputCode];
     
-    [self showView:statusBarFrame];
+    [self showView:statusBarFrame window:_inputWindow];
 }
 
 -(void)setEnterRegistrationKeyView:(NSRect)statusBarFrame{
-    [self createDynamicInputWindow];
+    _inputWindow = [self createDynamicInputWindow];
     _viewName = @"erk";
     
     //change labels
@@ -122,15 +119,19 @@
     [self createSubButton];
     [_subButton setAction:@selector(setCreditCode)];
     
-    [[self window] makeFirstResponder:_inputCode];
+    [_inputWindow makeFirstResponder:_inputCode];
     
-    [self showView:statusBarFrame];
+    [self showView:statusBarFrame window:_inputWindow];
+}
+
+-(void)downloadView:(NSRect)statusBarFrame downloadInfo:(NSString*)downloadInfo{
+    [self showView:statusBarFrame window:[self createDownloadWindow:downloadInfo]];
 }
 
 #pragma mark - window helpers
 
 -(void)createSubButton{
-    int button_width = 55;
+    int button_width = 50;
     [_subButton setFrame:CGRectMake((_windowWidth/2) - (button_width/2), (_windowHeight/2) - 67, button_width, 30)];
     [_subButton updateTrackingAreas];
     [_subButton setEnabled:true];
@@ -148,37 +149,36 @@
     
 }
 
--(void)createWindow{
+-(KeyWindow*)createWindow{
     NSRect viewFrame = NSMakeRect(0,
                                   0,
                                   _windowWidth,
                                   _windowWidth);
     
     
-    _window = [[KeyWindow alloc] initWithContentRect:viewFrame styleMask:0 backing:NSBackingStoreBuffered defer:YES];
+    KeyWindow* window = [[KeyWindow alloc] initWithContentRect:viewFrame styleMask:0 backing:NSBackingStoreBuffered defer:YES];
     
     
-    [_window setIdentifier:@"default"];
-    [_window setOpaque:NO];
-    [_window setBackgroundColor: [NSColor clearColor]];
-    [_window setReleasedWhenClosed:NO];
-    [_window setDelegate:(id)self];
-    [_window setHasShadow: YES];
-    [_window setHidesOnDeactivate:NO]; // only allow window to be closed manually
-    [_window setLevel:NSFloatingWindowLevel];
+    [window setIdentifier:@"default"];
+    [window setOpaque:NO];
+    [window setBackgroundColor: [NSColor clearColor]];
+    [window setReleasedWhenClosed:NO];
+    [window setDelegate:(id)self];
+    [window setHasShadow: YES];
+    [window setHidesOnDeactivate:NO]; // only allow window to be closed manually
+    [window setLevel:NSFloatingWindowLevel];
     
     // Create NSview
-    _view = nil;
-    _view = [_window contentView];
-    [_view setWantsLayer:YES];
-    _view.layer.backgroundColor = [NSColor clearColor].CGColor;
+    NSView * view = [window contentView];
+    [view setWantsLayer:YES];
+    view.layer.backgroundColor = [NSColor clearColor].CGColor;
     
     //add arrow icon
     NSImage *up = [NSImage imageNamed:@"up.png"];
     int up_h = 20;
     _up_arrow = [[NSImageView alloc] initWithFrame:NSMakeRect(_windowWidth/2 - (up_h / 2), 0, up_h, up_h)];
     [_up_arrow setImage:up];
-    [_view addSubview:_up_arrow];
+    [view addSubview:_up_arrow];
     
     //fill background
     NSVisualEffectView* contentView = [[NSVisualEffectView alloc] initWithFrame:CGRectMake(0, 0, _windowWidth, _windowHeight-15)];
@@ -186,27 +186,28 @@
     [contentView setState:NSVisualEffectStateActive];
     [contentView setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameVibrantLight]];
     [contentView.layer setCornerRadius:10.0f];
-    [_view addSubview:contentView];
+    [view addSubview:contentView];
     
     //create hidden pastebutton
     NSButton *pasteButton = [[NSButton alloc] initWithFrame:CGRectMake(0,0,0,0)];
     [pasteButton setKeyEquivalentModifierMask: NSCommandKeyMask];
     [pasteButton setKeyEquivalent:@"v"];
     [pasteButton setAction:@selector(pasteToFriendCode)];
-    [_view addSubview:pasteButton];
+    [view addSubview:pasteButton];
     
     //create hidden select all button
     NSButton *selectAllButton = [[NSButton alloc] initWithFrame:CGRectMake(0,0,0,0)];
     [selectAllButton setKeyEquivalentModifierMask: NSCommandKeyMask];
     [selectAllButton setKeyEquivalent:@"a"];
     [selectAllButton setAction:@selector(selectFriendCode)];
-    [_view addSubview:selectAllButton];
+    [view addSubview:selectAllButton];
     
     //create hidden enter button
     NSButton *enterButton = [[NSButton alloc] initWithFrame:CGRectMake(0,0,0,0)];
     [enterButton setKeyEquivalent:@"\r"];
     [enterButton setAction:@selector(enter)];
-    [_view addSubview:enterButton];
+    [view addSubview:enterButton];
+    return window;
 }
 
 
@@ -215,94 +216,96 @@
 // - input of friends code
 // - input of reg code
 // - input of perm code
--(void)createDynamicInputWindow{
-    if(_viewName == nil){
-        int input_width = 150;
-        [self createWindow];
-        
-        
-        // create exit button
-        int tooltip_wh = 10;
-        Button* exitButton = [[Button alloc] initWithFrame:CGRectMake(10, _windowHeight - tooltip_wh - 22, tooltip_wh, tooltip_wh)];
-        [exitButton setImage:[NSImage imageNamed:@"exit.png"]];
-        [exitButton setImageScaling:NSImageScaleProportionallyDown];
-        [exitButton setBordered:false];
-        [exitButton setFocusRingType:NSFocusRingTypeNone];
-        [exitButton updateTrackingAreas];
-        [exitButton setAction:@selector(closeWindow)];
-        [_view addSubview:exitButton];
-        
-        _label = [[NSTextField alloc] initWithFrame:CGRectMake((_windowWidth/2) - (250/2), (_windowHeight/2)+20, 250, 20)];
-        _label.backgroundColor = [NSColor clearColor];
-        [_label setAlignment:NSTextAlignmentCenter];
-        [_label setFont:[NSFont fontWithName:@"Montserrat-SemiBold" size:13]];
-        [_label setTextColor:[CustomVars black]];
-        [_label setEditable:false];
-        [_label setBordered:false];
-        [_view addSubview:_label];
-        
-        //create editable text field
-        _inputCode = [[BorderTextField alloc] initWithFrame:CGRectMake(
-                                                                   (_windowWidth/2) - (input_width/2),
-                                                                   (_windowHeight/2) - (30/2) -10,
-                                                                   input_width,
-                                                                   30)];
-        [_inputCode setAlignment:NSTextAlignmentCenter];
-        [_inputCode.cell setWraps:NO];
-        [_inputCode.cell setScrollable:YES];
-        [_inputCode setFont:[NSFont systemFontOfSize:20]];
-        [_inputCode setTextColor:[CustomVars black]];
-        [_inputCode setFocusRingType:NSFocusRingTypeNone];
-        [_inputCode setDelegate:(id)self];
-        [_view addSubview:_inputCode];
-        
-        float line_width = 2.5;
-        
-        //underline
-        NSView *line = [[NSView alloc] initWithFrame:CGRectMake(input_width / 2 , _inputCode.frame.origin.y, _windowWidth - input_width, line_width)];
-        line.wantsLayer = TRUE;
-        [line.layer setBackgroundColor:[[CustomVars black] CGColor]];
-        [_view addSubview:line];
-        
-        //overline
-        NSView *line2 = [[NSView alloc] initWithFrame:CGRectMake(input_width / 2 , _inputCode.frame.origin.y + _inputCode.frame.size.height - line_width, _windowWidth - input_width, line_width)];
-        line2.wantsLayer = TRUE;
-        [line2.layer setBackgroundColor:[[CustomVars black] CGColor]];
-        [_view addSubview:line2];
-        
-        //leftline
-        NSView *line3 = [[NSView alloc] initWithFrame:CGRectMake(_inputCode.frame.origin.x , _inputCode.frame.origin.y, line_width, _inputCode.frame.size.height)];
-        line3.wantsLayer = TRUE;
-        [line3.layer setBackgroundColor:[[CustomVars black] CGColor]];
-        [_view addSubview:line3];
-        
-        //rightline
-        NSView *line4 = [[NSView alloc] initWithFrame:CGRectMake(_inputCode.frame.origin.x + _inputCode.frame.size.width - line_width, _inputCode.frame.origin.y, line_width, _inputCode.frame.size.height)];
-        line4.wantsLayer = TRUE;
-        [line4.layer setBackgroundColor:[[CustomVars black] CGColor]];
-        [_view addSubview:line4];
-        
-        
-        // create submit button
-        _subButton = [[SubmitButton alloc] init];
-        [_view addSubview:_subButton];
-        
-        //file path textfield
-        _errorMessage = [[NSTextField alloc] init];
-        [_errorMessage setBackgroundColor:[NSColor clearColor]];
-        [_errorMessage setAlignment:NSTextAlignmentCenter];
-        [_errorMessage setFont:[NSFont fontWithName:@"Montserrat-Regular" size:9]];
-        [_errorMessage setTextColor:[CustomVars red]];
-        [_errorMessage setEditable:false];
-        [_errorMessage setBordered:false];
-        [_errorMessage setFrame:CGRectMake(0, 0, _windowWidth, 18)];
-        [_view addSubview:_errorMessage];
-    }
+-(KeyWindow*)createDynamicInputWindow{
+    if(_viewName != nil) [self closeInputWindow];
+    int input_width = 150;
+    
+    KeyWindow* window = [self createWindow];
+    NSView* view = [window contentView];
+    
+    // create exit button
+    int tooltip_wh = 10;
+    Button* exitButton = [[Button alloc] initWithFrame:CGRectMake(10, _windowHeight - tooltip_wh - 22, tooltip_wh, tooltip_wh)];
+    [exitButton setImage:[NSImage imageNamed:@"exit.png"]];
+    [exitButton setImageScaling:NSImageScaleProportionallyDown];
+    [exitButton setBordered:false];
+    [exitButton setFocusRingType:NSFocusRingTypeNone];
+    [exitButton updateTrackingAreas];
+    [exitButton setAction:@selector(closeInputWindow)];
+    [view addSubview:exitButton];
+    
+    _label = [[NSTextField alloc] initWithFrame:CGRectMake((_windowWidth/2) - (250/2), (_windowHeight/2)+20, 250, 20)];
+    _label.backgroundColor = [NSColor clearColor];
+    [_label setAlignment:NSTextAlignmentCenter];
+    [_label setFont:[NSFont fontWithName:@"Montserrat-SemiBold" size:13]];
+    [_label setTextColor:[CustomVars black]];
+    [_label setEditable:false];
+    [_label setBordered:false];
+    [view addSubview:_label];
+    
+    //create editable text field
+    _inputCode = [[BorderTextField alloc] initWithFrame:CGRectMake(
+                                                               (_windowWidth/2) - (input_width/2),
+                                                               (_windowHeight/2) - (30/2) -10,
+                                                               input_width,
+                                                               30)];
+    [_inputCode setAlignment:NSTextAlignmentCenter];
+    [_inputCode.cell setWraps:NO];
+    [_inputCode.cell setScrollable:YES];
+    [_inputCode setFont:[NSFont systemFontOfSize:20]];
+    [_inputCode setTextColor:[CustomVars black]];
+    [_inputCode setFocusRingType:NSFocusRingTypeNone];
+    [_inputCode setDelegate:(id)self];
+    [view addSubview:_inputCode];
+    
+    float line_width = 2.5;
+    
+    //underline
+    NSView *line = [[NSView alloc] initWithFrame:CGRectMake(input_width / 2 , _inputCode.frame.origin.y, _windowWidth - input_width, line_width)];
+    line.wantsLayer = TRUE;
+    [line.layer setBackgroundColor:[[CustomVars black] CGColor]];
+    [view addSubview:line];
+    
+    //overline
+    NSView *line2 = [[NSView alloc] initWithFrame:CGRectMake(input_width / 2 , _inputCode.frame.origin.y + _inputCode.frame.size.height - line_width, _windowWidth - input_width, line_width)];
+    line2.wantsLayer = TRUE;
+    [line2.layer setBackgroundColor:[[CustomVars black] CGColor]];
+    [view addSubview:line2];
+    
+    //leftline
+    NSView *line3 = [[NSView alloc] initWithFrame:CGRectMake(_inputCode.frame.origin.x , _inputCode.frame.origin.y, line_width, _inputCode.frame.size.height)];
+    line3.wantsLayer = TRUE;
+    [line3.layer setBackgroundColor:[[CustomVars black] CGColor]];
+    [view addSubview:line3];
+    
+    //rightline
+    NSView *line4 = [[NSView alloc] initWithFrame:CGRectMake(_inputCode.frame.origin.x + _inputCode.frame.size.width - line_width, _inputCode.frame.origin.y, line_width, _inputCode.frame.size.height)];
+    line4.wantsLayer = TRUE;
+    [line4.layer setBackgroundColor:[[CustomVars black] CGColor]];
+    [view addSubview:line4];
+    
+    
+    // create submit button
+    _subButton = [[SubmitButton alloc] init];
+    [view addSubview:_subButton];
+    
+    //file path textfield
+    _errorMessage = [[NSTextField alloc] init];
+    [_errorMessage setBackgroundColor:[NSColor clearColor]];
+    [_errorMessage setAlignment:NSTextAlignmentCenter];
+    [_errorMessage setFont:[NSFont fontWithName:@"Montserrat-Regular" size:9]];
+    [_errorMessage setTextColor:[CustomVars red]];
+    [_errorMessage setEditable:false];
+    [_errorMessage setBordered:false];
+    [_errorMessage setFrame:CGRectMake(0, 0, _windowWidth, 18)];
+    [view addSubview:_errorMessage];
+    
+    return window;
 }
 
--(void)createDownloadWindow:(NSString*)downloadInfo{
-    [self createWindow];
-    [_window setHidesOnDeactivate:NO]; // prevent user from being able to click off the notification.
+-(KeyWindow*)createDownloadWindow:(NSString*)downloadInfo{
+    KeyWindow* window = [self createWindow];
+    NSView* view = [window contentView];
     
     //decode json
     NSString* fileName = [[CustomFunctions jsonToVal:downloadInfo key:@"path"] lastPathComponent];
@@ -312,12 +315,12 @@
     NSTextField* incomingFile = [[NSTextField alloc] initWithFrame:CGRectMake((_windowWidth/2) - (250/2), (_windowHeight/2)+25, 250, 20)];
     [incomingFile setBackgroundColor:[NSColor clearColor]];
     [incomingFile setAlignment:NSTextAlignmentCenter];
-    [incomingFile setFont:[NSFont fontWithName:@"Montserrat-Medium" size:13]];
+    [incomingFile setFont:[NSFont fontWithName:@"Montserrat-SemiBold" size:13]];
     [incomingFile setTextColor:[CustomVars black]];
     [incomingFile setEditable:false];
     [incomingFile setBordered:false];
-    [incomingFile setStringValue:@"I N C O M I N G  F I L E"];
-    [_view addSubview:incomingFile];
+    [incomingFile setStringValue:@"I N C O M I N G   F I L E"];
+    [view addSubview:incomingFile];
     
     NSMutableParagraphStyle *centre = [[NSMutableParagraphStyle alloc] init];
     [centre setAlignment:NSCenterTextAlignment];
@@ -349,11 +352,10 @@
     [downloadPath setMessage:fileSize];
     [downloadPath setAction:@selector(popUpMessage:)];
     [downloadPath updateTrackingAreas];
-    [_view addSubview:downloadPath];
+    [view addSubview:downloadPath];
     
     
     // bottom button variables
-    NSFont* btnFont = [NSFont fontWithName:@"Montserrat-Medium" size:13];
     int btn_h = 40;
     
     ///////////////////////////
@@ -362,19 +364,21 @@
     Button* downloadBtn = [[Button alloc] initWithFrame:CGRectMake(_windowWidth / 2, 0, _windowWidth / 2, btn_h)];
     [downloadBtn setFocusRingType:NSFocusRingTypeNone];
     [downloadBtn setBordered:false];
+    [downloadBtn setButtonType:NSMomentaryChangeButton];
     // attribute font for delete button
     NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] initWithString:@"DOWNLOAD"];
     NSRange range = NSMakeRange(0, [attr length]);
     [attr addAttribute:NSParagraphStyleAttributeName value:centre range:range];
     [attr addAttribute:NSForegroundColorAttributeName value:[CustomVars black] range:range];
-    [attr addAttribute:NSFontAttributeName value:btnFont range:range];
+    [attr addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"Montserrat-SemiBold" size:13] range:range];
     [attr fixAttributesInRange:range];
     // add attribute
     [downloadBtn setAttributedTitle:attr];
     [downloadBtn updateTrackingAreas];
     [downloadBtn setMessage:downloadInfo];
+    [downloadBtn setWin:window];
     [downloadBtn setAction:@selector(downloadFile:)];
-    [_view addSubview:downloadBtn];
+    [view addSubview:downloadBtn];
     
     ///////////////////////////
     // ignore/delete button
@@ -382,19 +386,21 @@
     Button* deleteBtn = [[Button alloc] initWithFrame:CGRectMake(0, 0, _windowWidth / 2, btn_h)];
     [deleteBtn setFocusRingType:NSFocusRingTypeNone];
     [deleteBtn setBordered:false];
+    [deleteBtn setButtonType:NSMomentaryChangeButton];
     // attribute font for delete button
     NSMutableAttributedString *deleteAttr = [[NSMutableAttributedString alloc] initWithString:@"IGNORE"];
     NSRange deleteRange = NSMakeRange(0, [deleteAttr length]);
     [deleteAttr addAttribute:NSParagraphStyleAttributeName value:centre range:deleteRange];
     [deleteAttr addAttribute:NSForegroundColorAttributeName value:[CustomVars grey] range:deleteRange];
-    [deleteAttr addAttribute:NSFontAttributeName value:btnFont range:deleteRange];
+    [deleteAttr addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"Montserrat-Medium" size:13] range:deleteRange];
     [deleteAttr fixAttributesInRange:deleteRange];
     // add attribute
     [deleteBtn setAttributedTitle:deleteAttr];
     [deleteBtn updateTrackingAreas];
     [deleteBtn setMessage:downloadInfo];
+    [deleteBtn setWin:window];
     [deleteBtn setAction:@selector(ignoreFile:)];
-    [_view addSubview:deleteBtn];
+    [view addSubview:deleteBtn];
     
     
     ///////////////////////////
@@ -403,18 +409,18 @@
     //horizontal border bottom
     NSView *hor_bor_bot = [[NSView alloc] initWithFrame:CGRectMake(0, btn_h, _windowWidth, 1)];
     hor_bor_bot.wantsLayer = TRUE;
-    [hor_bor_bot.layer setBackgroundColor:[[CustomVars boarder] CGColor]];
-    [_view addSubview:hor_bor_bot];
+    [hor_bor_bot.layer setBackgroundColor:[[CustomVars black] CGColor]];
+    [view addSubview:hor_bor_bot];
     
     //vertical button splitter boarder
     NSView *vert_bor_top = [[NSView alloc] initWithFrame:CGRectMake((_windowWidth / 2) -  1, 0, 1, btn_h)];
     vert_bor_top.wantsLayer = TRUE;
-    [vert_bor_top.layer setBackgroundColor:[[CustomVars boarder] CGColor]];
-    [_view addSubview:vert_bor_top];
+    [vert_bor_top.layer setBackgroundColor:[[CustomVars black] CGColor]];
+    [view addSubview:vert_bor_top];
+    return window;
 }
 
-
--(void)positionWindow:(NSRect)statusBarFrame{
+-(void)positionWindow:(NSRect)statusBarFrame window:(KeyWindow*)window{
     float menu_icon_width = statusBarFrame.size.width;
     float menu_icon_x = statusBarFrame.origin.x;
     float menu_icon_y = statusBarFrame.origin.y;
@@ -427,8 +433,8 @@
     
     // update positions
     [_up_arrow setFrame:NSMakeRect(arrow_x, arrow_y, _up_arrow.frame.size.width, _up_arrow.frame.size.height)];
-    [_window setFrame:NSMakeRect(window_x, window_y, _windowWidth, _windowHeight) display:true];
-    [_view setFrame:CGRectMake(0, 0, _windowWidth, _windowHeight + arrow_y)];
+    [window setFrame:NSMakeRect(window_x, window_y, _windowWidth, _windowHeight) display:true];
+    [[window contentView] setFrame:CGRectMake(0, 0, _windowWidth, _windowHeight + arrow_y)];
 }
 
 -(void)popUpMessage:(Button *)sender {
@@ -452,7 +458,7 @@
     [po setBehavior:NSPopoverBehaviorSemitransient];
     [po setAnimates:YES];
     [po setContentViewController:viewController];
-    [po showRelativeToRect:[sender bounds] ofView:sender preferredEdge:NSMinYEdge]; //NSMinYEdge = below 
+    [po showRelativeToRect:[sender bounds] ofView:sender preferredEdge:NSMaxYEdge]; //NSMinYEdge = below
 }
 
 // Make sure send to friend view only takes an input of a friend code
@@ -477,20 +483,20 @@ NSString* string_before;
     }
 }
 
--(void)showView:(NSRect)statusBarFrame{
+-(void)showView:(NSRect)statusBarFrame window:(KeyWindow*)window{
     [NSApp activateIgnoringOtherApps:YES];
     
     // remove all desktop notifications
     [[NSUserNotificationCenter defaultUserNotificationCenter] removeAllDeliveredNotifications];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        _window.alphaValue = 0;
-        _window.animator.alphaValue = 0.0f;
-        [self positionWindow:statusBarFrame];
-        [_window makeKeyAndOrderFront:_view];
+        window.alphaValue = 0;
+        window.animator.alphaValue = 0.0f;
+        [self positionWindow:statusBarFrame window:window];
+        [window makeKeyAndOrderFront:[window contentView]];
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
             context.duration = 0.4;
-            _window.animator.alphaValue = 1.0f;
+            window.animator.alphaValue = 1.0f;
             [_subButton animateHover];
         } completionHandler:nil];
     });
@@ -498,6 +504,8 @@ NSString* string_before;
 
 #pragma mark - actions
 -(void)uploadFile{
+    [_subButton setEnabled:false];
+    
     // send message to User class to upload file with params:
     NSString* jsonInfo = [CustomFunctions dicToJsonString:@{
                                        @"path": _subButton.uploadFilePath,
@@ -513,9 +521,9 @@ NSString* string_before;
         // not specified default save location
         downloadLocation = [CustomFunctions choosePathWindow:@"Choose your download location" buttonTitle:@"Save" allowDir:true allowFile:false];
         if(downloadLocation == nil) return;
-    }else{
-        [self closeWindow];
     }
+    
+    [self close:sender.win];
     
     // send message to User class to download file with params:
     NSString* downloadInfo = sender.message;
@@ -528,8 +536,20 @@ NSString* string_before;
     [CustomFunctions sendNotificationCenter:jsonInfo name:@"download-file"];
 }
 
+-(void)closeInputWindow{
+    [self close:_inputWindow];
+    _inputWindow = nil;
+}
+
+-(void)close:(KeyWindow*)window{
+    [_subButton setEnabled:true];
+    [window close];
+    [window orderOut:self];
+}
+
 -(void)ignoreFile:(Button *)sender{
-    [self closeWindow];
+    [self close:sender.win];
+    
     // get variables
     NSString* downloadInfo = sender.message;
     NSString* friendUUID = [CustomFunctions jsonToVal:downloadInfo key:@"UUID"];
@@ -537,8 +557,7 @@ NSString* string_before;
     unsigned long long ref = [CustomFunctions stringToULL:[CustomFunctions jsonToVal:downloadInfo key:@"ref"]];
     
     // end download early (empty file hash)
-    [[[Download alloc] initWithKeychain:_keychain menuBar:nil window:self] finishedDownload:path friendUUID:friendUUID downloadRef:ref hash:@""];
-    
+    [[[Download alloc] initWithKeychain:_keychain menuBar:nil] finishedDownload:path friendUUID:friendUUID downloadRef:ref hash:@""];
 }
 
 // function is used to both add and remove permenant codes depending on whether the user is using one already
@@ -591,7 +610,7 @@ NSString* string_before;
     if([code length] != 100){
         [self inputError:@"Invalid Credit Code!"];
     }else{
-        [self closeWindow];
+        [self close:_inputWindow];
         
         STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/regCredit.php"];
         
@@ -628,15 +647,6 @@ NSString* string_before;
     [_subButton performClick:self];
 }
 
--(void)closeWindow{
-    NSLog(@"Closing %@", _viewName);
-    _viewName = nil; // allows user to click on MenuBar again after download.
-    if(_window != nil){
-        [_window close];
-        [_window orderOut:self];
-    }
-}
-
 -(void)inputError:(NSString*)message{
     CABasicAnimation *fadeOutAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
     fadeOutAnimation.fromValue = [NSNumber numberWithFloat:0.0];
@@ -647,7 +657,7 @@ NSString* string_before;
     [_errorMessage.layer addAnimation:fadeOutAnimation forKey:nil];
     
     NSLog(@"error send %@", message);
-    _errorMessage.stringValue = [NSString stringWithFormat:@"❌ %@ ❌",message];
+    _errorMessage.stringValue = message;
     [self shakeLayer:_subButton.layer];
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(fadeOutErrorText) object:@""];
     [self performSelector:@selector(fadeOutErrorText) withObject:@"" afterDelay:4];
@@ -698,16 +708,16 @@ NSString* string_before;
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(duration + 0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         
-        _window.alphaValue = 1.0;
+        _inputWindow.alphaValue = 1.0;
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
             context.duration = 0.3;
-            _window.animator.alphaValue = 0.0f; // fade window out
+            _inputWindow.animator.alphaValue = 0.0f; // fade window out
         }
         completionHandler:^{
-            _window.alphaValue = 1.0f; // reset window opacity
+            _inputWindow.alphaValue = 1.0f; // reset window opacity
             
             //close window
-            [self closeWindow];
+            [self close:_inputWindow];
         }];
     });
 }

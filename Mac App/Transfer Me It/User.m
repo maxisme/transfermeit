@@ -204,7 +204,7 @@
         
         if([CustomFunctions getStoredBool:@"autoDownload"]){
             // auto download to location
-            [[[Download alloc] initWithKeychain:_keychain menuBar:_menuBar window:_window] downloadTo:[[NSUserDefaults standardUserDefaults] objectForKey:@"saveLocation"] friendUUID:friendUUID downloadPath:path downloadRef:ref];
+            [[[Download alloc] initWithKeychain:_keychain menuBar:_menuBar] downloadTo:[[NSUserDefaults standardUserDefaults] objectForKey:@"saveLocation"] friendUUID:friendUUID downloadPath:path downloadRef:ref];
         }else{
             // Open window asking client whether they would like to download the file
             [_window downloadView:[[_menuBar valueForKey:@"window"] frame] downloadInfo:json];
@@ -339,7 +339,7 @@
     unsigned long long dlRef = [CustomFunctions stringToULL:[CustomFunctions jsonToVal:jsonInfo key:@"dlRef"]];
     NSString* friendUUID = [CustomFunctions jsonToVal:jsonInfo key:@"friendUUID"];
     
-    [[[Download alloc] initWithKeychain:_keychain menuBar:_menuBar window:_window] downloadTo:localPath friendUUID:friendUUID downloadPath:serverPath downloadRef:dlRef];
+    [[[Download alloc] initWithKeychain:_keychain menuBar:_menuBar] downloadTo:localPath friendUUID:friendUUID downloadPath:serverPath downloadRef:dlRef];
 }
 
 #pragma mark - every second

@@ -65,11 +65,14 @@
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-    if(![_w.viewName isEqual: @"dlv"]){
-        [_w closeWindow];
+    @try {
+        [_w closeInputWindow];
         NSMenu *menu = [super menu];
         [_statusItem popUpStatusItemMenu:menu];
         [NSApp sendAction:self.action to:self.target from:self];
+    }
+    @catch (NSException * e) {
+        NSLog(@"Mouse Down MB Exception: %@", e);
     }
 }
 

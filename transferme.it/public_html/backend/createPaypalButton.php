@@ -25,9 +25,9 @@ function createButton($name, $price, $subscribe = false){
         "BUTTONSUBTYPE" => "SERVICES",
         "BUTTONCOUNTRY" => "GB",
         "BUTTONIMAGE" => "reg",
-        "L_BUTTONVAR1" => "return=https://transferme.it/payed.php",
+        "L_BUTTONVAR1" => "return=https://transferme.it/#payed",
         "L_BUTTONVAR2" => "item_name=".$name,
-        "L_BUTTONVAR3" => "notify_url=https://transferme.it/ppNotify.php",
+        "L_BUTTONVAR3" => "notify_url=https://transferme.it/backend/paypalNotify.php",
         "L_BUTTONVAR4" => "currency_code=GBP",
         "L_BUTTONVAR5" => "no_shipping=1"
     );
@@ -56,11 +56,16 @@ function createButton($name, $price, $subscribe = false){
 	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
 	//post data to paypal
-	curl_setopt($curl, CURLOPT_URL, 'https://api-3t.paypal.com/nvp?'.http_build_query($payData));
+	curl_setopt($curl, CURLOPT_URL, 'https://api-3t.paypal.com/nvp');
+    curl_setopt($curl,CURLOPT_POST, count($payData));
+    curl_setopt($curl,CURLOPT_POSTFIELDS, http_build_query($payData));
 	$nvpPayReturn = curl_exec($curl);
 	curl_close($curl);
+
 	//return only the html
-	$nvpPayReturn = get_string_between($nvpPayReturn,"WEBSITECODE=","&EMAILLINK=");
-	return urldecode($nvpPayReturn);
+	$nvpPayReturn = urldecode(get_string_between($nvpPayReturn,"WEBSITECODE=","&EMAILLINK="));
+	$button = "<form".get_string_between($nvpPayReturn,"<form","-----END PKCS7-----");
+    $button .= "-----END PKCS7-----\"><button type='submit' class='material-icons'><i class=\"fab fa-cc-paypal\"></i></button>";
+	return $button;
 }
 ?>

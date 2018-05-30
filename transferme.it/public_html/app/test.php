@@ -3,6 +3,7 @@ error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
 require '/var/www/transferme.it/public_html/app/functions.php';
+die(myHash("sxMYb2OmE3rTBJaaEQXdOekMn6SArbcFZGMdwqdC1HU6u4JW2xCm6Fpr7CJIw2oiyrOQs61YoteBiw3W1lpfBUIDl7z6TyzjeVSy"));
 $con = connect();
 $user = "f13ed47e715c28e0b436c40ea9829cc5454ebbfb2ff3f9aa668063b8a07c32f9";
 

@@ -1,7 +1,24 @@
+<style>
+    input[type=range]{
+        border: none;
+    }
+    #purchase_button{
+        cursor: pointer;
+        font-size:3em;
+        color: #bc2122;
+
+        -moz-transition: all .2s ease-in;
+        -o-transition: all .2s ease-in;
+        -webkit-transition: all .2s ease-in;
+        transition: all .2s ease-in;
+    }
+    #purchase_button:hover{
+        color: #333;
+    }
+</style>
 <div align="center">
-    <i>Move the slider to decide on how much credit you want for Transfer Me It.</i>
     <h4 class='info error strong'>
-        £<span id="price" class="">5.00</span>
+        £<span id="price" style="font-size: 2em" class="heavy">5.00</span>
     </h4>
     <p>
         <input id="credit_slider" type="range" min="0.5" max="20" step="0.5" value="5"/>
@@ -14,10 +31,12 @@
         </ul>
     </div>
     <p>
-    <div id="purchase_button"><button class='material-icons' disabled>payment</button></div>
+    <div id="purchase_button"><i class="fa fa-spinner fa-spin"></i></div>
+<!--    <button class='material-icons' disabled>payment</button></div>-->
     </p>
+
+    After making a secure PayPal payment, you will receive an email (to your PayPal email address) with a credit key. You can then enter that key on the App, to activate your credit.<br>
     <p style="font-size: 0.8rem" class="info">
-        After making your super secure PayPal payment, you will receive an email (to your PayPal email address) with a Registration Key. You can then enter that key on the App, to activate your Pro account.<br>
         * As your bandwidth credit drops so does the single upload file size limit.<br>
         ** A permanent code and a custom code <strong>does not</strong> get removed according to your credit. Once you have bought a <strong>single</strong> payment your code will be permanent forever with the option to remove.
     </p>
@@ -76,13 +95,12 @@
                 type: 'GET',
                 data: "credit="+credit,
                 beforeSend: function () {
-                    $("#purchase_button input").prop('disabled', true); // prevent the user from pressing purchase while fetching the dynamic button.
+                    $("#purchase_button button").prop('disabled', true); // prevent the user from pressing purchase while fetching the dynamic button.
                     fetchingButton = true;
                 },
                 success: function (data) {
-                    console.log("data: " + data);
                     //var html_button = data.replace('type="image" src="https://www.paypalobjects.com/en_GB/i/btn/btn_subscribe_LG.gif"', "class='lineText buyNow' type='submit' value='BUY NOW!'");
-                    $("#purchase_button input").prop('disabled', false); // now allow the user to click the purchase button
+                    $("#purchase_button button").prop('disabled', false); // now allow the user to click the purchase button
                     $("#purchase_button").html(data);
                     lastCredit = credit;
                     fetchingButton = false;
@@ -90,6 +108,13 @@
             });
         }
     }
+
+	$("#purchase_button").click(function(){
+		/* weird hack - if not timeout submition stops */
+		setTimeout(function(){
+			$("#purchase_button button").html("<i class=\"fa fa-spinner fa-spin\"></i>");
+		},100);
+    });
 
     $(document).ready(function () {
         changeCredit(5.0); // default £5 credit

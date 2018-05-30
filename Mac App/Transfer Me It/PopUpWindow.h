@@ -12,14 +12,14 @@
 @class Keys;
 @class Button;
 @class BorderTextField;
+@class KeyWindow;
 
 @interface PopUpWindow : NSObject
 @property NSString* viewName;
 
 @property NSString* filePath;
 
-@property NSWindow* window;
-@property NSView* view;
+@property KeyWindow* inputWindow;
 
 @property (readonly) int windowWidth;
 @property (readonly) int windowHeight;
@@ -34,10 +34,10 @@
 @property Keys* keychain;
 @property NSString* uuid;
 
--(void)closeWindow;
-
 -(void)inputError:(NSString*)message;
 -(void)animatePlane;
+
+-(void)closeInputWindow;
 
 -(void)setSendToFriendView:(NSRect)statusBarFrame filePath:(NSString*)filePath;
 -(void)setEnterPermCodeView:(NSRect)statusBarFrame;

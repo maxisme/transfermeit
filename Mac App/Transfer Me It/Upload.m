@@ -81,61 +81,67 @@
                 
                 // COMPRESSING FILE
                 [_mb setProgressInfo:@"Compressing File"];
-                NSData* compressedFile = [file gzippedDataWithCompressionLevel:COMPRESSION_LEVEL];
                 
-                NSData* fileToEncrypt = nil;
-                
-                if([compressedFile length] < fileSize){
-                    //if compression made the file smaller
-                    fileToEncrypt = compressedFile;
-                }else{
-                    NSLog(@"File already @ max compression");
-                    fileToEncrypt = file;
-                }
-                
-                // encrypt the `pass` (password that the file is going to be encrypted with) with friends public key
-                id friendPubKey = [RSAClass string64ToKey:pubKey isPublic:YES];
-                NSString* encrypted_pass = [RSAClass encryptStringWithKey:pass pubKey:friendPubKey];
-                
-                // ENCRYPT THE FILE with unencrypted password
-                [_mb setProgressInfo:@"Encrypting File..."];
-                NSData* encryptedFile = [FileCrypter encryptFile:fileToEncrypt password:pass];
-                
-                // UPLOAD ENCRYPTED FILE along with encrypted password of file.
-                _ul = nil;
-                _ul = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/upload.php"];
-                _ul.POSTDictionary = @{ @"friend":friendCode, @"UUID":[CustomFunctions getSystemUUID], @"UUIDKey":[keys getKey:@"UUID Key"], @"pass": encrypted_pass};
-                
-                [_ul addDataToUpload:encryptedFile parameterName:@"fileUpload" mimeType:@"application/octet-stream" fileName:[path lastPathComponent]];
-                
-                _ul.completionBlock = ^(NSDictionary *headers, NSString *body) {
-                    if(![body isEqual: @"1"]){
-                        [DesktopNotification send:@"Major Error Uploading!" message:[NSString stringWithFormat:@"Error code: %@. Contact hello@transferme.it", body]];
-                    }else{
-                        [DesktopNotification send:@"Uploaded File!" message:@"Your friend can now download the file."];
-                    }
-                    [self finish];
-                };
-                
-                _ul.errorBlock = ^(NSError *error) {
-                    if (![[error localizedDescription] isEqual: @"Connection was cancelled."]) {// ignore when manually cancelled
-                        NSLog(@"Upload Error (2): %@",[error localizedDescription]);
-                        [DesktopNotification send:@"Network Error During Upload!" message:@"Please check your network and try uploading the file again."];
-                        [self finish];
-                    }
-                };
-                
-                _ul.uploadProgressBlock = ^(int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite){
-                    // make sure always showing upload menu when uploading
-                    if(![_mb.menuName isEqual: @"upload"]) [_mb setUploadMenu:[path lastPathComponent]];
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    NSData* compressedFile = [file gzippedDataWithCompressionLevel:COMPRESSION_LEVEL];
                     
-                    float uploadPercent = ([@(totalBytesWritten) floatValue] / [@(totalBytesExpectedToWrite) floatValue]) * 100;
-                    unsigned long long totalUploadBytes = (unsigned long long)totalBytesExpectedToWrite;
-                    [_mb setProgressInfo:[NSString stringWithFormat:@"%.1f%% of %@", uploadPercent, [NSByteCountFormatter stringFromByteCount:totalUploadBytes countStyle:NSByteCountFormatterCountStyleFile]]];
-                };
-                
-                
-                [_ul startAsynchronous];
+                    NSData* fileToEncrypt = nil;
+                    
+                    if([compressedFile length] < fileSize){
+                        //if compression made the file smaller
+                        fileToEncrypt = compressedFile;
+                    }else{
+                        NSLog(@"File already @ max compression");
+                        fileToEncrypt = file;
+                    }
+                    
+                    // encrypt the `pass` (password that the file is going to be encrypted with) with friends public key
+                    id friendPubKey = [RSAClass string64ToKey:pubKey isPublic:YES];
+                    NSString* encrypted_pass = [RSAClass encryptStringWithKey:pass pubKey:friendPubKey];
+                    
+                    // ENCRYPT THE FILE with unencrypted password
+                    [_mb setProgressInfo:@"Encrypting File..."];
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        NSData* encryptedFile = [FileCrypter encryptFile:fileToEncrypt password:pass];
+                        
+                        // UPLOAD ENCRYPTED FILE along with encrypted password of file.
+                        _ul = nil;
+                        _ul = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/upload.php"];
+                        _ul.POSTDictionary = @{ @"friend":friendCode, @"UUID":[CustomFunctions getSystemUUID], @"UUIDKey":[keys getKey:@"UUID Key"], @"pass": encrypted_pass};
+                        
+                        [_ul addDataToUpload:encryptedFile parameterName:@"fileUpload" mimeType:@"application/octet-stream" fileName:[path lastPathComponent]];
+                        
+                        _ul.completionBlock = ^(NSDictionary *headers, NSString *body) {
+                            if(![body isEqual: @"1"]){
+                                [DesktopNotification send:@"Major Error Uploading!" message:[NSString stringWithFormat:@"Error code: %@. Contact hello@transferme.it", body]];
+                            }else{
+                                NSLog(@"File Uploaded");
+//                                [DesktopNotification send:@"Uploaded File!" message:@"Your friend can now download the file."];
+                            }
+                            [self finish];
+                        };
+                        
+                        _ul.errorBlock = ^(NSError *error) {
+                            if (![[error localizedDescription] isEqual: @"Connection was cancelled."]) {// ignore when manually cancelled
+                                NSLog(@"Upload Error (2): %@",[error localizedDescription]);
+                                [DesktopNotification send:@"Network Error During Upload!" message:@"Please check your network and try uploading the file again."];
+                                [self finish];
+                            }
+                        };
+                        
+                        _ul.uploadProgressBlock = ^(int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite){
+                            // make sure always showing upload menu when uploading
+                            if(![_mb.menuName isEqual: @"upload"]) [_mb setUploadMenu:[path lastPathComponent]];
+                            
+                            float uploadPercent = ([@(totalBytesWritten) floatValue] / [@(totalBytesExpectedToWrite) floatValue]) * 100;
+                            unsigned long long totalUploadBytes = (unsigned long long)totalBytesExpectedToWrite;
+                            [_mb setProgressInfo:[NSString stringWithFormat:@"%.1f%% of %@", uploadPercent, [NSByteCountFormatter stringFromByteCount:totalUploadBytes countStyle:NSByteCountFormatterCountStyleFile]]];
+                        };
+                        
+                        
+                        [_ul startAsynchronous];
+                    }); // encrypt
+                }); // compress
             }else{
                 // error with init upload
                 NSString *error_message = [CustomFunctions jsonToVal:body key:@"message"];
@@ -155,7 +161,6 @@
     NSLog(@"finished upload");
     [_ul cancel];
     _ul = nil;
-    [_window closeWindow];
     [_mb setDMenu];
 }
 

@@ -7,9 +7,10 @@
 //
 
 #import <Cocoa/Cocoa.h>
-
+@class KeyWindow;
 @interface Button : NSButton
 @property bool shouldNotOpacitate;
 @property NSString* message;
+@property KeyWindow* win;
 @property (strong) NSTrackingArea* trackingArea;
 @end

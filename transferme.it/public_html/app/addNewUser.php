@@ -66,7 +66,32 @@ while ($row = mysqli_fetch_array($queryNewUser)){
 
 addIP($con); // used to find "fishy" socket connections and DDOS account creation
 
-if(empty($UUIDKey) && empty($storedUUIDKey)) {
+if(mysqli_num_rows($queryNewUser) == 0){
+    ////////////////////
+    // create initial account
+    ////////////////////
+    $secureUUIDKey = generateRandomString($key_len);
+
+    $query = mysqli_query($con, "
+	INSERT INTO `user` (user, UUID, UUIDKey, pubKey, created, registered)
+	VALUES ('" . myHash($userCode) . "', '" . myHash($UUID) . "','" . myHash($secureUUIDKey) . "', '".$pubKey."', NOW(), NOW());");
+
+    if (!$query) {
+        echo("Error description: " . mysqli_error($con));
+        customLog("Error description 2: " . mysqli_error($con), true, "error.log");
+    } else {
+        $arr = array(
+            "user_code" => $userCode,
+            "bw_left" => $daily_allowed_free_user_bandwidth,
+            "max_fs" => $default_max_file_upload,
+            "mins_allowed" => $max_allowed_mins,
+            "user_tier" => 0,
+            "UUID_key" => $secureUUIDKey,
+            "time_left" => getUserTimeLeft($con, myHash($UUID))
+        );
+        die(json_encode($arr));
+    }
+}else if(empty($UUIDKey) && empty($storedUUIDKey)) {
 	////////////////////
 	// UUIDKey reset.
     ////////////////////
@@ -95,31 +120,6 @@ if(empty($UUIDKey) && empty($storedUUIDKey)) {
         die(json_encode($arr));
     }
 
-}else if(mysqli_num_rows($queryNewUser) == 0){
-    ////////////////////
-    // create initial account
-    ////////////////////
-    $secureUUIDKey = generateRandomString($key_len);
-
-    $query = mysqli_query($con, "
-	INSERT INTO `user` (user, UUID, UUIDKey, pubKey, created, registered)
-	VALUES ('" . myHash($userCode) . "', '" . myHash($UUID) . "','" . myHash($secureUUIDKey) . "', '".$pubKey."', NOW(), NOW());");
-
-    if (!$query) {
-        echo("Error description: " . mysqli_error($con));
-        customLog("Error description 2: " . mysqli_error($con), true, "error.log");
-    } else {
-        $arr = array(
-            "user_code" => $userCode,
-            "bw_left" => $daily_allowed_free_user_bandwidth,
-            "max_fs" => $default_max_file_upload,
-            "mins_allowed" => $max_allowed_mins,
-            "user_tier" => 0,
-            "UUID_key" => $secureUUIDKey,
-            "time_left" => getUserTimeLeft($con, myHash($UUID))
-        );
-        die(json_encode($arr));
-    }
 }else if (UUIDRegistered($con, $UUID, $UUIDKey)){
     ////////////////////
 	/// already exists

@@ -16,16 +16,14 @@
 #import "RSAClass.h"
 #import "Keys.h"
 #import "FileCrypter.h"
-#import "PopUpWindow.h" // <<< BAD
 
 #import "MenuBar.h"
 
 @implementation Download
 
--(id)initWithKeychain:(Keys*)keys menuBar:(MenuBar*)mb window:(PopUpWindow*)window{
+-(id)initWithKeychain:(Keys*)keys menuBar:(MenuBar*)mb{
     if (self != [super init]) return nil;
     
-    _window = window;
     _mb = mb;
     _keychain = keys;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(finish) name:@"cancel-download" object:nil];
@@ -35,7 +33,6 @@
 
 -(void)downloadTo:(NSString*)savedPath friendUUID:(NSString*)friendUUID downloadPath:(NSString*)path downloadRef:(unsigned long long)ref{
     [_mb setdownloadMenu:[path lastPathComponent]];
-    [_window closeWindow];
     
     _dl = nil;
     _dl = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/download.php"];
@@ -113,7 +110,7 @@
         }else{
             NSString* errorMsg = [[NSString alloc] initWithData:downloadedData encoding:NSUTF8StringEncoding];
             if([errorMsg isEqual: @"2"]){
-                [DesktopNotification send:@"Expired File!" message:@"You did not download the file in time." activate:@"" close:@"Close"];
+                [DesktopNotification send:@"Expired File!" message:@"You did not download the file in time. It has been deleted." activate:@"" close:@"Close"];
             }else{
                 [DesktopNotification send:@"Error Downloading File!" message:errorMsg activate:@"" close:@"Close"];
             }
@@ -181,7 +178,6 @@
 // TODO run finished download on finish
 -(void)finish{
     NSLog(@"finished download");
-    [_window closeWindow];
     [_mb setDMenu];
     [_dl cancel];
     _dl = nil;

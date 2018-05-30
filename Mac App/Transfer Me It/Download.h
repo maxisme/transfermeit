@@ -6,17 +6,15 @@
 //  Copyright © 2018 Maximilian Mitchell. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
 @class STHTTPRequest;
 @class Keys;
 @class MenuBar;
-@class PopUpWindow;
 
 @interface Download : NSObject
 
 @property (weak) Keys* keychain;
 @property (weak) MenuBar *mb;
-@property (weak) PopUpWindow *window;
 
 @property STHTTPRequest *dl;
 @property NSMutableData *downloadData;
@@ -27,7 +25,7 @@
 @property NSString* tempStoreIncomingPath;
 @property NSString* dlStartTime;
 
--(id)initWithKeychain:(Keys*)keys menuBar:(MenuBar*)mb window:(PopUpWindow*)window;
+-(id)initWithKeychain:(Keys*)keys menuBar:(MenuBar*)mb;
 -(void)downloadTo:(NSString*)savedPath friendUUID:(NSString*)friendUUID downloadPath:(NSString*)path downloadRef:(unsigned long long)ref;
 -(NSString*)finishedDownload:(NSString*)path friendUUID:(NSString*)friendUUID downloadRef:(unsigned long long)ref hash:(NSString*)hash;
 @end
