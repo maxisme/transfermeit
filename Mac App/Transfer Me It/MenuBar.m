@@ -243,8 +243,7 @@
     [self resetMenu];
     [self iconAnimation:@"uploading"];
     
-    
-    _itemOne.title = [NSString stringWithFormat:@"Uploading: %@", [CustomFunctions overflowString:fileName size:20]];
+    _itemOne.title = [NSString stringWithFormat:@"Uploading: %@", [CustomFunctions overflowString:fileName size:30]];
     [_itemOne setHidden:false];
     
     [_itemTwo setHidden:false];
@@ -425,7 +424,7 @@
     [menu addItem:extraItem];
     [menu addItem:[NSMenuItem separatorItem]];
     
-    NSMenuItem* showOnStartupItem = [[NSMenuItem alloc] initWithTitle:@"Start Transfer Me It at login" action:@selector(openOnStartup) keyEquivalent:@""];
+    NSMenuItem* showOnStartupItem = [[NSMenuItem alloc] initWithTitle:@"Start Transfer Me It at login" action:@selector(toggleOpenOnStartup) keyEquivalent:@""];
     [showOnStartupItem setTarget:self];
     
     if([CustomFunctions doesOpenOnStartup]){
@@ -439,10 +438,25 @@
     [update setTarget:self];
     [menu addItem:update];
     
+    NSMenuItem* about = [[NSMenuItem alloc] initWithTitle:@"About..." action:@selector(showAbout) keyEquivalent:@""];
+    [about setTarget:self];
+    [menu addItem:about];
+    
     // Disable auto enable
     [menu setAutoenablesItems:NO];
     [menu setDelegate:(id)self];
     return menu;
+}
+
+-(void)toggleOpenOnStartup{
+    [CustomFunctions toggleOpenOnStartup];
+    [self init];
+}
+
+// show about panel Credits.html
+-(void)showAbout{
+    NSLog(@"about");
+    [[NSApplication sharedApplication] orderFrontStandardAboutPanel:self];
 }
 
 -(NSAttributedString*)stringToCentre:(NSString*)string{

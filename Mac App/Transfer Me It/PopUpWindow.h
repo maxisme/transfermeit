@@ -35,7 +35,7 @@
 @property NSString* uuid;
 
 -(void)inputError:(NSString*)message;
--(void)animatePlane;
+-(void)flyAway;
 
 -(void)closeInputWindow;
 

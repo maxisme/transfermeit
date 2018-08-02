@@ -23,7 +23,6 @@ function uploadDie($error_num){
 $con = connect();
 
 //initial variables
-$friend = san($con, $_POST['friend']);
 $UUID = san($con, $_POST['UUID']);
 $UUIDKey = san($con, $_POST['UUIDKey']);
 $pass = san($con, $_POST['pass']);
@@ -39,7 +38,6 @@ if($upload_id == null) uploadDie("4");
 // get friendUUID from session
 $promisedFriendUUID = $_SESSION["friendUUID".$upload_id];
 if(!isset($promisedFriendUUID)) uploadDie("5"); //initUpload.php was not successful.
-if(userToHashedUUID($con, $friend) != $promisedFriendUUID) uploadDie("12"); // not sending to the same friend as promised
 
 // get file path from session
 $promisedUploadPath = $_SESSION["path".$upload_id];

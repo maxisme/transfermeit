@@ -26,7 +26,6 @@
 }
 
 -(void)open{
-    NSLog(@"opening socket");
     [self destroy];
     
     _web_socket = [[SRWebSocket alloc] initWithURL:[NSURL URLWithString:_url]];
@@ -61,9 +60,7 @@
     _received_pong = true;
 }
 
-- (void)webSocketDidOpen:(SRWebSocket *)webSocket
-{
-    NSLog(@"socket open");
+- (void)webSocketDidOpen:(SRWebSocket *)webSocket{
     _connected = true;
     
     if(_reconnect_timer){
@@ -74,19 +71,16 @@
     if (self.onConnectBlock) _onConnectBlock();
 }
 
-- (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error
-{
+- (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error{
     NSLog(@"Socket failed with error: %@", error);
     [self close];
 }
 
-- (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(nonnull NSString *)string
-{
+- (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(nonnull NSString *)string{
     if (self.onMessageBlock) _onMessageBlock(string);
 }
 
-- (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean
-{
+- (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean{
     NSLog(@"Socket closed with reason: %@", reason);
     [self close];
 }

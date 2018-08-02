@@ -35,6 +35,8 @@
     
     //check for transferme.it update
     [CustomFunctions checkForUpdate:false];
+    
+    [_w downloadView:[[_mb valueForKey:@"window"] frame] downloadInfo:@"{\"path\":\"foo.zip\"}"];
 }
 
 # pragma mark - finder right click

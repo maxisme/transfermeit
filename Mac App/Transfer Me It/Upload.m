@@ -75,7 +75,7 @@
                 // generate a password to encrypt the file with
                 NSString* pass = [CustomFunctions randomString:FILE_PASS_SIZE];
                 
-                [_window animatePlane];
+                [_window flyAway];
                 
                 [_mb setUploadMenu:[path lastPathComponent]];
                 
@@ -107,7 +107,7 @@
                         // UPLOAD ENCRYPTED FILE along with encrypted password of file.
                         _ul = nil;
                         _ul = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/upload.php"];
-                        _ul.POSTDictionary = @{ @"friend":friendCode, @"UUID":[CustomFunctions getSystemUUID], @"UUIDKey":[keys getKey:@"UUID Key"], @"pass": encrypted_pass};
+                        _ul.POSTDictionary = @{ @"UUID":[CustomFunctions getSystemUUID], @"UUIDKey":[keys getKey:@"UUID Key"], @"pass": encrypted_pass};
                         
                         [_ul addDataToUpload:encryptedFile parameterName:@"fileUpload" mimeType:@"application/octet-stream" fileName:[path lastPathComponent]];
                         
@@ -115,18 +115,18 @@
                             if(![body isEqual: @"1"]){
                                 [DesktopNotification send:@"Major Error Uploading!" message:[NSString stringWithFormat:@"Error code: %@. Contact hello@transferme.it", body]];
                             }else{
-                                NSLog(@"File Uploaded");
 //                                [DesktopNotification send:@"Uploaded File!" message:@"Your friend can now download the file."];
                             }
                             [self finish];
                         };
                         
                         _ul.errorBlock = ^(NSError *error) {
-                            if (![[error localizedDescription] isEqual: @"Connection was cancelled."]) {// ignore when manually cancelled
-                                NSLog(@"Upload Error (2): %@",[error localizedDescription]);
+                            if (![[error localizedDescription] isEqual: @"Connection was cancelled."]) {
+                                // not manually cancelled
+                                NSLog(@"Upload Error (2): %@", [error localizedDescription]);
                                 [DesktopNotification send:@"Network Error During Upload!" message:@"Please check your network and try uploading the file again."];
-                                [self finish];
                             }
+                            [self finish];
                         };
                         
                         _ul.uploadProgressBlock = ^(int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite){
@@ -162,6 +162,7 @@
     [_ul cancel];
     _ul = nil;
     [_mb setDMenu];
+    [_window inputError:@""]; // hack to re-enable button
 }
 
 

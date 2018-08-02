@@ -28,6 +28,7 @@
 		487F8CE420686792004CD8CF /* Montserrat-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 487F8CE320686791004CD8CF /* Montserrat-SemiBold.ttf */; };
 		48AF4B61202DF37B004DE865 /* file.png in Resources */ = {isa = PBXBuildFile; fileRef = 48AF4B60202DF37B004DE865 /* file.png */; };
 		48AF4B64202DF8DF004DE865 /* Button.m in Sources */ = {isa = PBXBuildFile; fileRef = 48AF4B63202DF8DF004DE865 /* Button.m */; };
+		48C38BBA210DFDBA001A306C /* Credits.html in Resources */ = {isa = PBXBuildFile; fileRef = 48C38BB9210DFDB9001A306C /* Credits.html */; };
 		D624441A2043015100D23F11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D62444192043015100D23F11 /* Assets.xcassets */; };
 		D62FFFCF2033306600954FA4 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = D62FFFCE2033306600954FA4 /* User.m */; };
 		D63DC42D1F73E84B0046278C /* libPods-Transfer Me It.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D63DC42E1F73E84B0046278C /* libPods-Transfer Me It.a */; };
@@ -75,6 +76,7 @@
 		48AF4B60202DF37B004DE865 /* file.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = file.png; sourceTree = "<group>"; };
 		48AF4B62202DF8DF004DE865 /* Button.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Button.h; sourceTree = "<group>"; };
 		48AF4B63202DF8DF004DE865 /* Button.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Button.m; sourceTree = "<group>"; };
+		48C38BB9210DFDB9001A306C /* Credits.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Credits.html; sourceTree = "<group>"; };
 		5155CE64DBB11A9BFBCD445D /* Pods-Transfer Me It.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Transfer Me It.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Transfer Me It/Pods-Transfer Me It.debug.xcconfig"; sourceTree = "<group>"; };
 		94ECA04043BBF2E7605FDAC8 /* Pods-Transfer Me It.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Transfer Me It.release.xcconfig"; path = "Pods/Target Support Files/Pods-Transfer Me It/Pods-Transfer Me It.release.xcconfig"; sourceTree = "<group>"; };
 		D62444192043015100D23F11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -166,6 +168,7 @@
 				481893C31E4E73EF007227EA /* AppDelegate.h */,
 				481893C41E4E73EF007227EA /* AppDelegate.m */,
 				481893CE1E4E73EF007227EA /* Info.plist */,
+				48C38BB9210DFDB9001A306C /* Credits.html */,
 				D62444192043015100D23F11 /* Assets.xcassets */,
 				48743678201D45ED0030B1EF /* Custom Classes */,
 				D6FE1D972036032000C74518 /* Classes */,
@@ -373,6 +376,7 @@
 				4818940D1E4E786D007227EA /* up.png in Resources */,
 				D6B6242B20692573002252EC /* exit.png in Resources */,
 				481894051E4E786D007227EA /* alert.png in Resources */,
+				48C38BBA210DFDBA001A306C /* Credits.html in Resources */,
 				481894061E4E786D007227EA /* download.png in Resources */,
 				48AF4B61202DF37B004DE865 /* file.png in Resources */,
 			);

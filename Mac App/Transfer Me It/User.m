@@ -253,7 +253,6 @@
 
 #pragma mark - socket
 -(void)createSocket{
-    NSLog(@"Creating new socket");
     _socket = [[Socket alloc] initWithURL:@"wss://s.transferme.it"];
     
     __weak typeof(self) weakSelf = self;
@@ -263,7 +262,7 @@
     }];
     
     [_socket setOnCloseBlock:^{
-        [weakSelf.menuBar setErrorMenu:@"Network Error"];
+        [weakSelf.menuBar setErrorMenu:@"Network Error..."];
     }];
     
     [_socket setOnMessageBlock:^(NSString *message) {

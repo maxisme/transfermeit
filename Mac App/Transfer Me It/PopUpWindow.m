@@ -370,7 +370,7 @@
     NSRange range = NSMakeRange(0, [attr length]);
     [attr addAttribute:NSParagraphStyleAttributeName value:centre range:range];
     [attr addAttribute:NSForegroundColorAttributeName value:[CustomVars black] range:range];
-    [attr addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"Montserrat-SemiBold" size:13] range:range];
+    [attr addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"Montserrat-Bold" size:13] range:range];
     [attr fixAttributesInRange:range];
     // add attribute
     [downloadBtn setAttributedTitle:attr];
@@ -407,13 +407,13 @@
     // spliter boarders
     ///////////////////////////
     //horizontal border bottom
-    NSView *hor_bor_bot = [[NSView alloc] initWithFrame:CGRectMake(0, btn_h, _windowWidth, 1)];
+    NSView *hor_bor_bot = [[NSView alloc] initWithFrame:CGRectMake(0, btn_h, _windowWidth, 2)];
     hor_bor_bot.wantsLayer = TRUE;
     [hor_bor_bot.layer setBackgroundColor:[[CustomVars black] CGColor]];
     [view addSubview:hor_bor_bot];
     
     //vertical button splitter boarder
-    NSView *vert_bor_top = [[NSView alloc] initWithFrame:CGRectMake((_windowWidth / 2) -  1, 0, 1, btn_h)];
+    NSView *vert_bor_top = [[NSView alloc] initWithFrame:CGRectMake((_windowWidth / 2) -  2, 0, 2, btn_h)];
     vert_bor_top.wantsLayer = TRUE;
     [vert_bor_top.layer setBackgroundColor:[[CustomVars black] CGColor]];
     [view addSubview:vert_bor_top];
@@ -473,7 +473,11 @@ NSString* string_before;
         
         //make sure user is less than userCodeLength
         if([string length] > [CustomVars userCodeLength]){
-            string = string_before;
+            if(string_before){
+                string = string_before;
+            }else{
+                string = [string substringToIndex:[CustomVars userCodeLength]]; //doesn't work
+            }
         }else{
             string_before = string;
         }
@@ -497,7 +501,6 @@ NSString* string_before;
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
             context.duration = 0.4;
             window.animator.alphaValue = 1.0f;
-            [_subButton animateHover];
         } completionHandler:nil];
     });
 }
@@ -661,6 +664,8 @@ NSString* string_before;
     [self shakeLayer:_subButton.layer];
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(fadeOutErrorText) object:@""];
     [self performSelector:@selector(fadeOutErrorText) withObject:@"" afterDelay:4];
+    
+    [_subButton setEnabled:true];
 }
 
 #pragma mark - animations
@@ -674,7 +679,7 @@ NSString* string_before;
     [_errorMessage.layer addAnimation:fadeOutAnimation forKey:nil];
 }
 
--(void)animatePlane{
+-(void)flyAway{
     float duration = 0.4;
     CAMediaTimingFunction*easing = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
     

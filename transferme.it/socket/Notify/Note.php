@@ -97,8 +97,8 @@ class Note implements MessageComponentInterface
                         break; // only ever one matching client
                     }
                 }
-            } else if ($type === "bw") { // asking for the amount of bandwidth left
-                //ASKING FOR TIME LEFT OF USER CODE
+            } else if ($type === "bw") {
+                // asking for the amount of bandwidth user has left
                 $hashedUUID = myHash($UUID);
 
                 foreach ($this->clients as $client) {
@@ -133,7 +133,7 @@ class Note implements MessageComponentInterface
                     }
                 }
             } else if ($type == "connect") {
-                // initial socket connection checks whether key is legit
+                // initial socket connection checks whether UUID key is legit
                 $UUIDKey = san($con, $json->UUIDKey);
 
                 if ($json->serverKey != $this->serverCode) {
