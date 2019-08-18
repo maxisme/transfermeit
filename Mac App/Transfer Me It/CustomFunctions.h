@@ -25,7 +25,7 @@
 + (NSString *)getSystemUUID;
 + (void)copyText:(NSString*)text;
 
-+ (NSString*)jsonToVal:(NSString*)json key:(NSString*)key;
++ (id)jsonToVal:(NSString*)json key:(NSString*)key;
 + (NSString*)dicToJsonString:(NSDictionary*)dic;
 
 + (unsigned long long)bytesToMega:(unsigned long long)bytes;
@@ -46,4 +46,6 @@
 
 + (CGFloat)widthOfString:(NSString *)string withFont:(NSFont *)font;
 + (unsigned long long)stringToULL:(NSString*)str;
+
++ (NSDate*)formatGoTime:(NSString *)goTime;
 @end

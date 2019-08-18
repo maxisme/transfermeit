@@ -9,13 +9,19 @@
 #import "Socket.h"
 
 #import <SocketRocket/SRWebSocket.h>
+#import <CocoaLumberjack/CocoaLumberjack.h>
+static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
+#import "LOOCryptString.h"
+
 #import "CustomFunctions.h"
+#import "Keys.h"
 
 @implementation Socket
 
 - (id)initWithURL:(NSString*)url{
     if (self != [super init]) return nil;
     _url = url;
+    _keychain = [[Keys alloc] init];
     
     [self open];
     
@@ -28,16 +34,25 @@
 -(void)open{
     [self destroy];
     
-    _web_socket = [[SRWebSocket alloc] initWithURL:[NSURL URLWithString:_url]];
-    [_web_socket setDelegate:(id)self];
-    [_web_socket open];
+    if([_keychain getKey:@"UUID Key"]){
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:_url]];
+        [request setValue:[LOOCryptString serverKey] forHTTPHeaderField:@"Sec-Key"];
+        [request setValue:[_keychain getKey:@"UUID Key"] forHTTPHeaderField:@"UUID-key"];
+        [request setValue:[CustomFunctions getSystemUUID] forHTTPHeaderField:@"UUID"];
+        [request setValue:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"] forHTTPHeaderField:@"version"];
+        _web_socket = [[SRWebSocket alloc] initWithURLRequest:request];
+        [_web_socket setDelegate:(id)self];
+        [_web_socket open];
+    }else{
+        DDLogError(@"Need to create user before connecting to socket!");
+        _reconnect_timer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(open) userInfo:nil repeats:YES];
+    }
 }
 
 -(void)destroy{
     [_web_socket close];
     _web_socket.delegate = nil;
     _web_socket = nil;
-    _authed = false;
     _connected = false;
 }
 
@@ -53,7 +68,6 @@
             }
         });
     }
-    
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didReceivePong:(NSData *)pongPayload{
@@ -72,7 +86,7 @@
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error{
-    NSLog(@"Socket failed with error: %@", error);
+    DDLogDebug(@"Socket failed with error: %@", error);
     [self close];
 }
 
@@ -81,7 +95,7 @@
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean{
-    NSLog(@"Socket closed with reason: %@", reason);
+    DDLogDebug(@"Socket closed with reason: %@", reason);
     [self close];
 }
 

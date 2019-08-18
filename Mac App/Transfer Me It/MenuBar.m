@@ -5,6 +5,9 @@
 
 #import "MenuBar.h"
 
+#import <CocoaLumberjack/CocoaLumberjack.h>
+static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
+
 #import "CustomVars.h"
 #import "CustomFunctions.h"
 
@@ -43,7 +46,7 @@
     {
         _statusItem = statusItem;
         _statusItem.view = self;
-        [self setImage:[NSImage imageNamed:@"loading.png"]];
+        [self setImage:[self getIconOnTheme]];
         [self createMenu];
         
     }
@@ -72,7 +75,7 @@
         [NSApp sendAction:self.action to:self.target from:self];
     }
     @catch (NSException * e) {
-        NSLog(@"Mouse Down MB Exception: %@", e);
+        DDLogDebug(@"Mouse Down MB Exception: %@", e);
     }
 }
 
@@ -94,7 +97,7 @@
 
 - (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender
 {
-    if(self.image == [NSImage imageNamed:@"icon.png"]){ // no menu failure
+    if(self.image == [self getIconOnTheme]){ // no menu failure
         [self setImage:[NSImage imageNamed:@"drag.png"]];
         
         if ([[sender draggingPasteboard] availableTypeFromArray:@[NSFilenamesPboardType]]) {
@@ -106,13 +109,13 @@
 
 - (void)draggingExited:(id<NSDraggingInfo>)sender
 {
-    [self setImage:[NSImage imageNamed:@"icon.png"]];
+    [self setImage:[self getIconOnTheme]];
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
 {
     //return to original icon image
-    [self setImage:[NSImage imageNamed:@"icon.png"]];
+    [self setImage:[self getIconOnTheme]];
     
     // get file path from drag to menu icon operation
     NSPasteboard *pb = [sender draggingPasteboard];
@@ -273,14 +276,14 @@
     [_itemOne setHidden:false];
 }
 
--(void)setDefaultMenu:(NSString*)userCode bandwidthLeft:(unsigned long long)bandwidthLeft maxFileUpload:(unsigned long long)maxFileUpload maxTime:(int)maxTime wantedTime:(int)wantedTime userTier:(int)userTier timeLeft:(NSDate*)timeLeft{
+-(void)setDefaultMenu:(NSString*)userCode bandwidthLeft:(unsigned long long)bandwidthLeft maxFileUpload:(unsigned long long)maxFileUpload maxTime:(int)maxTime userTier:(int)userTier{
     _menuName = @"default";
     [self resetMenu];
     
     [_animationTimer invalidate];
     _animationTimer = nil;
     
-    [self setImage:[NSImage imageNamed:@"icon.png"]];
+    [self setImage:[self getIconOnTheme]];
     
     //handle seperators
     [_seperator4 setHidden:false];
@@ -326,13 +329,13 @@
     
     //_itemSix
     //options menu
-    [_itemSix setSubmenu: [self optionsWithBandwidthLeft:bandwidthLeft maxFileUpload:maxFileUpload maxTime:maxTime wantedTime:wantedTime userTier:userTier]];
+    [_itemSix setSubmenu: [self optionsWithBandwidthLeft:bandwidthLeft maxFileUpload:maxFileUpload maxTime:maxTime userTier:userTier]];
     _itemSix.title = @"Settings...";
     [_itemSix setHidden:false];
     [_itemSix setEnabled:true];
 }
 
-- (NSMenu *)optionsWithBandwidthLeft:(unsigned long long)bandwidthLeft maxFileUpload:(unsigned long long)maxFileUpload maxTime:(int)maxTime wantedTime:(int)wantedTime userTier:(int)userTier{
+- (NSMenu *)optionsWithBandwidthLeft:(unsigned long long)bandwidthLeft maxFileUpload:(unsigned long long)maxFileUpload maxTime:(int)maxTime userTier:(int)userTier{
     NSMenu *menu = [[NSMenu alloc] init];
     
     //CODE STUFF
@@ -351,7 +354,7 @@
     [menu addItem:phoneticOptionItem];
     
     NSMenuItem* createNewCode = [[NSMenuItem alloc] initWithTitle:@"Create a new code for..." action:nil keyEquivalent:@""];
-    [createNewCode setSubmenu: [self timeIntervalsWithMaxTime:maxTime wantedTime:wantedTime userTier:userTier]];
+    [createNewCode setSubmenu: [self timeIntervalsWithMaxTime:maxTime userTier:userTier]];
     [menu addItem:createNewCode];
     
     [menu addItem:[NSMenuItem separatorItem]];
@@ -364,7 +367,7 @@
     
     [menu addItem:[NSMenuItem separatorItem]];
     
-    NSMenuItem* saveLocation = [[NSMenuItem alloc] initWithTitle:@"Set a Default Download Location" action:@selector(setAutoSaveLocation) keyEquivalent:@""];
+    NSMenuItem* saveLocation = [[NSMenuItem alloc] initWithTitle:@"Set Download Location" action:@selector(setDownloadLocation) keyEquivalent:@""];
     [saveLocation setTarget:self];
     if([[NSUserDefaults standardUserDefaults] objectForKey:@"saveLocation"] != nil){
         [saveLocation setState:NSOnState];
@@ -442,6 +445,10 @@
     [about setTarget:self];
     [menu addItem:about];
     
+    NSMenuItem* view_log = [[NSMenuItem alloc] initWithTitle:@"Open Logs..." action:@selector(showLoggingFile) keyEquivalent:@""];
+    [view_log setTarget:self];
+    [menu addItem:view_log];
+    
     // Disable auto enable
     [menu setAutoenablesItems:NO];
     [menu setDelegate:(id)self];
@@ -455,8 +462,12 @@
 
 // show about panel Credits.html
 -(void)showAbout{
-    NSLog(@"about");
+    DDLogDebug(@"about");
     [[NSApplication sharedApplication] orderFrontStandardAboutPanel:self];
+}
+
+-(void)showLoggingFile{
+    [[NSWorkspace sharedWorkspace] openFile:[[NSUserDefaults standardUserDefaults] objectForKey:@"logging_path"]];
 }
 
 -(NSAttributedString*)stringToCentre:(NSString*)string{
@@ -468,7 +479,7 @@
     return attributedString;
 }
 
-- (NSMenu *)timeIntervalsWithMaxTime:(int)maxTime wantedTime:(int)wantedTime userTier:(int)userTier {
+- (NSMenu *)timeIntervalsWithMaxTime:(int)maxTime userTier:(int)userTier {
     NSMenu *menu = [[NSMenu alloc] init];
     
     NSMutableArray *times = [NSMutableArray array];
@@ -486,7 +497,7 @@
         [item setTarget:self];
         
         //tick if selected
-        if(x == wantedTime){
+        if(x == [[NSUserDefaults standardUserDefaults] integerForKey:@"wantedTime"]){
             [item setState:NSOnState];
         }
         
@@ -524,7 +535,7 @@
 }
 
 // asks the User class to re initiate default menu using update variables
--(void)setDMenu{
+-(void)setDefaultMenuBarMenu{
     [CustomFunctions sendNotificationCenter:nil name:@"set-default-menu"];
 }
 
@@ -532,11 +543,14 @@
     [CustomFunctions sendNotificationCenter:sender.representedObject name:@"create-user-menu"];
 }
 
--(void)setMenuTime:(NSDate*)time{
-    NSString* time_left = [[CustomVars dateFormat] stringFromDate:time];
-    if([time_left isEqual: @"00:00"]){
-        NSLog(@"create a new user!");
+-(void)setMenuTime:(NSTimeInterval)time{
+    NSString* time_left = @"00:00";
+    if(time < 0){
         [CustomFunctions sendNotificationCenter:nil name:@"create-user"];
+    }else{
+        int mins = floor(time / 60);
+        int seconds = round(time - mins * 60);
+        time_left = [NSString stringWithFormat:@"%d:%d", mins, seconds];
     }
     _itemTwo.title = time_left;
 }
@@ -559,7 +573,7 @@
     if(filePath){
         [_w setSendToFriendView:[[self valueForKey:@"window"] frame] filePath:filePath];
     }else{
-        NSLog(@"No path was selected!");
+        DDLogDebug(@"No path was selected!");
     }
 }
 
@@ -582,7 +596,6 @@
 }
 
 -(void)checkForUpdate{
-    NSLog(@"");
     [CustomFunctions checkForUpdate:true];
 }
 
@@ -590,8 +603,8 @@
     [CustomFunctions copyText:_itemThree.title];
 }
 
--(void)setAutoSaveLocation{
-    if([[NSUserDefaults standardUserDefaults] objectForKey:@"saveLocation"] != NULL){
+-(void)setDownloadLocation{
+    if([[NSUserDefaults standardUserDefaults] objectForKey:@"saveLocation"]){
         // toggle remove save location
         [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"saveLocation"];
         // remove should auto download
@@ -603,7 +616,7 @@
     }
     
     // reset menu showing new changes
-    [self setDMenu];
+    [self setDefaultMenuBarMenu];
 }
 
 -(void)setDownloadAuto{
@@ -611,7 +624,7 @@
         // toggle remove autodownload option
         [CustomFunctions setStoredBool:@"autoDownload" b:false];
     }else{
-        if([[NSUserDefaults standardUserDefaults] objectForKey:@"saveLocation"] == NULL) [self setAutoSaveLocation];
+        if([[NSUserDefaults standardUserDefaults] objectForKey:@"saveLocation"] == NULL) [self setDownloadLocation];
         
         //check again incase user pressed cancel on choosing location
         if([[NSUserDefaults standardUserDefaults] objectForKey:@"saveLocation"] != NULL){
@@ -621,14 +634,14 @@
     }
     
     // reset menu with showing new changes
-    [self setDMenu];
+    [self setDefaultMenuBarMenu];
 }
 
 - (void)showPhonetic{
     [CustomFunctions setStoredBool:@"phonetic" b:![CustomFunctions getStoredBool:@"phonetic"]];
     
     // reset menu showing new changes
-    [self setDMenu];
+    [self setDefaultMenuBarMenu];
 }
 
 
@@ -671,7 +684,7 @@ int opacityCnt;
         x = opacityCnt;
     }
     
-    NSImage *image = [NSImage imageNamed:@"loading.png"];
+    NSImage *image = [self getIconOnTheme];
     NSImage *opacitatedImage = [[NSImage alloc] initWithSize:[image size]];
     
     [opacitatedImage lockFocus];
@@ -700,7 +713,7 @@ int arrowY;
     }
     
     if(image2 != nil){
-        NSImage *image = [NSImage imageNamed:@"icon.png"];
+        NSImage *image = [self getIconOnTheme];
         NSImage *arrowImage = [[NSImage alloc] initWithSize:[image size]];
 
         // add arrow on top of icon
@@ -711,5 +724,14 @@ int arrowY;
 
         [self setImage:arrowImage];
     }
+}
+
+- (NSImage*)getIconOnTheme{
+    NSImage *image = [NSImage imageNamed:@"icon.png"];
+    if([[NSUserDefaults standardUserDefaults] stringForKey:@"AppleInterfaceStyle"]){
+        // dark theme
+        image = [NSImage imageNamed:@"icon_inv.png"];
+    }
+    return image;
 }
 @end

@@ -10,6 +10,8 @@
 
 #import <CommonCrypto/CommonDigest.h>
 #import <Sparkle/Sparkle.h>
+#import <CocoaLumberjack/CocoaLumberjack.h>
+static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 
 @implementation CustomFunctions
 
@@ -91,7 +93,7 @@
 
 + (void)onlyOneInstanceOfApp {
     if ([[NSRunningApplication runningApplicationsWithBundleIdentifier:[[NSBundle mainBundle] bundleIdentifier]] count] > 1) {
-        NSLog(@"already open app");
+        DDLogDebug(@"already open app");
         [self quit];
     }
 }
@@ -183,8 +185,8 @@
     return randomString;
 }
 
-+ (NSString*)jsonToVal:(NSString*)json key:(NSString*)key{
-    NSMutableDictionary* dic = [NSJSONSerialization JSONObjectWithData:[json dataUsingEncoding:NSUTF8StringEncoding] options:0 error:NULL];
++ (id)jsonToVal:(NSString*)json key:(NSString*)key{
+    NSDictionary* dic = [NSJSONSerialization JSONObjectWithData:[json dataUsingEncoding:NSUTF8StringEncoding] options:0 error:NULL];
     if([dic objectForKey:key]) return [dic objectForKey:key];
     return @"";
 }
@@ -332,5 +334,14 @@
 
 + (unsigned long long)stringToULL:(NSString*)str{
     return [[[[NSNumberFormatter alloc] init] numberFromString:str] unsignedLongLongValue];
+}
+
++ (NSDate*)formatGoTime:(NSString *)goTime{
+    goTime = [goTime componentsSeparatedByString:@"."].firstObject;
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
+    [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
+    return [dateFormatter dateFromString:goTime];
 }
 @end

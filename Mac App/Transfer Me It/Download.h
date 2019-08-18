@@ -26,6 +26,6 @@
 @property NSString* dlStartTime;
 
 -(id)initWithKeychain:(Keys*)keys menuBar:(MenuBar*)mb;
--(void)downloadTo:(NSString*)savedPath friendUUID:(NSString*)friendUUID downloadPath:(NSString*)path downloadRef:(unsigned long long)ref;
--(NSString*)finishedDownload:(NSString*)path friendUUID:(NSString*)friendUUID downloadRef:(unsigned long long)ref hash:(NSString*)hash;
+-(void)downloadTo:(NSString*)savedPath downloadPath:(NSString*)path;
+-(NSString*)finishedDownload:(NSString*)path hash:(NSString*)hash;
 @end

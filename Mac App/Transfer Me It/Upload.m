@@ -10,6 +10,9 @@
 
 #import <STHTTPRequest/STHTTPRequest.h>
 #import <GZIP/GZIP.h>
+#import <CocoaLumberjack/CocoaLumberjack.h>
+static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
+#import "LOOCryptString.h"
 
 #import "Keys.h"
 #import "CustomVars.h"
@@ -36,18 +39,17 @@
 }
 
 -(void)uploadFile:(NSString*)path friend:(NSString*)friendCode keys:(Keys*)keys{
+    friendCode = [CustomFunctions cleanUpString:friendCode];
     NSData* file = [NSData dataWithContentsOfFile:path];
     unsigned long long fileSize = (unsigned long long)[file length];
     if(fileSize > 0){ // is a valid file
-        friendCode = [CustomFunctions cleanUpString:friendCode];
-        
         // TODO locally verify fileSize is less than allowed.
         if ([friendCode length] == 0) {
             [_window inputError:@"You must enter your friends code!"];
         }else if ([friendCode length] != [CustomVars userCodeLength]) {
             [_window inputError:@"Your friend does not exist!"];
         }else if(![CustomFunctions fileIsPath:path]){
-            //TODO zip if not already.
+            // TODO zip if not already.
             [_window inputError:@"You must Compress/zip folders!"];
         }else{
             /////////////////////////////////
@@ -59,19 +61,24 @@
             /////////////////////////////////
             unsigned long long encryptedFileSize = [CustomFunctions bytesToEncrypted:fileSize];
             
-            STHTTPRequest* r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/initUpload.php"];
-            
-            r.POSTDictionary = @{ @"friend":friendCode,
+            STHTTPRequest* r = [STHTTPRequest requestWithURLString:@"https://sock.transferme.it/init-upload"];
+            r.requestHeaders = [[NSMutableDictionary alloc] initWithDictionary:@{@"Sec-Key":[LOOCryptString serverKey]}];
+            r.POSTDictionary = @{ @"code":friendCode,
                                   @"UUID":[CustomFunctions getSystemUUID],
-                                  @"UUIDKey":[keys getKey:@"UUID Key"],
+                                  @"UUID_key":[keys getKey:@"UUID Key"],
                                   @"filesize":[NSString stringWithFormat:@"%llu", encryptedFileSize]};
             NSError *error = nil;
             NSString *body = [r startSynchronousWithError:&error];
-            NSString* pubKey = [CustomFunctions jsonToVal:body key:@"pub_key"]; // given friends pub_key
+            if (r.responseStatus != 200){
+                [_window inputError:body];
+                return;
+            }
+            NSString* pubKey = body;
             
             /////////////////////////////////
             
             if(![pubKey isEqual: @""]){
+                NSLog(@"pub %@", pubKey);
                 // generate a password to encrypt the file with
                 NSString* pass = [CustomFunctions randomString:FILE_PASS_SIZE];
                 
@@ -91,7 +98,7 @@
                         //if compression made the file smaller
                         fileToEncrypt = compressedFile;
                     }else{
-                        NSLog(@"File already @ max compression");
+                        DDLogDebug(@"File already @ max compression");
                         fileToEncrypt = file;
                     }
                     
@@ -106,27 +113,24 @@
                         
                         // UPLOAD ENCRYPTED FILE along with encrypted password of file.
                         _ul = nil;
-                        _ul = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/upload.php"];
-                        _ul.POSTDictionary = @{ @"UUID":[CustomFunctions getSystemUUID], @"UUIDKey":[keys getKey:@"UUID Key"], @"pass": encrypted_pass};
+                        _ul = [STHTTPRequest requestWithURLString:@"https://sock.transferme.it/upload"];
+                        _ul.requestHeaders = [[NSMutableDictionary alloc] initWithDictionary:@{@"Sec-Key":[LOOCryptString serverKey]}];
+                        _ul.POSTDictionary = @{@"password": encrypted_pass};
                         
-                        [_ul addDataToUpload:encryptedFile parameterName:@"fileUpload" mimeType:@"application/octet-stream" fileName:[path lastPathComponent]];
+                        [_ul addDataToUpload:encryptedFile parameterName:@"file" mimeType:@"application/octet-stream" fileName:[path lastPathComponent]];
                         
                         _ul.completionBlock = ^(NSDictionary *headers, NSString *body) {
-                            if(![body isEqual: @"1"]){
-                                [DesktopNotification send:@"Major Error Uploading!" message:[NSString stringWithFormat:@"Error code: %@. Contact hello@transferme.it", body]];
-                            }else{
-//                                [DesktopNotification send:@"Uploaded File!" message:@"Your friend can now download the file."];
-                            }
+                            [DesktopNotification send:@"Uploaded File!" message:@"Your friend can now download the file."];
                             [self finish];
                         };
                         
                         _ul.errorBlock = ^(NSError *error) {
-                            if (![[error localizedDescription] isEqual: @"Connection was cancelled."]) {
+                            if (![[error localizedDescription] isEqualToString: @"Connection was cancelled."]) {
                                 // not manually cancelled
-                                NSLog(@"Upload Error (2): %@", [error localizedDescription]);
-                                [DesktopNotification send:@"Network Error During Upload!" message:@"Please check your network and try uploading the file again."];
+                                DDLogDebug(@"Upload Error: %@ - %@", [error localizedDescription], _ul.responseString);
+                                [DesktopNotification send:@"Network Error During Upload!" message:_ul.responseString];
+                                [self finish];
                             }
-                            [self finish];
                         };
                         
                         _ul.uploadProgressBlock = ^(int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite){
@@ -148,7 +152,7 @@
                 if ([[error localizedDescription] isEqual: @"Connection was cancelled."]) {
                     [DesktopNotification send:error_message message:@"Would you like to purchase upload credit?" activate:@"Yes" close:@"No"];
                 }
-                NSLog(@"upload error body: %@",body);
+                DDLogDebug(@"upload error body: %@",body);
                 [_window inputError:error_message];
             }
         }
@@ -158,11 +162,11 @@
 }
 
 -(void)finish{
-    NSLog(@"finished upload");
+    DDLogVerbose(@"finished upload");
     [_ul cancel];
     _ul = nil;
-    [_mb setDMenu];
-    [_window inputError:@""]; // hack to re-enable button
+    [_mb setDefaultMenuBarMenu];
+    [_window inputError:@""]; // remove input error message
 }
 
 

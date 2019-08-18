@@ -9,6 +9,9 @@
 #import "DesktopNotification.h"
 #import "CustomFunctions.h"
 
+#import <CocoaLumberjack/CocoaLumberjack.h>
+static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
+
 @implementation DesktopNotification
 
 # pragma mark - send notifications
@@ -51,13 +54,12 @@
 }
 
 + (void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification{
-    NSLog(@"activated notification");
+    DDLogDebug(@"activated notification");
     NSString* filePath = notification.userInfo[@"file_path"];
     
     if([notification.title isEqual: @"File Too Big!"]){
         [CustomFunctions goPro];
     }else if(filePath){
-        NSLog(@"Activated %@", [NSURL fileURLWithPath:filePath]);
         NSArray *fileURLs = [NSArray arrayWithObjects:[NSURL fileURLWithPath:filePath], nil];
         [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:fileURLs];
     }

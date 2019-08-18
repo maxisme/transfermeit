@@ -42,13 +42,13 @@
 @property NSTimer* animationTimer;
 @property int lastAnimateCnt;
 
--(void)setDefaultMenu:(NSString*)userCode bandwidthLeft:(unsigned long long)bandwidthLeft maxFileUpload:(unsigned long long)maxFileUpload maxTime:(int)maxTime wantedTime:(int)wantedTime userTier:(int)userTier timeLeft:(NSDate*)timeLeft;
--(void)setDMenu;
+-(void)setDefaultMenu:(NSString*)userCode bandwidthLeft:(unsigned long long)bandwidthLeft maxFileUpload:(unsigned long long)maxFileUpload maxTime:(int)maxTime userTier:(int)userTier;
+-(void)setDefaultMenuBarMenu;
 
 -(void)setTurnOffDND:(bool)DNDIson;
 -(void)setErrorMenu:(NSString*)message;
 -(void)setRequestingCodeMenu;
--(void)setMenuTime:(NSDate*)time;
+-(void)setMenuTime:(NSTimeInterval)time;
 
 - (id)initWithStatusItem:(NSStatusItem *)statusItem window:(PopUpWindow*)w;
 

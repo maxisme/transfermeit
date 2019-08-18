@@ -42,7 +42,7 @@
 -(void)setSendToFriendView:(NSRect)statusBarFrame filePath:(NSString*)filePath;
 -(void)setEnterPermCodeView:(NSRect)statusBarFrame;
 -(void)setEnterRegistrationKeyView:(NSRect)statusBarFrame;
--(void)downloadView:(NSRect)statusBarFrame downloadInfo:(NSString*)downloadInfo;
+-(void)downloadView:(NSRect)statusBarFrame downloadInfo:(id)downloadInfo;
 
 -(void)togglePermenantUser;
 @end

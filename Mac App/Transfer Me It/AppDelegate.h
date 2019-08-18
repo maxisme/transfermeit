@@ -13,4 +13,5 @@
 @interface AppDelegate : NSObject <NSApplicationDelegate , NSUserNotificationCenterDelegate>
 @property MenuBar* mb;
 @property PopUpWindow* w;
+@property NSImage* icon;
 @end

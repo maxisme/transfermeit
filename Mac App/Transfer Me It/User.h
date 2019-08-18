@@ -15,7 +15,6 @@
 @interface User : NSObject
 //helpers
 @property bool createFailed;
-@property int secondCount;
 
 //classes
 @property (strong, nonatomic) MenuBar* menuBar;
@@ -28,10 +27,9 @@
 @property unsigned long long maxFileUpload;
 @property unsigned long long bandwidthLeft;
 @property int maxTime;
-@property int wantedTime;
 @property int tier;
 @property (readonly) NSString* uuid;
-@property NSDate *timeLeft;
+@property NSDate *endTime;
 
 -(id)initWithMenuBar:(MenuBar*)mb;
 -(void)create;

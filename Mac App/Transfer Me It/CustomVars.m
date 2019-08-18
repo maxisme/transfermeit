@@ -45,12 +45,6 @@
     return 7;
 }
 
-+(NSDateFormatter*)dateFormat{
-    NSDateFormatter* time_format = [[NSDateFormatter alloc] init];
-    [time_format setDateFormat:@"mm:ss"];
-    return time_format;
-}
-
 +(NSDictionary*)iconAnimations{
     static NSDictionary *inst = nil;
     static dispatch_once_t onceToken;

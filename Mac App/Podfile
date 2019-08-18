@@ -1,10 +1,12 @@
 target 'Transfer Me It' do
+  pod 'CocoaLumberjack'
   pod 'SocketRocket'
   pod 'STHTTPRequest'
   pod 'Sparkle'
-  pod 'RNCryptor-objc', '3.0.5'
+  pod 'RNCryptor-objc'
   pod 'SAMKeychain'
   pod 'GZIP'
   pod 'MIHCrypto'
-  #use_frameworks!
+  pod 'Sentry', :git => 'https://github.com/getsentry/sentry-cocoa.git'
+#  use_frameworks!
 end

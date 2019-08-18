@@ -10,6 +10,9 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import <STHTTPRequest/STHTTPRequest.h>
+#import <CocoaLumberjack/CocoaLumberjack.h>
+#import "LOOCryptString.h"
+static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 
 #import "CustomVars.h"
 #import "CustomFunctions.h"
@@ -65,6 +68,7 @@
 -(void)setSendToFriendView:(NSRect)statusBarFrame filePath:(NSString*)filePath{
     _inputWindow = [self createDynamicInputWindow];
     NSView* view = [_inputWindow contentView];
+    [self pasteToFriendCode];
     
     _viewName = @"stf";
 
@@ -124,7 +128,7 @@
     [self showView:statusBarFrame window:_inputWindow];
 }
 
--(void)downloadView:(NSRect)statusBarFrame downloadInfo:(NSString*)downloadInfo{
+-(void)downloadView:(NSRect)statusBarFrame downloadInfo:(id)downloadInfo{
     [self showView:statusBarFrame window:[self createDownloadWindow:downloadInfo]];
 }
 
@@ -303,14 +307,13 @@
     return window;
 }
 
--(KeyWindow*)createDownloadWindow:(NSString*)downloadInfo{
+-(KeyWindow*)createDownloadWindow:(id)downloadInfo{
     KeyWindow* window = [self createWindow];
     NSView* view = [window contentView];
     
     //decode json
-    NSString* fileName = [[CustomFunctions jsonToVal:downloadInfo key:@"path"] lastPathComponent];
-    unsigned long long fs = [CustomFunctions stringToULL:[CustomFunctions jsonToVal:downloadInfo key:@"file-size"]];
-    NSString* fileSize = [NSByteCountFormatter stringFromByteCount:fs countStyle:NSByteCountFormatterCountStyleFile];
+    NSString* fileName = [downloadInfo[@"file_path"] lastPathComponent];
+    NSString* fileSize = [NSByteCountFormatter stringFromByteCount:downloadInfo[@"file_size"] countStyle:NSByteCountFormatterCountStyleFile];
     
     NSTextField* incomingFile = [[NSTextField alloc] initWithFrame:CGRectMake((_windowWidth/2) - (250/2), (_windowHeight/2)+25, 250, 20)];
     [incomingFile setBackgroundColor:[NSColor clearColor]];
@@ -365,6 +368,7 @@
     [downloadBtn setFocusRingType:NSFocusRingTypeNone];
     [downloadBtn setBordered:false];
     [downloadBtn setButtonType:NSMomentaryChangeButton];
+    
     // attribute font for delete button
     NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] initWithString:@"DOWNLOAD"];
     NSRange range = NSMakeRange(0, [attr length]);
@@ -372,6 +376,7 @@
     [attr addAttribute:NSForegroundColorAttributeName value:[CustomVars black] range:range];
     [attr addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"Montserrat-Bold" size:13] range:range];
     [attr fixAttributesInRange:range];
+    
     // add attribute
     [downloadBtn setAttributedTitle:attr];
     [downloadBtn updateTrackingAreas];
@@ -511,9 +516,9 @@ NSString* string_before;
     
     // send message to User class to upload file with params:
     NSString* jsonInfo = [CustomFunctions dicToJsonString:@{
-                                       @"path": _subButton.uploadFilePath,
-                                       @"friendCode": [CustomFunctions cleanUpString:_inputCode.stringValue]
-                                       }];
+        @"path": _subButton.uploadFilePath,
+        @"friendCode": [CustomFunctions cleanUpString:_inputCode.stringValue]
+    }];
     [CustomFunctions sendNotificationCenter:jsonInfo name:@"upload-file"];
 }
 
@@ -529,13 +534,11 @@ NSString* string_before;
     [self close:sender.win];
     
     // send message to User class to download file with params:
-    NSString* downloadInfo = sender.message;
+    id downloadInfo = sender.message;
     NSString* jsonInfo = [CustomFunctions dicToJsonString:@{
-                                                            @"localPath": downloadLocation,
-                                                            @"serverPath": [CustomFunctions jsonToVal:downloadInfo key:@"path"],
-                                                            @"dlRef": [CustomFunctions jsonToVal:downloadInfo key:@"ref"],
-                                                            @"friendUUID": [CustomFunctions jsonToVal:downloadInfo key:@"UUID"]
-                                                            }];
+        @"localPath": downloadLocation,
+        @"serverPath": downloadInfo[@"file_path"]
+    }];
     [CustomFunctions sendNotificationCenter:jsonInfo name:@"download-file"];
 }
 
@@ -555,12 +558,10 @@ NSString* string_before;
     
     // get variables
     NSString* downloadInfo = sender.message;
-    NSString* friendUUID = [CustomFunctions jsonToVal:downloadInfo key:@"UUID"];
     NSString* path = [CustomFunctions jsonToVal:downloadInfo key:@"path"];
-    unsigned long long ref = [CustomFunctions stringToULL:[CustomFunctions jsonToVal:downloadInfo key:@"ref"]];
     
     // end download early (empty file hash)
-    [[[Download alloc] initWithKeychain:_keychain menuBar:nil] finishedDownload:path friendUUID:friendUUID downloadRef:ref hash:@""];
+    [[[Download alloc] initWithKeychain:_keychain menuBar:nil] finishedDownload:path hash:@""];
 }
 
 // function is used to both add and remove permenant codes depending on whether the user is using one already
@@ -576,9 +577,10 @@ NSString* string_before;
         currentPermCode = @"";
     }
     
-    STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/togglePermenantUser.php"];
+    STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://sock.transferme.it/toggle-perm-code"];
+    r.requestHeaders = [[NSMutableDictionary alloc] initWithDictionary:@{@"Sec-Key":[LOOCryptString serverKey]}];
     
-    r.POSTDictionary = @{ @"customCode":customCode, @"currentPermCode":currentPermCode, @"UUID":_uuid, @"UUIDKey":[_keychain getKey:@"UUID Key"]};
+    r.POSTDictionary = @{ @"customCode":customCode, @"currentPermCode":currentPermCode, @"UUID":_uuid, @"UUID_key":[_keychain getKey:@"UUID Key"]};
     
     r.completionBlock = ^(NSDictionary *headers, NSString *body) {
         if([body length] > 0){
@@ -593,7 +595,7 @@ NSString* string_before;
                     [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"perm_user_code"];
                     [CustomFunctions sendNotificationCenter:nil name:@"create-user"];
                 }else{
-                    NSLog(@"toggle error: %@", body);
+                    DDLogDebug(@"toggle error: %@", body);
                     [DesktopNotification send:@"Error Setting Permenant Code!" message:body];
                 }
             }
@@ -601,7 +603,7 @@ NSString* string_before;
     };
     
     r.errorBlock = ^(NSError *error) {
-        NSLog(@"Error setting perm user: %@",error);
+        DDLogDebug(@"Error setting perm user: %@",error);
     };
     
     [r startAsynchronous];
@@ -615,9 +617,10 @@ NSString* string_before;
     }else{
         [self close:_inputWindow];
         
-        STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/regCredit.php"];
+        STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://sock.transferme.it/register"];
+        r.requestHeaders = [[NSMutableDictionary alloc] initWithDictionary:@{@"Sec-Key":[LOOCryptString serverKey]}];
         
-        r.POSTDictionary = @{ @"UUID":_uuid, @"UUIDKey":[_keychain getKey:@"UUID Key"], @"pro_code":[CustomFunctions cleanUpString:code]};
+        r.POSTDictionary = @{ @"UUID":_uuid, @"UUID_key":[_keychain getKey:@"UUID Key"], @"pro_code":[CustomFunctions cleanUpString:code]};
         
         r.completionBlock = ^(NSDictionary *headers, NSString *body){
             if ([body  isEqual: @"0"]) {
@@ -629,7 +632,7 @@ NSString* string_before;
         };
         
         r.errorBlock = ^(NSError *error) {
-            NSLog(@"Error registering credit: %@",error);
+            DDLogDebug(@"Error registering credit: %@",error);
         };
         
         [r startAsynchronous];
@@ -639,7 +642,9 @@ NSString* string_before;
 -(void)pasteToFriendCode{
     NSPasteboard *pasteBoard = [NSPasteboard generalPasteboard];
     NSString* pasteString = [pasteBoard stringForType:NSPasteboardTypeString];
-    _inputCode.stringValue = [pasteString uppercaseString];
+    if([pasteString length] == [CustomVars userCodeLength]){
+        _inputCode.stringValue = [pasteString uppercaseString];
+    }
 }
 
 -(void)selectFriendCode{
@@ -659,7 +664,6 @@ NSString* string_before;
     fadeOutAnimation.removedOnCompletion = NO;
     [_errorMessage.layer addAnimation:fadeOutAnimation forKey:nil];
     
-    NSLog(@"error send %@", message);
     _errorMessage.stringValue = message;
     [self shakeLayer:_subButton.layer];
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(fadeOutErrorText) object:@""];

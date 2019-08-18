@@ -19,6 +19,5 @@
 +(int)windowHeight;
 
 +(int)userCodeLength;
-+(NSDateFormatter*)dateFormat;
 +(NSDictionary*)iconAnimations;
 @end

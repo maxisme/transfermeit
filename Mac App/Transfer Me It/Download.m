@@ -10,6 +10,9 @@
 
 #import <STHTTPRequest/STHTTPRequest.h>
 #import <GZIP/GZIP.h>
+#import <CocoaLumberjack/CocoaLumberjack.h>
+#import "LOOCryptString.h"
+static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 
 #import "CustomFunctions.h"
 #import "DesktopNotification.h"
@@ -31,12 +34,13 @@
     return self;
 }
 
--(void)downloadTo:(NSString*)savedPath friendUUID:(NSString*)friendUUID downloadPath:(NSString*)path downloadRef:(unsigned long long)ref{
+-(void)downloadTo:(NSString*)savedPath downloadPath:(NSString*)path{
     [_mb setdownloadMenu:[path lastPathComponent]];
     
     _dl = nil;
-    _dl = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/download.php"];
-    _dl.POSTDictionary = @{ @"UUID":[CustomFunctions getSystemUUID], @"UUIDKey":[_keychain getKey:@"UUID Key"], @"path":path};
+    _dl = [STHTTPRequest requestWithURLString:@"https://sock.transferme.it/download"];
+    _dl.requestHeaders = [[NSMutableDictionary alloc] initWithDictionary:@{@"Sec-Key":[LOOCryptString serverKey]}];
+    _dl.POSTDictionary = @{ @"UUID":[CustomFunctions getSystemUUID], @"UUID_key":[_keychain getKey:@"UUID Key"], @"file_path":path};
     
     // start keep alive (tell server not to delete a file still downloading)
     [NSTimer scheduledTimerWithTimeInterval:10.f target:self selector:@selector(keepAlive:) userInfo:@{@"path": path} repeats:YES];
@@ -49,13 +53,11 @@
             // helps against MITM attacks.
             [_mb setProgressInfo:@"Fetching File Hash..."];
             NSString* fileHash = [CustomFunctions hash:downloadedData];
-            NSLog(@"after hash");
             
             //get the encrypted (by friend with your PubKey) password for the file from server by confirming hash and download path
-            NSString* encrypted_pass = [self finishedDownload:path friendUUID:friendUUID downloadRef:ref hash:fileHash];
+            NSString* encrypted_pass = [self finishedDownload:path hash:fileHash];
             
-            if ([downloadedData length] > 0 && [encrypted_pass length] > 10) { // 10 is arbitrary
-                
+            if ([downloadedData length] > 0 && [encrypted_pass length] > 0) {
                 // decrypt `encrypted_pass` with your PrivKey
                 id privateKey = [RSAClass string64ToKey:[[[RSAClass alloc] initWithKeys:_keychain] getPriv] isPublic:NO];
                 NSString* pass = [RSAClass decryptStringWithKey:encrypted_pass privKey:privateKey];
@@ -97,7 +99,7 @@
                     }
                 }else{
                     downloadedError = @"Unable to decrypt encrypted string.";
-                    NSLog(@"encrypted_pass: %@", encrypted_pass);
+                    DDLogDebug(@"encrypted_pass: %@", encrypted_pass);
                 }
             }else{
                 downloadedError = [NSString stringWithFormat:@"Downloaded file is not as it should be. '%@'", encrypted_pass];
@@ -105,7 +107,7 @@
             
             if(downloadedError.length > 0){
                 [DesktopNotification send:@"Error Downloading File!" message:downloadedError activate:@"" close:@"Close"];
-                NSLog(@"Download Error: %@",downloadedError);
+                DDLogDebug(@"Download Error: %@",downloadedError);
             }
         }else{
             NSString* errorMsg = [[NSString alloc] initWithData:downloadedData encoding:NSUTF8StringEncoding];
@@ -121,8 +123,9 @@
     
     _dl.errorBlock = ^(NSError *error) {
         if (![[error localizedDescription] isEqual: @"Connection was cancelled."]) { // ignore when manually cancelled
-            [self finishedDownload:path friendUUID:friendUUID downloadRef:ref hash:@""];
-            [DesktopNotification send:@"Network Error During Download!" message:@"Please check your network and ask friend to upload again." activate:@"" close:@"Close"];
+            DDLogDebug(@"Download Error: %@ - %@", [error localizedDescription], _dl.responseString);
+            [self finishedDownload:path hash:@""];
+            [DesktopNotification send:@"Network Error During Download!" message:_dl.responseString activate:@"" close:@"Close"];
             [self finish];
         }
     };
@@ -141,28 +144,29 @@
 
 // retrieve the encrypted password stored by the server.
 // if the hash is empty (as is the case with unwanted downloads and errornous downloads) the file will be deleted but no key returned.
--(NSString*)finishedDownload:(NSString*)path friendUUID:(NSString*)friendUUID downloadRef:(unsigned long long)ref hash:(NSString*)hash{
-    STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://transferme.it/app/finishedDownload.php"];
-    NSLog(@"key %llu", ref);
+-(NSString*)finishedDownload:(NSString*)path hash:(NSString*)hash{
+    STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://sock.transferme.it/completed-download"];
+    r.requestHeaders = [[NSMutableDictionary alloc] initWithDictionary:@{@"Sec-Key":[LOOCryptString serverKey]}];
     r.POSTDictionary = @{
-                         @"path":path,
-                         @"friendUUID": friendUUID,
-                         @"UUID":[CustomFunctions getSystemUUID],
-                         @"UUIDKey":[_keychain getKey:@"UUID Key"],
-                         @"hash":hash,
-                         @"ref":[NSNumber numberWithUnsignedLongLong:ref]
-                         };
+        @"file_path":path,
+        @"UUID":[CustomFunctions getSystemUUID],
+        @"UUID_key":[_keychain getKey:@"UUID Key"],
+        @"hash":hash
+    };
     
     NSError *error = nil;
-    NSString *password = [r startSynchronousWithError:&error];
+    NSString *body = [r startSynchronousWithError:&error];
     
-    if(error != nil){
-        NSLog(@"Error finishing download: %@",[error localizedDescription]);
+    if (r.responseStatus != 200){
+        if(error != nil){
+            DDLogDebug(@"Error finishing download: %@", [error localizedDescription]);
+        }
+        DDLogDebug(@"Error finishing download: %@", body);
         [DesktopNotification send:@"Unable To Delete File From Server!" message:@"File will be deleted within the hour."];
         return @"";
     }
     
-    return password;
+    return body;
 }
 
 -(void)keepAlive:(NSTimer *)timer{
@@ -170,15 +174,13 @@
         NSString* path = [[timer userInfo] objectForKey:@"path"];
         [CustomFunctions sendNotificationCenter:path name:@"keep-alive"];
     }else{
-        NSLog(@"No download request");
         [timer invalidate];
     }
 }
 
 // TODO run finished download on finish
 -(void)finish{
-    NSLog(@"finished download");
-    [_mb setDMenu];
+    [_mb setDefaultMenuBarMenu];
     [_dl cancel];
     _dl = nil;
 }

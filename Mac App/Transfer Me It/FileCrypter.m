@@ -10,13 +10,16 @@
 #import "RNDecryptor.h"
 #import "RNEncryptor.h"
 
+#import <CocoaLumberjack/CocoaLumberjack.h>
+static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
+
 @implementation FileCrypter
 
 +(NSData*)encryptFile:(NSData*)data password:(NSString*)password{
     NSError *error = nil;
     NSData *encrypted_data = [RNEncryptor encryptData:data withSettings:kRNCryptorAES256Settings password:password error:&error];
     if (error != nil) {
-        NSLog(@"RNEncryptor error:%@", error);
+        DDLogDebug(@"RNEncryptor error:%@", error);
         return nil;
     }else{
         return encrypted_data;
@@ -27,7 +30,7 @@
     NSError *error = nil;
     NSData *decrypted_data = [RNDecryptor decryptData:data withSettings:kRNCryptorAES256Settings password:password error:&error];
     if (error != nil) {
-        NSLog(@"Decryption ERROR:%@", error);
+        DDLogDebug(@"Decryption ERROR:%@", error);
         return nil;
     }else{
         return decrypted_data;
