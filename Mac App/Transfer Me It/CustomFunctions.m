@@ -327,6 +327,17 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
     }
 }
 
++ (void)checkForBetaUpdate{
+    NSURL* live = [[SUUpdater sharedUpdater] feedURL];
+    
+    // check for update with new url
+    [[SUUpdater sharedUpdater] setFeedURL:[NSURL URLWithString:@"https://transferme.it/beta-version.php"]];
+    [[SUUpdater sharedUpdater] checkForUpdates:self];
+    
+    // revert to live url
+    [[SUUpdater sharedUpdater] setFeedURL:live];
+}
+
 + (CGFloat)widthOfString:(NSString *)string withFont:(NSFont *)font {
     NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
     return [[[NSAttributedString alloc] initWithString:string attributes:attributes] size].width;

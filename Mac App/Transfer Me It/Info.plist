@@ -21,17 +21,32 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.01</string>
+	<string>0.02</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>0.01</string>
+	<string>0.02</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
 	<key>LSUIElement</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>yourdomain.com</key>
+			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+				<false/>
+			</dict>
+		</dict>
+	</dict>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2018 Transfer Me It. All rights reserved.</string>
 	<key>NSMainStoryboardFile</key>
@@ -60,28 +75,13 @@
 	</array>
 	<key>NSUserNotificationAlertStyle</key>
 	<string>alert</string>
-	<key>SUEnableAutomaticChecks</key>
-	<true/>
 	<key>SUAutomaticallyUpdate</key>
 	<true/>
-	<key>SUShowReleaseNotes</key>
+	<key>SUEnableAutomaticChecks</key>
 	<true/>
 	<key>SUFeedURL</key>
 	<string>https://transferme.it/version.php</string>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-		<key>NSExceptionDomains</key>
-		<dict>
-			<key>yourdomain.com</key>
-			<dict>
-				<key>NSIncludesSubdomains</key>
-				<true/>
-				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
-				<false/>
-			</dict>
-		</dict>
-	</dict>
+	<key>SUShowReleaseNotes</key>
+	<true/>
 </dict>
 </plist>

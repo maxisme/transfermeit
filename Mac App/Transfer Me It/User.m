@@ -125,13 +125,10 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
             
             // store all information from creating a new user
             _code           = userCode;
-            
             _bandwidthLeft  = [[CustomFunctions jsonToVal:body key:@"bw_left"] integerValue];
             _maxFileUpload  = [[CustomFunctions jsonToVal:body key:@"max_fs"] integerValue];
-            
             // work out time left
             _endTime       = [CustomFunctions formatGoTime:[CustomFunctions jsonToVal:body key:@"end_time"]];
-            
             _maxTime        = [[CustomFunctions jsonToVal:body key:@"mins_allowed"] intValue];
             _tier           = [[CustomFunctions jsonToVal:body key:@"user_tier"] intValue];
             
@@ -144,7 +141,6 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
     };
     
     r.errorBlock = ^(NSError *error) {
-//        DDLogDebug(@"USER ERROR: %@", error);
         DDLogDebug(@"USER ERROR: %@", r.responseString);
         int responseCode = r.responseStatus;
         if(responseCode == 401){
@@ -197,20 +193,17 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
     }else if(![user isEqual:[NSNull null]]){
         if([_menuBar.menuName isEqual: @"error"] && _code) [self setDefaultMenu];
         
-        NSString* time = user[@"time"];
-        if([time isEqual: @"-"] && ![_menuBar.menuName isEqual:@"download"] && ![_menuBar.menuName isEqual:@"upload"]){
-            // account ended - create a new one
-            DDLogDebug(@"account told to terminate");
+        _endTime = [CustomFunctions formatGoTime:user[@"end_time"]];
+        if((_endTime == nil || [[NSDate date] compare:_endTime] == NSOrderedAscending) && ![_menuBar.menuName isEqual:@"download"] && ![_menuBar.menuName isEqual:@"upload"]){
+            // code expired - create a new one
             [self create];
         }else{
-            _endTime = [CustomFunctions formatGoTime:time];
+            _bandwidthLeft  = [user[@"bw_left"] integerValue];
+            _maxFileUpload  = [user[@"max_fs"] integerValue];
+            
+            // reload menu with updated bandwdith and max file upload size
+            [self setDefaultMenu];
         }
-        
-        _bandwidthLeft  = [user[@"bw_left"] integerValue];
-        _maxFileUpload  = [user[@"max_fs"] integerValue];
-        
-        // reload menu with updated bandwdith and max file upload size
-        [self setDefaultMenu];
     }else if(![message isEqual:[NSNull null]]){
         [DesktopNotification send:message[@"title"] message:message[@"message"]];
         [CustomFunctions sendNotificationCenter:nil name:@"user-stats"]; // TODO potentially a bit overkill

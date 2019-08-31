@@ -441,6 +441,12 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
     [update setTarget:self];
     [menu addItem:update];
     
+    NSMenuItem* beta_update = [[NSMenuItem alloc] initWithTitle:@"Check for beta updates..." action:@selector(checkForBetaUpdate) keyEquivalent:@""];
+    [beta_update setTarget:self];
+    [beta_update setKeyEquivalentModifierMask:NSEventModifierFlagOption];
+    [beta_update setAlternate:YES];
+    [menu addItem:beta_update];
+    
     NSMenuItem* about = [[NSMenuItem alloc] initWithTitle:@"About..." action:@selector(showAbout) keyEquivalent:@""];
     [about setTarget:self];
     [menu addItem:about];
@@ -597,6 +603,10 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 
 -(void)checkForUpdate{
     [CustomFunctions checkForUpdate:true];
+}
+
+-(void)checkForBetaUpdate{
+    [CustomFunctions checkForBetaUpdate];
 }
 
 -(void)copyCode{

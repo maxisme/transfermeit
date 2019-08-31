@@ -132,5 +132,3 @@
         });
     });
 </script>
-
-<!-- echo -n "$(system_profiler SPHardwareDataType | awk '/UUID/ { print $3; }')" | shasum -a 256 -->

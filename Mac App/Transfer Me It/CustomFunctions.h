@@ -43,6 +43,7 @@
 + (NSString*)letterToPhonetic:(char)letter;
 
 + (void)checkForUpdate:(bool)fg;
++ (void)checkForBetaUpdate;
 
 + (CGFloat)widthOfString:(NSString *)string withFont:(NSFont *)font;
 + (unsigned long long)stringToULL:(NSString*)str;
