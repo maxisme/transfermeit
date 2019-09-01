@@ -150,7 +150,7 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
                 // error with init upload
                 NSString *error_message = [CustomFunctions jsonToVal:body key:@"message"];
                 if ([[error localizedDescription] isEqual: @"Connection was cancelled."]) {
-                    [DesktopNotification send:error_message message:@"Would you like to purchase upload credit?" activate:@"Yes" close:@"No"];
+                    [DesktopNotification send:error_message message:@"Would you like to add credit?" activate:@"Yes" close:@"No"];
                 }
                 DDLogDebug(@"upload error body: %@",body);
                 [_window inputError:error_message];

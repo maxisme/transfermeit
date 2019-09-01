@@ -346,16 +346,16 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
     
     [menu addItem:[NSMenuItem separatorItem]];
     
+    NSMenuItem* createNewCode = [[NSMenuItem alloc] initWithTitle:@"Create a new code for..." action:nil keyEquivalent:@""];
+    [createNewCode setSubmenu: [self timeIntervalsWithMaxTime:maxTime userTier:userTier]];
+    [menu addItem:createNewCode];
+    
     NSMenuItem* phoneticOptionItem = [[NSMenuItem alloc] initWithTitle:@"Show phonetics" action:@selector(showPhonetic) keyEquivalent:@""];
     [phoneticOptionItem setTarget:self];
     if([CustomFunctions getStoredBool:@"phonetic"]){
         [phoneticOptionItem setState:NSOnState];
     }
     [menu addItem:phoneticOptionItem];
-    
-    NSMenuItem* createNewCode = [[NSMenuItem alloc] initWithTitle:@"Create a new code for..." action:nil keyEquivalent:@""];
-    [createNewCode setSubmenu: [self timeIntervalsWithMaxTime:maxTime userTier:userTier]];
-    [menu addItem:createNewCode];
     
     [menu addItem:[NSMenuItem separatorItem]];
     //DOWNLOAD STUFF
@@ -367,14 +367,14 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
     
     [menu addItem:[NSMenuItem separatorItem]];
     
-    NSMenuItem* saveLocation = [[NSMenuItem alloc] initWithTitle:@"Set Download Location" action:@selector(setDownloadLocation) keyEquivalent:@""];
+    NSMenuItem* saveLocation = [[NSMenuItem alloc] initWithTitle:@"Set default download location" action:@selector(setDownloadLocation) keyEquivalent:@""];
     [saveLocation setTarget:self];
     if([[NSUserDefaults standardUserDefaults] objectForKey:@"saveLocation"] != nil){
         [saveLocation setState:NSOnState];
     }
     [menu addItem:saveLocation];
     
-    NSMenuItem* downloadAutomatically = [[NSMenuItem alloc] initWithTitle:@"Automatically Download Incoming Files" action:@selector(setDownloadAuto) keyEquivalent:@""];
+    NSMenuItem* downloadAutomatically = [[NSMenuItem alloc] initWithTitle:@"Automatically download incoming files" action:@selector(setDownloadAuto) keyEquivalent:@""];
     [downloadAutomatically setTarget:self];
     if([CustomFunctions getStoredBool:@"autoDownload"]){
         [downloadAutomatically setState:NSOnState];
@@ -410,11 +410,11 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
     [fs setTitle:[NSString stringWithFormat:@"Max File Upload Size: %@", maxFileUploadStr]];
     [menu addItem:fs];
     
-    NSMenuItem* addCredit = [[NSMenuItem alloc] initWithTitle:@"Purchase Upload Credit" action:@selector(goPro) keyEquivalent:@""];
+    NSMenuItem* addCredit = [[NSMenuItem alloc] initWithTitle:@"Add credit" action:@selector(goPro) keyEquivalent:@""];
     [addCredit setTarget:self];
     [menu addItem:addCredit];
     
-    NSMenuItem* regKey = [[NSMenuItem alloc] initWithTitle:@"Enter Credit Key" action:@selector(enterProDetesView) keyEquivalent:@""];
+    NSMenuItem* regKey = [[NSMenuItem alloc] initWithTitle:@"Enter credit key" action:@selector(enterProDetesView) keyEquivalent:@""];
     [regKey setTarget:self];
     [menu addItem:regKey];
     
@@ -447,13 +447,13 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
     [beta_update setAlternate:YES];
     [menu addItem:beta_update];
     
+    NSMenuItem* view_log = [[NSMenuItem alloc] initWithTitle:@"Open logs..." action:@selector(showLoggingFile) keyEquivalent:@""];
+    [view_log setTarget:self];
+    [menu addItem:view_log];
+    
     NSMenuItem* about = [[NSMenuItem alloc] initWithTitle:@"About..." action:@selector(showAbout) keyEquivalent:@""];
     [about setTarget:self];
     [menu addItem:about];
-    
-    NSMenuItem* view_log = [[NSMenuItem alloc] initWithTitle:@"Open Logs..." action:@selector(showLoggingFile) keyEquivalent:@""];
-    [view_log setTarget:self];
-    [menu addItem:view_log];
     
     // Disable auto enable
     [menu setAutoenablesItems:NO];
