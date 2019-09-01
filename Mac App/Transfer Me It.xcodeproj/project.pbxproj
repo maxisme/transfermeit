@@ -617,7 +617,7 @@
 					"$(PROJECT_DIR)/build/Release/OpenSSL-Universal",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				PRODUCT_BUNDLE_IDENTIFIER = "it.transferme.Transfer-Me-It";
+				PRODUCT_BUNDLE_IDENTIFIER = transferme.it;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
@@ -651,7 +651,7 @@
 					"$(PROJECT_DIR)/build/Release/OpenSSL-Universal",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				PRODUCT_BUNDLE_IDENTIFIER = "it.transferme.Transfer-Me-It";
+				PRODUCT_BUNDLE_IDENTIFIER = transferme.it;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
