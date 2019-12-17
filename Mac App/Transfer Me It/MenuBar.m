@@ -265,6 +265,14 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
     [self setImage:[NSImage imageNamed:@"alert.png"]];
     _itemOne.title = title;
     [_itemOne setHidden:false];
+    
+    [_seperator1 setHidden:false];
+    //_itemSix
+    //options menu
+    [_itemSix setSubmenu: [self optionsWithBandwidthLeft:0 maxFileUpload:0 maxTime:0 userTier:0]];
+    _itemSix.title = @"Settings...";
+    [_itemSix setHidden:false];
+    [_itemSix setEnabled:true];
 }
 
 -(void)setRequestingCodeMenu{
@@ -297,7 +305,11 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
     [_itemTwo setTarget:self];
     [_itemTwo setHidden:false];
     
-    _itemThree.title = userCode;
+    if (userCode != nil) {
+        _itemThree.title = userCode;
+    }else{
+        _itemThree.title = @"";
+    }
     _itemThree.action = @selector(copyCode);
     _itemThree.keyEquivalent = @"c";
     [_itemThree setHidden:false];
@@ -555,8 +567,12 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
         [CustomFunctions sendNotificationCenter:nil name:@"create-user"];
     }else{
         int mins = floor(time / 60);
-        int seconds = round(time - mins * 60);
-        time_left = [NSString stringWithFormat:@"%d:%d", mins, seconds];
+        int seconds = round(time - mins * 60) - 1;
+        NSString* sseconds = [NSString stringWithFormat:@"%d", seconds];
+        if (seconds < 10){
+            sseconds = [NSString stringWithFormat:@"0%d", seconds];
+        }
+        time_left = [NSString stringWithFormat:@"%d:%@", mins, sseconds];
     }
     _itemTwo.title = time_left;
 }

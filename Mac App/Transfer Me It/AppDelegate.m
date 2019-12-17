@@ -43,14 +43,13 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
     [DDLog addLogger:[DDTTYLogger sharedInstance]]; // log to xcode output
     [DDLog addLogger:[DDOSLogger sharedInstance]]; // log apple stuff
     [[NSUserDefaults standardUserDefaults] setObject:[[fileLogger currentLogFileInfo] filePath] forKey:@"logging_path"];
-    DDLogDebug(@"----- started -----");
-    DDLogDebug(@"%@", [[[NSBundle mainBundle] bundleURL] URLByDeletingLastPathComponent]);
+    DDLogDebug(@"Started");
     
     // handle crashing logs
     [[NSExceptionHandler defaultExceptionHandler] setExceptionHandlingMask:NSLogAndHandleEveryExceptionMask];
     [[NSExceptionHandler defaultExceptionHandler] setDelegate:self];
     
-    // finder right click
+    // enables finder right click
     [NSApp setServicesProvider:self];
     NSUpdateDynamicServices();
     
@@ -71,11 +70,12 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 - (BOOL)exceptionHandler:(NSExceptionHandler *)sender shouldLogException:(NSException *)exception mask:(NSUInteger)aMask{
 
     NSString* exc = [exception reason];
+    DDLogError(@"Stack: %@", [NSThread callStackSymbols]);
     DDLogError(@"Crash Exception: %@", exc);
 
     NSAlert *alert = [[NSAlert alloc] init];
     [alert addButtonWithTitle:@"Okay"];
-    [alert setMessageText:@"App unexpectedly closed! We have been notified."];
+    [alert setMessageText:@"App unexpectedly closed! We have been notified. Please reopen app."];
     [alert setInformativeText:[NSString stringWithFormat:@"Crash Message: %@", exc]];
     [alert setAlertStyle:NSAlertStyleCritical];
     [alert runModal];

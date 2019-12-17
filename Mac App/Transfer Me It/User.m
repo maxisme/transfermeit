@@ -81,6 +81,7 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
     [self create:wantedTime];
 }
 
+bool UUID_purge;
 -(void)create:(int)wantedTime{
     _code = nil;
     
@@ -153,11 +154,10 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
             DDLogDebug(@"Invalid Public Key");
         }else if(responseCode == 402){
             [_keychain deleteKey:@"UUID Key"];
-            [DesktopNotification send:@"Emergency!" message:@"Your UUID Key has been purged. Please contact hello@transferme.it."];
-            
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [CustomFunctions quit];
-            });
+            if(!UUID_purge){
+                UUID_purge = TRUE;
+                [DesktopNotification send:@"Emergency!" message:@"Your UUID Key has been purged. Please contact hello@transferme.it."];
+            }
         }
         [_menuBar setErrorMenu:@"Network Error!"];
         _code = false;
