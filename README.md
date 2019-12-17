@@ -1,2 +1,5 @@
-# transfermeit
-A simple and minimalistic way to transfer a file from one mac to another.
+<p align="center"><img height="150px" src="https://github.com/maxisme/transferme.it/raw/master/public_html/images/og_logo.png"></p>
+
+# [transferme.it](https://transferme.it/)
+
+## Mac App | [Website](https://github.com/maxisme/transferme.it) | [Backend](https://github.com/maxisme/transfermeit-backend)
