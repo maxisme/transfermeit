@@ -345,6 +345,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -597,7 +598,9 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 0.04;
 				DEVELOPMENT_TEAM = 3H49MXS325;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = "Transfer Me It/Info.plist";
@@ -617,6 +620,7 @@
 					"$(PROJECT_DIR)/build/Release/OpenSSL-Universal",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MARKETING_VERSION = 0.04;
 				PRODUCT_BUNDLE_IDENTIFIER = transferme.it;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -632,7 +636,9 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 0.04;
 				DEVELOPMENT_TEAM = 3H49MXS325;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = "Transfer Me It/Info.plist";
@@ -651,6 +657,7 @@
 					"$(PROJECT_DIR)/build/Release/OpenSSL-Universal",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MARKETING_VERSION = 0.04;
 				PRODUCT_BUNDLE_IDENTIFIER = transferme.it;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

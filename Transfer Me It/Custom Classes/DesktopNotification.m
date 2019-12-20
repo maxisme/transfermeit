@@ -28,6 +28,7 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
     notification.title = title;
     notification.userInfo = variables;
     notification.informativeText = message;
+    notification.soundName = @"Morse";
     
     if(button1.length > 0){
         notification.actionButtonTitle = button1;
