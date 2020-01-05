@@ -16,10 +16,13 @@ dev_team="3H49MXS325"
 # can be recreated with xcode preferences > + > mac Developer
 sign_key="92FE8FE7E7A291030E292B8129AD99F72E65F585"
 
+#dmg
+dmg_project_output="${dir}/Documents/work/${domain}/public_html/${project_name}.dmg"
+
 #server
 scp_command="scp '"$dmg_project_output"' root@${domain}:/var/www/${domain}/public_html/"
 sparkle_path="https://${domain}/version.php"
 
 #run
 cd "$deployment_dir"
-bash deployer.sh "$project_name" "$project_type" "$project_dir" "$dev_team" "$scp_command" "$sparkle_path" "$sign_key"
+bash deployer.sh "$project_name" "$project_type" "$project_dir" "$dev_team" "$scp_command" "$sparkle_path" "$sign_key" "$dmg_project_output"
