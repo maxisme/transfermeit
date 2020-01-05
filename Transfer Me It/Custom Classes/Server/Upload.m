@@ -3,7 +3,7 @@
 //  Transfer Me It
 //
 //  Created by Maximilian Mitchell on 31/01/2018.
-//  Copyright © 2018 Maximilian Mitchell. All rights reserved.
+//  Copyright © 2020 Maximilian Mitchell. All rights reserved.
 //
 
 #import "Upload.h"

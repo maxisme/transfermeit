@@ -3,7 +3,7 @@
 //  Transfer Me It
 //
 //  Created by Max Mitchell on 28/01/2018.
-//  Copyright © 2018 Maximilian Mitchell. All rights reserved.
+//  Copyright © 2020 Maximilian Mitchell. All rights reserved.
 //
 
 #import "RSAClass.h"

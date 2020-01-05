@@ -3,7 +3,7 @@
 //  notifi
 //
 //  Created by Max Mitchell on 24/01/2018.
-//  Copyright © 2018 max mitchell. All rights reserved.
+//  Copyright © 2020 max mitchell. All rights reserved.
 //
 
 #import "Socket.h"
