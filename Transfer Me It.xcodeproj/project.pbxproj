@@ -24,6 +24,7 @@
 		4874367B201D51B70030B1EF /* RSAClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 4874367A201D51B70030B1EF /* RSAClass.m */; };
 		48743681201D55E40030B1EF /* Keys.m in Sources */ = {isa = PBXBuildFile; fileRef = 4874367F201D55E40030B1EF /* Keys.m */; };
 		487F8CE420686792004CD8CF /* Montserrat-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 487F8CE320686791004CD8CF /* Montserrat-SemiBold.ttf */; };
+		4897783923C152CF0072F139 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 4897783823C152CF0072F139 /* Constants.m */; };
 		48AF4B61202DF37B004DE865 /* file.png in Resources */ = {isa = PBXBuildFile; fileRef = 48AF4B60202DF37B004DE865 /* file.png */; };
 		48AF4B64202DF8DF004DE865 /* Button.m in Sources */ = {isa = PBXBuildFile; fileRef = 48AF4B63202DF8DF004DE865 /* Button.m */; };
 		48BBDE08218F560D00014B84 /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 48BBDE07218F560D00014B84 /* Montserrat-Bold.ttf */; };
@@ -71,6 +72,8 @@
 		4874367F201D55E40030B1EF /* Keys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Keys.m; sourceTree = "<group>"; };
 		48743680201D55E40030B1EF /* Keys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keys.h; sourceTree = "<group>"; };
 		487F8CE320686791004CD8CF /* Montserrat-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-SemiBold.ttf"; sourceTree = "<group>"; };
+		4897783723C151950072F139 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		4897783823C152CF0072F139 /* Constants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		48AF4B60202DF37B004DE865 /* file.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = file.png; sourceTree = "<group>"; };
 		48AF4B62202DF8DF004DE865 /* Button.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Button.h; sourceTree = "<group>"; };
 		48AF4B63202DF8DF004DE865 /* Button.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Button.m; sourceTree = "<group>"; };
@@ -225,6 +228,8 @@
 				D6F63857201E0A9600EA9866 /* Socket.m */,
 				D62FFFCD2033306600954FA4 /* User.h */,
 				D62FFFCE2033306600954FA4 /* User.m */,
+				4897783723C151950072F139 /* Constants.h */,
+				4897783823C152CF0072F139 /* Constants.m */,
 			);
 			path = "Custom Classes";
 			sourceTree = "<group>";
@@ -494,6 +499,7 @@
 				481893C81E4E73EF007227EA /* main.m in Sources */,
 				D6BD9FAA2021FD090099E7DE /* Upload.m in Sources */,
 				4811057C201F51B1004D2040 /* PopUpWindow.m in Sources */,
+				4897783923C152CF0072F139 /* Constants.m in Sources */,
 				481893C51E4E73EF007227EA /* AppDelegate.m in Sources */,
 				D6BD9FA72021E6AE0099E7DE /* CustomVars.m in Sources */,
 			);

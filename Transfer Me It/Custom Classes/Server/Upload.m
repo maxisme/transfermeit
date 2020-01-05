@@ -22,6 +22,7 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 #import "PopUpWindow.h"
 #import "MenuBar.h"
 #import "FileCrypter.h"
+#import "Constants.h"
 
 #define FILE_PASS_SIZE 128
 #define COMPRESSION_LEVEL 0.7
@@ -61,7 +62,7 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
             /////////////////////////////////
             unsigned long long encryptedFileSize = [CustomFunctions bytesToEncrypted:fileSize];
             
-            STHTTPRequest* r = [STHTTPRequest requestWithURLString:@"https://sock.transferme.it/init-upload"];
+            STHTTPRequest* r = [STHTTPRequest requestWithURLString:[NSString stringWithFormat:@"%@/init-upload", BackendURL]];
             r.requestHeaders = [[NSMutableDictionary alloc] initWithDictionary:@{@"Sec-Key":[LOOCryptString serverKey]}];
             r.POSTDictionary = @{ @"code":friendCode,
                                   @"UUID":[CustomFunctions getSystemUUID],
@@ -113,7 +114,7 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
                         
                         // UPLOAD ENCRYPTED FILE along with encrypted password of file.
                         _ul = nil;
-                        _ul = [STHTTPRequest requestWithURLString:@"https://sock.transferme.it/upload"];
+                        _ul = [STHTTPRequest requestWithURLString:[NSString stringWithFormat:@"%@/upload", BackendURL]];
                         _ul.requestHeaders = [[NSMutableDictionary alloc] initWithDictionary:@{@"Sec-Key":[LOOCryptString serverKey]}];
                         _ul.POSTDictionary = @{@"password": encrypted_pass};
                         

@@ -9,6 +9,7 @@
 #import "RSAClass.h"
 
 #import "Keys.h"
+#import "Constants.h"
 
 #import <MIHCrypto/MIHPublicKey.h>
 #import <MIHCrypto/MIHPrivateKey.h>
@@ -29,11 +30,11 @@
 }
 
 -(NSString*)getPub{
-    return [_keychain getKey:@"Public Key"];
+    return [_keychain getKey:PubKeyRef];
 }
 
 -(NSString*)getPriv{
-    return [_keychain getKey:@"Private Key"];
+    return [_keychain getKey:PrivKeyRef];
 }
 
 -(void)generatePair{
@@ -44,8 +45,8 @@
     id<MIHPrivateKey> privateKey = keyPair.private;
     
     //store priv key in keychain
-    [_keychain setKey:@"Private Key" withPassword:[RSAClass keyTo64String:privateKey]];
-    [_keychain setKey:@"Public Key" withPassword:[RSAClass keyTo64String:publicKey]];
+    [_keychain setKey:PrivKeyRef withPassword:[RSAClass keyTo64String:privateKey]];
+    [_keychain setKey:PubKeyRef withPassword:[RSAClass keyTo64String:publicKey]];
 }
 
 // used to make sure stored keys are not tampered with and work correctly.

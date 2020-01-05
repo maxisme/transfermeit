@@ -14,6 +14,7 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 #import "LOOCryptString.h"
 
 #import "CustomFunctions.h"
+#import "Constants.h"
 #import "Keys.h"
 
 @implementation Socket
@@ -34,10 +35,10 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 -(void)open{
     [self destroy];
     
-    if([_keychain getKey:@"UUID Key"]){
+    if([_keychain getKey:UUIDKeyRef]){
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:_url]];
         [request setValue:[LOOCryptString serverKey] forHTTPHeaderField:@"Sec-Key"];
-        [request setValue:[_keychain getKey:@"UUID Key"] forHTTPHeaderField:@"UUID-key"];
+        [request setValue:[_keychain getKey:UUIDKeyRef] forHTTPHeaderField:@"UUID-key"];
         [request setValue:[CustomFunctions getSystemUUID] forHTTPHeaderField:@"UUID"];
         [request setValue:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"] forHTTPHeaderField:@"version"];
         _web_socket = [[SRWebSocket alloc] initWithURLRequest:request];

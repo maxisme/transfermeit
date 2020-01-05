@@ -19,8 +19,8 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 #import "RSAClass.h"
 #import "Keys.h"
 #import "FileCrypter.h"
-
 #import "MenuBar.h"
+#import "Constants.h"
 
 @implementation Download
 
@@ -38,9 +38,9 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
     [_mb setdownloadMenu:[path lastPathComponent]];
     
     _dl = nil;
-    _dl = [STHTTPRequest requestWithURLString:@"https://sock.transferme.it/download"];
+    _dl = [STHTTPRequest requestWithURLString:[NSString stringWithFormat:@"%@/download", BackendURL]];
     _dl.requestHeaders = [[NSMutableDictionary alloc] initWithDictionary:@{@"Sec-Key":[LOOCryptString serverKey]}];
-    _dl.POSTDictionary = @{ @"UUID":[CustomFunctions getSystemUUID], @"UUID_key":[_keychain getKey:@"UUID Key"], @"file_path":path};
+    _dl.POSTDictionary = @{ @"UUID":[CustomFunctions getSystemUUID], @"UUID_key":[_keychain getKey:UUIDKeyRef], @"file_path":path};
     
     // start keep alive (tell server not to delete a file still downloading)
     [NSTimer scheduledTimerWithTimeInterval:10.f target:self selector:@selector(keepAlive:) userInfo:@{@"path": path} repeats:YES];
@@ -145,12 +145,12 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 // retrieve the encrypted password stored by the server.
 // if the hash is empty (as is the case with unwanted downloads and errornous downloads) the file will be deleted but no key returned.
 -(NSString*)finishedDownload:(NSString*)path hash:(NSString*)hash{
-    STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://sock.transferme.it/completed-download"];
+    STHTTPRequest *r = [STHTTPRequest requestWithURLString:[NSString stringWithFormat:@"%@/completed-download", BackendURL]];
     r.requestHeaders = [[NSMutableDictionary alloc] initWithDictionary:@{@"Sec-Key":[LOOCryptString serverKey]}];
     r.POSTDictionary = @{
         @"file_path":path,
         @"UUID":[CustomFunctions getSystemUUID],
-        @"UUID_key":[_keychain getKey:@"UUID Key"],
+        @"UUID_key":[_keychain getKey:UUIDKeyRef],
         @"hash":hash
     };
     

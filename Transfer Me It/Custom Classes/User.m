@@ -22,6 +22,7 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 #import "PopUpWindow.h"
 #import "Download.h"
 #import "Upload.h"
+#import "Constants.h"
 
 #import "LOOCryptString.h"
 
@@ -90,11 +91,11 @@ bool UUID_purge;
     NSString* permUserCode = @"";
     if([[NSUserDefaults standardUserDefaults] objectForKey:@"perm_user_code"] != nil) permUserCode = [[NSUserDefaults standardUserDefaults] objectForKey:@"perm_user_code"];
     
-    STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://sock.transferme.it/code"];
+    STHTTPRequest *r = [STHTTPRequest requestWithURLString:[NSString stringWithFormat:@"%@/code", BackendURL]];
     r.requestHeaders = [[NSMutableDictionary alloc] initWithDictionary:@{@"Sec-Key":[LOOCryptString serverKey]}];
     r.timeoutSeconds = 3;
     
-    NSString *uuidKey = [_keychain getKey:@"UUID Key"];
+    NSString *uuidKey = [_keychain getKey:UUIDKeyRef];
     if(uuidKey == nil) uuidKey = @"";
     
     r.POSTDictionary = @{
@@ -114,7 +115,7 @@ bool UUID_purge;
             NSString* newUUIDkey = [CustomFunctions jsonToVal:body key:@"UUID_key"];
             if([newUUIDkey length] > 0){ // only happens when using tmi for the first time.
                 //receiving the key
-                if(![_keychain setKey:@"UUID Key" withPassword:newUUIDkey]){
+                if(![_keychain setKey:UUIDKeyRef withPassword:newUUIDkey]){
                     NSAlert *alert = [[NSAlert alloc] init];
                     [alert setMessageText:@"Major Key Error"];
                     [alert setInformativeText:@"Problem storing key in keychain. Please contact hello@transferme.it"];
@@ -153,10 +154,10 @@ bool UUID_purge;
             [self create];
             DDLogDebug(@"Invalid Public Key");
         }else if(responseCode == 402){
-            [_keychain deleteKey:@"UUID Key"];
+            [_keychain deleteKey:UUIDKeyRef];
             if(!UUID_purge){
                 UUID_purge = TRUE;
-                [DesktopNotification send:@"Emergency!" message:@"Your UUID Key has been purged. Please contact hello@transferme.it."];
+                [DesktopNotification send:@"Emergency!" message:@"Your UUID Key has been purged. Please contact hello@transferme.it"];
             }
         }
         [_menuBar setErrorMenu:@"Network Error!"];
@@ -214,7 +215,7 @@ bool UUID_purge;
 
 #pragma mark - socket
 -(void)createSocket{
-    _socket = [[Socket alloc] initWithURL:@"https://sock.transferme.it/ws"];
+    _socket = [[Socket alloc] initWithURL:[NSString stringWithFormat:@"%@/ws", BackendURL]];
     
     __weak typeof(self) weakSelf = self;
     

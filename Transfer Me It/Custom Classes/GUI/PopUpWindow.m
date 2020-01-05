@@ -22,6 +22,7 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 #import "Keys.h"
 #import "Upload.h"
 #import "Download.h"
+#import "Constants.h"
 
 @interface BorderTextField : NSTextField
 @end
@@ -577,10 +578,10 @@ NSString* string_before;
         currentPermCode = @"";
     }
     
-    STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://sock.transferme.it/toggle-perm-code"];
+    STHTTPRequest *r = [STHTTPRequest requestWithURLString:[NSString stringWithFormat:@"%@/toggle-perm-code", BackendURL]];
     r.requestHeaders = [[NSMutableDictionary alloc] initWithDictionary:@{@"Sec-Key":[LOOCryptString serverKey]}];
     
-    r.POSTDictionary = @{ @"customCode":customCode, @"currentPermCode":currentPermCode, @"UUID":_uuid, @"UUID_key":[_keychain getKey:@"UUID Key"]};
+    r.POSTDictionary = @{ @"customCode":customCode, @"currentPermCode":currentPermCode, @"UUID":_uuid, @"UUID_key":[_keychain getKey:UUIDKeyRef]};
     
     r.completionBlock = ^(NSDictionary *headers, NSString *body) {
         if([body length] > 0){
@@ -617,10 +618,10 @@ NSString* string_before;
     }else{
         [self close:_inputWindow];
         
-        STHTTPRequest *r = [STHTTPRequest requestWithURLString:@"https://sock.transferme.it/register"];
+        STHTTPRequest *r = [STHTTPRequest requestWithURLString:[NSString stringWithFormat:@"%@/register", BackendURL]];
         r.requestHeaders = [[NSMutableDictionary alloc] initWithDictionary:@{@"Sec-Key":[LOOCryptString serverKey]}];
         
-        r.POSTDictionary = @{ @"UUID":_uuid, @"UUID_key":[_keychain getKey:@"UUID Key"], @"pro_code":[CustomFunctions cleanUpString:code]};
+        r.POSTDictionary = @{ @"UUID":_uuid, @"UUID_key":[_keychain getKey:UUIDKeyRef], @"pro_code":[CustomFunctions cleanUpString:code]};
         
         r.completionBlock = ^(NSDictionary *headers, NSString *body){
             if ([body  isEqual: @"0"]) {
